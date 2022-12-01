@@ -22,6 +22,11 @@ on:
         type: boolean
         required: true
         default: true
+      pushDockerImage:
+        description: 'Push Docker Image'
+        type: boolean
+        required: true
+        default: true
 
 jobs:
   sonar:
@@ -89,9 +94,17 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Build e Push Docker Image
+    - name: Build Docker Image
+      shell: pwsh
+      run: |
+        docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+    - name: Login Docker HUB
+      if: ${{inputs.pushDockerImage == true}}
       shell: pwsh
       run: |
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-        docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+    - name: Push Docker Image
+      if: ${{inputs.pushDockerImage == true}}
+      shell: pwsh
+      run: |
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
