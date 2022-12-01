@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["src/", "."]
-RUN dotnet restore "src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj"
+RUN dotnet restore "/src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj"
 WORKDIR "/src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi"
 RUN dotnet build "MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj" -c Release -o /app/build
 
