@@ -36,3 +36,27 @@ jobs:
         dotnet build --no-restore
         dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./tst/Demos.ShopDemo.Monolithic.Tests.UnitTests/Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+  build:
+    needs: sonar
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Setup .NET 6
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore Dependencies
+      run: dotnet restore
+    - name: Build And Test
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
+        dotnet build --no-restore
+    - name: Build e Push Docker Image
+      shell: pwsh
+      run: |
+        docker build . --file Dockerfile
