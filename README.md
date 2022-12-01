@@ -1,0 +1,1 @@
+# MCB.Demos.ShopDemo.Monolithic
