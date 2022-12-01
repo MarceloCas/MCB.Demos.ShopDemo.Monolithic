@@ -22,6 +22,11 @@ on:
         type: boolean
         required: true
         default: true
+      dockerImageTag:
+        description: 'Docker Image Tag'
+        type: string
+        required: true
+        default: 'latest'
     
 jobs:
   sonar:
@@ -92,4 +97,6 @@ jobs:
     - name: Build e Push Docker Image
       shell: pwsh
       run: |
-        docker build . --file Dockerfile
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+        docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{inputs.dockerImageTag}}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic
