@@ -25,7 +25,7 @@ on:
     
 jobs:
   sonar:
-    if: ${{inputs.runSonar}} == true
+    if: ${{inputs.runSonar == true}} 
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -55,7 +55,7 @@ jobs:
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
   integration-tests:
     needs: sonar
-    if: ${{inputs.runIntegrationTests}} == true
+    if: ${{success() && inputs.runIntegrationTests  == true}}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -82,7 +82,7 @@ jobs:
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
   build:
     needs: integration-tests
-    if: ${{inputs.runBuild}} == true
+    if: ${{success() && inputs.runBuild == true}}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
