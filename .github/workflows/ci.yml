@@ -94,4 +94,4 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
         docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
