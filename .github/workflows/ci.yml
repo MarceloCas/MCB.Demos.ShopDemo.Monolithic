@@ -6,9 +6,26 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-
+    inputs:
+      runSonar:
+        description: 'Run Sonar'
+        type: boolean
+        required: true
+        default: true
+      runIntegrationTests:
+        description: 'Run Integration Tests'
+        type: boolean
+        required: true
+        default: true
+      runBuild:
+        description: 'Run Build'
+        type: boolean
+        required: true
+        default: true
+    
 jobs:
   sonar:
+    if: ${{inputs.runSonar}} failure()
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -38,6 +55,7 @@ jobs:
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
   integration-tests:
     needs: sonar
+    if: ${{inputs.runIntegrationTests}} failure()
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -64,8 +82,13 @@ jobs:
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
   build:
     needs: integration-tests
+    if: ${{inputs.runBuild}} failure()
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Build e Push Docker Image
       shell: pwsh
       run: |
