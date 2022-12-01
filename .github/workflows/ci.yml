@@ -22,12 +22,7 @@ on:
         type: boolean
         required: true
         default: true
-      dockerImageTag:
-        description: 'Docker Image Tag'
-        type: string
-        required: true
-        default: 'latest'
-    
+
 jobs:
   sonar:
     if: ${{inputs.runSonar == true}} 
