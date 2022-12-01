@@ -36,7 +36,7 @@ jobs:
         dotnet build --no-restore
         dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./tst/Demos.ShopDemo.Monolithic.Tests.UnitTests/Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-  build:
+  integration-tests:
     needs: sonar
     runs-on: ubuntu-latest
     steps:
@@ -50,12 +50,22 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore Dependencies
       run: dotnet restore
-    - name: Build And Test
+    - name: Build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
         dotnet build --no-restore
+    - name: Integration Tests
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
+        dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
+  build:
+    needs: integration-tests
+    runs-on: ubuntu-latest
+    steps:
     - name: Build e Push Docker Image
       shell: pwsh
       run: |
