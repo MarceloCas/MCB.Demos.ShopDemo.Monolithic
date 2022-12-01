@@ -54,7 +54,6 @@ jobs:
         dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./tst/Demos.ShopDemo.Monolithic.Tests.UnitTests/Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
   integration-tests:
-    needs: sonar
     if: ${{inputs.runIntegrationTests == true}}
     runs-on: ubuntu-latest
     steps:
@@ -81,7 +80,6 @@ jobs:
       run: |
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
   build:
-    needs: integration-tests
     if: ${{inputs.runBuild == true}}
     runs-on: ubuntu-latest
     steps:
