@@ -23,25 +23,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - UnitTests", "1 - UnitTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - IntegrationTests", "2 - IntegrationTests", "{F8988DF3-6B4C-4ECA-86F9-06D3129DE317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting", "src\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj", "{94BCC293-3225-44B5-9B59-A69735B0C449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting", "src\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj", "{94BCC293-3225-44B5-9B59-A69735B0C449}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Domain", "src\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj", "{7BB0D8AF-C545-480E-AB22-4BC1FBA1D57B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Domain", "src\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj", "{7BB0D8AF-C545-480E-AB22-4BC1FBA1D57B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Infra.Data", "src\MCB.Demos.ShopDemo.Monolithic.Infra.Data\MCB.Demos.ShopDemo.Monolithic.Infra.Data.csproj", "{9124AFE8-08BD-4EEC-823D-488A778FBCF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Infra.Data", "src\MCB.Demos.ShopDemo.Monolithic.Infra.Data\MCB.Demos.ShopDemo.Monolithic.Infra.Data.csproj", "{9124AFE8-08BD-4EEC-823D-488A778FBCF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Domain.Entities", "src\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj", "{5786892D-86F0-4440-A7E4-4DA101608180}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Domain.Entities", "src\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj", "{5786892D-86F0-4440-A7E4-4DA101608180}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Application", "src\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj", "{BED0656B-DB78-4B8D-9D0B-E017F0CDF1FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Application", "src\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj", "{BED0656B-DB78-4B8D-9D0B-E017F0CDF1FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork", "src\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj", "{51375272-D918-46CF-8088-9968ED07362E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork", "src\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj", "{51375272-D918-46CF-8088-9968ED07362E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi", "src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj", "{1F437D99-9A52-4295-90BF-0A0C0188F192}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi", "src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj", "{1F437D99-9A52-4295-90BF-0A0C0188F192}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection", "src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.csproj", "{62FC4EE3-ACE3-4815-B9EA-50644803660C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection", "src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.csproj", "{62FC4EE3-ACE3-4815-B9EA-50644803660C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demos.ShopDemo.Monolithic.Tests.UnitTests", "tst\Demos.ShopDemo.Monolithic.Tests.UnitTests\Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj", "{70011A54-B913-4245-A68C-5130C46AC0BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demos.ShopDemo.Monolithic.Tests.UnitTests", "tst\Demos.ShopDemo.Monolithic.Tests.UnitTests\Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj", "{70011A54-B913-4245-A68C-5130C46AC0BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demos.ShopDemo.Monolithic.Tests.IntegrationTests", "tst\Demos.ShopDemo.Monolithic.Tests.IntegrationTests\Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj", "{5431CB84-00B8-4CA4-9682-35EFA46A2657}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demos.ShopDemo.Monolithic.Tests.IntegrationTests", "tst\Demos.ShopDemo.Monolithic.Tests.IntegrationTests\Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj", "{5431CB84-00B8-4CA4-9682-35EFA46A2657}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Messages", "5 - Messages", "{C5720FF4-CACE-4CE9-8F59-3315A1F7F8E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Messages", "src\MCB.Demos.ShopDemo.Monolithic.Messages\MCB.Demos.ShopDemo.Monolithic.Messages.csproj", "{4EB1C09A-20F0-4834-B14B-4B3293037042}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +93,10 @@ Global
 		{5431CB84-00B8-4CA4-9682-35EFA46A2657}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5431CB84-00B8-4CA4-9682-35EFA46A2657}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5431CB84-00B8-4CA4-9682-35EFA46A2657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +120,8 @@ Global
 		{62FC4EE3-ACE3-4815-B9EA-50644803660C} = {62BD2284-CC34-4B9F-9428-7175A6B58759}
 		{70011A54-B913-4245-A68C-5130C46AC0BD} = {BBAAAF96-46BF-4ED5-94A2-CCA1092591B0}
 		{5431CB84-00B8-4CA4-9682-35EFA46A2657} = {F8988DF3-6B4C-4ECA-86F9-06D3129DE317}
+		{C5720FF4-CACE-4CE9-8F59-3315A1F7F8E1} = {B4F5D30D-D3A8-4FAD-8191-5AAAE99E89C4}
+		{4EB1C09A-20F0-4834-B14B-4B3293037042} = {C5720FF4-CACE-4CE9-8F59-3315A1F7F8E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0F7B3DF-7E49-4EA5-B77C-6C45D393FCE5}

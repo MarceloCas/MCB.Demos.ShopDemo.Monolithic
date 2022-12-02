@@ -1,14 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MCB.Core.Domain" Version="0.27.0-alpha" />
+		<PackageReference Include="MCB.Core.Domain.Abstractions" Version="0.32.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.38.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions" Version="0.6.0-alpha" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
+	</ItemGroup>
 
 </Project>

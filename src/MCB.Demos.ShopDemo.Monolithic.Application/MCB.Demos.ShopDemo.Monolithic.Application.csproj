@@ -11,6 +11,7 @@
     <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
     <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
     <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
+    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Messages\MCB.Demos.ShopDemo.Monolithic.Messages.csproj" />
   </ItemGroup>
 
 </Project>

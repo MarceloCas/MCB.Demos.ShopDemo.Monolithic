@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:49866;http://localhost:49870"
+    }
+  }
+}
