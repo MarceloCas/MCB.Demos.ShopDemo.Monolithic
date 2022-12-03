@@ -30,16 +30,11 @@ public class CustomControllerBase
 
     // Private Methods
     private ResponseBase CreateResponse<TUseCaseInput>(
-        string? executionUser,
-        string? sourcePlatform,
         Func<TUseCaseInput, ResponseBase> responseBaseFactory,
         TUseCaseInput useCaseInput
     )
     {
         var response = responseBaseFactory(useCaseInput);
-
-        response.ExecutionUser = executionUser;
-        response.SourcePlatform = sourcePlatform;
 
         response.ResponseMessageCollection = _notificationSubscriber.NotificationCollection.Select(q =>
             new ResponseMessage(
@@ -73,14 +68,16 @@ public class CustomControllerBase
             cancellationToken
         );
 
-        return StatusCode(
-            statusCode: success ? successStatusCode : failStatusCode,
-            value: CreateResponse(
-                useCaseInput.ExecutionUser,
-                useCaseInput.SourcePlatform,
+        var response =
+            success ? null
+            : CreateResponse(
                 responseBaseFactory,
                 useCaseInput
-            )
+            );
+
+        return StatusCode(
+            statusCode: success ? successStatusCode : failStatusCode,
+            value: response
         );
     }
 }

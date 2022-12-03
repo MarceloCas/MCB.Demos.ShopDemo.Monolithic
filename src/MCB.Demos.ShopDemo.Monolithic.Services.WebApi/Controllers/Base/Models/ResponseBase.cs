@@ -1,9 +1,10 @@
-﻿namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
 
 public abstract class ResponseBase
 {
-    public string? ExecutionUser { get; set; }
-    public string? SourcePlatform { get; set; }
+    [JsonPropertyName("messages")]
     public IEnumerable<ResponseMessage> ResponseMessageCollection { get; set; }
 
     protected ResponseBase()
