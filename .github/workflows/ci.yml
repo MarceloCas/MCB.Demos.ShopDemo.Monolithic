@@ -98,6 +98,9 @@ jobs:
     needs: build
     if: ${{inputs.runIntegrationTests == true}}
     runs-on: ubuntu-latest
+    container:
+      image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+      options: "-p 5000:80 -p 5001:443"
 
     services:
 
@@ -135,13 +138,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Run ShopDemo Image
-      uses: addnab/docker-run-action@v3
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-        image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-        options: "-p 5000:80 -p 5001:443"
+    #- name: Run ShopDemo Image
+    #  uses: addnab/docker-run-action@v3
+    #  with:
+    #    username: ${{ secrets.DOCKER_HUB_USERNAME }}
+    #    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    #    image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+    #    options: "-p 5000:80 -p 5001:443"
 
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
