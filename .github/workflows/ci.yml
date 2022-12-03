@@ -8,11 +8,6 @@ on:
         type: boolean
         required: true
         default: true
-      runIntegrationTests:
-        description: 'Run Integration Tests'
-        type: boolean
-        required: true
-        default: true
       runBuild:
         description: 'Run Build'
         type: boolean
@@ -23,27 +18,40 @@ on:
         type: boolean
         required: true
         default: true
+      runIntegrationTests:
+        description: 'Run Integration Tests'
+        type: boolean
+        required: true
+        default: true
 
 jobs:
+
   sonar:
+
     if: ${{inputs.runSonar == true}} 
     runs-on: ubuntu-latest
+
     steps:
+
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+
     - name: Install Sonar Scanner
       shell: pwsh
       run: |
         New-Item -Path ./.sonar/scanner -ItemType Directory
         dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+
     - name: Restore Dependencies
       run: dotnet restore
+
     - name: Build And Test
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -54,61 +62,105 @@ jobs:
         dotnet build --no-restore
         dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./tst/Demos.ShopDemo.Monolithic.Tests.UnitTests/Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-  integration-tests:
+  
+  build:
+
     needs: sonar
-    if: ${{inputs.runIntegrationTests == true}}
+    if: ${{inputs.runBuild == true}}
     runs-on: ubuntu-latest
+
     steps:
+
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Setup MongoDB
-      uses: supercharge/mongodb-github-action@1.8.0
+
+    - name: Build Docker Image
+      shell: pwsh
+      run: |
+        docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+    
+    - name: Login Docker HUB
+      if: ${{inputs.pushDockerImage == true}}
+      shell: pwsh
+      run: |
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Push Docker Image
+      if: ${{inputs.pushDockerImage == true}}
+      shell: pwsh
+      run: |
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+
+  integration-tests:
+
+    needs: build
+    if: ${{inputs.runIntegrationTests == true}}
+    runs-on: ubuntu-latest
+
+    services:
+
+      rabbitmq:
+        image: rabbitmq:3-management-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+          - 15672:15672
+
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: 123456
+        ports:
+          - "27017:27017"
+
+      redis:
+        image: redis
+        ports:
+          - '6379:6379'
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --requirepass 123456
+
+      shopdemo:
+        image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+        ports:
+          - 5000:80
+          - 5001:443
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        mongodb-version: latest
-        mongodb-port: 27017
-        mongodb-username: root
-        mongodb-password: 123456
-        mongodb-db: SHOP_DEMO_MONOLITHIC
+        fetch-depth: 0
+
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+
     - name: Restore Dependencies
       run: dotnet restore
+
     - name: Build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
         dotnet build --no-restore
+
     - name: Integration Tests
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
-  build:
-    needs: integration-tests
-    if: ${{inputs.runBuild == true}}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Build Docker Image
-      shell: pwsh
-      run: |
-        docker build . --file Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-    - name: Login Docker HUB
-      if: ${{inputs.pushDockerImage == true}}
-      shell: pwsh
-      run: |
-        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
-    - name: Push Docker Image
-      if: ${{inputs.pushDockerImage == true}}
-      shell: pwsh
-      run: |
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+
