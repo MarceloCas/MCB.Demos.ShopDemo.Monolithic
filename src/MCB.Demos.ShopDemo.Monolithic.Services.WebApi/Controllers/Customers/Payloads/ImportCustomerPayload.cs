@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 
-public class RegisterNewCustomerPayload
+public class ImportCustomerPayload
     : PayloadBase
 {
     public string? FirstName { get; set; }

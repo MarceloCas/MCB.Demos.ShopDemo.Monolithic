@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Responses;
 
-public class RegisterNewCustomerResponse
+public class ImportCustomerResponse
     : ResponseBase
 {
 }

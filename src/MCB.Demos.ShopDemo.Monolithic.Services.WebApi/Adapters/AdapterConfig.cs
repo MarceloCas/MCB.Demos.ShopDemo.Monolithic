@@ -19,6 +19,6 @@ public class AdapterConfig
     // Private Methods
     private static void ConfigureForWebApi()
     {
-        TypeAdapterConfig<RegisterNewCustomerPayload, RegisterNewCustomerUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerPayload, RegisterNewCustomerUseCaseInput>.NewConfig();
     }
 }

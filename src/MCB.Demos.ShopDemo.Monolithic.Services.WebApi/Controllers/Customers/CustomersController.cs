@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [ApiVersion("1")]
 public class CustomersController
@@ -28,20 +28,20 @@ public class CustomersController
         _registerNewCustomerUseCase = registerNewCustomerUseCase;
     }
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(RegisterNewCustomerResponse))]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(RegisterNewCustomerResponse))]
-    public async Task<IActionResult> RegisterNewCustomerAsync(
-        [FromBody] RegisterNewCustomerPayload payload,
+    [HttpPost("import")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ImportCustomerResponse))]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ImportCustomerResponse))]
+    public async Task<IActionResult> ImportCustomerAsync(
+        [FromBody] ImportCustomerPayload payload,
         CancellationToken cancellationToken
     )
     {
         return await RunUseCaseAsync(
             useCase: _registerNewCustomerUseCase!,
-            useCaseInput: Adapter.Adapt<RegisterNewCustomerPayload, RegisterNewCustomerUseCaseInput>(payload)!,
-            responseBaseFactory: (useCaseInput) => new RegisterNewCustomerResponse(),
-            successStatusCode: 201,
-            failStatusCode: 422,
+            useCaseInput: Adapter.Adapt<ImportCustomerPayload, RegisterNewCustomerUseCaseInput>(payload)!,
+            responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
+            successStatusCode: (int) System.Net.HttpStatusCode.Created,
+            failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
             cancellationToken
         );
     }
