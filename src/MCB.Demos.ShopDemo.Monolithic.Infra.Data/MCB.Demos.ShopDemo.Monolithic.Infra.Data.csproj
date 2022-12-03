@@ -1,16 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.80" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain.Entities\MCB.Demos.ShopDemo.Monolithic.Domain.Entities.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
+	</ItemGroup>
 
 </Project>

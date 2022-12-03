@@ -11,7 +11,7 @@
 	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.38.0-alpha" />
 	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Validator" Version="0.16.0-alpha" />
 	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions" Version="0.6.0-alpha" />
-	  <PackageReference Include="FluentValidation" Version="11.2.2" />
+	  <PackageReference Include="FluentValidation" Version="11.4.0" />
   </ItemGroup>
 
   <ItemGroup>

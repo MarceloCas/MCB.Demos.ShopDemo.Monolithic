@@ -1,19 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection" Version="0.8.0-alpha" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.50.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.csproj" />
+	</ItemGroup>
 
 </Project>

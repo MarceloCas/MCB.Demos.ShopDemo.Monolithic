@@ -1,17 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
-    <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data\MCB.Demos.ShopDemo.Monolithic.Infra.Data.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MCB.Core.Infra.CrossCutting" Version="0.13.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection" Version="0.8.0-alpha" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data\MCB.Demos.ShopDemo.Monolithic.Infra.Data.csproj" />
+	</ItemGroup>
 
 </Project>

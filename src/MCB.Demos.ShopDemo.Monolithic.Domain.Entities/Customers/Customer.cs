@@ -48,6 +48,25 @@ public sealed class Customer
             .SetEmail(input.Email)
             .RegisterNewInternal<Customer>(input.TenantId, input.ExecutionUser, input.SourcePlatform);
     }
+    public Customer SetExistingCustomerInfo(SetExistingCustomerInfoInput input)
+    {
+        SetExistingInfoInternal<Customer>(
+            input.Id,
+            input.TenantId,
+            input.CreatedBy,
+            input.CreatedAt,
+            input.LastUpdatedBy,
+            input.LastUpdatedAt,
+            input.LastSourcePlatform,
+            input.RegistryVersion
+        );
+
+        SetName(input.FirstName, input.LastName);
+        SetBirthDate(input.BirthDate);
+        SetEmail(input.Email);
+
+        return this;
+    }
 
     public Customer DeepClone()
     {
