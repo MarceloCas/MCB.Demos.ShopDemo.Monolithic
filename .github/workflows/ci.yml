@@ -1,10 +1,6 @@
 name: ci
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       runSonar:
@@ -67,6 +63,14 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    - name: Setup MongoDB
+      uses: supercharge/mongodb-github-action@1.8.0
+      with:
+        mongodb-version: latest
+        mongodb-port: 27017
+        mongodb-username: root
+        mongodb-password: 123456
+        mongodb-db: SHOP_DEMO_MONOLITHIC
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
       with:
