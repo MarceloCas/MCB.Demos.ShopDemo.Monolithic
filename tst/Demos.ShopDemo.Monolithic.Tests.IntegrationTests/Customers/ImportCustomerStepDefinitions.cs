@@ -31,7 +31,7 @@ public class ImportCustomerStepDefinitions
         _fixture = fixture;
         _httpClient = new HttpClient();
 
-        _importCustomerUrl = "https://localhost:5001/api/v1/Customers/import";
+        _importCustomerUrl = "http://localhost:5000/api/v1/Customers/import";
     }
 
     [Given(@"a customer who does not have the registered email")]
