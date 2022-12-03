@@ -6,7 +6,6 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Responses;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers;
 
