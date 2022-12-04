@@ -29,13 +29,13 @@ jobs:
   init:
     runs-on: ubuntu-latest
     outputs:
-      dockerhubusername: ${{ steps.step1.outputs.test }}
-      imagename: ${{ steps.step2.outputs.test }}
+      dockerhubusername: ${{ steps.step1.outputs.output }}
+      imagename: ${{ steps.step2.outputs.output }}
     steps:
       - id: step1
-        run: echo "marcelocas" >> $GITHUB_OUTPUT
+        run: echo "output=marcelocas" >> $GITHUB_OUTPUT
       - id: step2
-        run: echo "marcelocas/mcb_demos_shopdemo_monolithic:${{github.run_id}}" >> $GITHUB_OUTPUT
+        run: echo "output=marcelocas/mcb_demos_shopdemo_monolithic:${{github.run_id}}" >> $GITHUB_OUTPUT
 
   sonar:
     
