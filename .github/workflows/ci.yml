@@ -24,19 +24,18 @@ on:
         required: true
         default: true
 
-env:
-  DOCKER_HUB_USERNAME: "marcelocas"
-  IMAGE_NAME: ${{ env.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-
 jobs:
 
   init:
     runs-on: ubuntu-latest
     outputs:
-      imagename: ${{ steps.step1.outputs.test }}
+      dockerhubusername: ${{ steps.step1.outputs.test }}
+      imagename: ${{ steps.step2.outputs.test }}
     steps:
       - id: step1
-        run: echo "${{ env.IMAGE_NAME }}" >> $GITHUB_OUTPUT
+        run: echo "marcelocas" >> $GITHUB_OUTPUT
+      - id: step2
+        run: echo "marcelocas/mcb_demos_shopdemo_monolithic:${{github.run_id}}" >> $GITHUB_OUTPUT
 
   sonar:
     
@@ -78,7 +77,7 @@ jobs:
   
   build:
 
-    needs: sonar
+    needs: [init, sonar]
     if: ${{inputs.runBuild == true}}
     runs-on: ubuntu-latest
 
@@ -98,7 +97,7 @@ jobs:
       if: ${{inputs.pushDockerImage == true}}
       shell: pwsh
       run: |
-        docker login -u ${{ env.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+        docker login -u ${{needs.init.outputs.dockerhubusername}} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     - name: Push Docker Image
       if: ${{inputs.pushDockerImage == true}}
