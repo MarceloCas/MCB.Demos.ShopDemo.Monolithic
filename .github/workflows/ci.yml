@@ -91,7 +91,7 @@ jobs:
     - name: Build Docker Image
       shell: pwsh
       run: |
-        docker build . --file Dockerfile -t ${{ env.IMAGE_NAME }}
+        docker build . --file Dockerfile -t ${{ needs.init.outputs.imagename }}
     
     - name: Login Docker HUB
       if: ${{inputs.pushDockerImage == true}}
