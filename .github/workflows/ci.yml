@@ -127,6 +127,11 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          
+      shopdemo:
+        image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+        ports:
+          - '5000:80'
 
     steps:
 
