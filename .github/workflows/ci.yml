@@ -129,7 +129,8 @@ jobs:
           --health-retries 5
           
       shopdemo:
-        image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+        #image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+        image: ${{inputs.runIntegrationTests == true}}
         ports:
           - '5000:80'
 
