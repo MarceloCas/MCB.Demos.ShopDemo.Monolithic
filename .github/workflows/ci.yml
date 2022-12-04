@@ -24,6 +24,9 @@ on:
         required: true
         default: true
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+
 jobs:
 
   sonar:
@@ -92,6 +95,8 @@ jobs:
       shell: pwsh
       run: |
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+    #outputs:
+    #  imageName: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
 
   integration-tests:
 
@@ -130,7 +135,7 @@ jobs:
           
       shopdemo:
         #image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-        image: ${{inputs.runIntegrationTests == true}}
+        image: $IMAGE_NAME
         ports:
           - '5000:80'
 
