@@ -40,9 +40,10 @@ jobs:
   sonar:
     
     needs: init
-
-    if: ${{inputs.runSonar == true}} 
+    
     runs-on: ubuntu-latest
+    if: ${{inputs.runSonar == true}} 
+
     steps:
 
     - name: Checkout
@@ -78,8 +79,9 @@ jobs:
   build:
 
     needs: [init, sonar]
-    if: ${{inputs.runBuild == true}}
+
     runs-on: ubuntu-latest
+    if: ${{inputs.runBuild == true}}
 
     steps:
 
@@ -141,7 +143,6 @@ jobs:
           --health-retries 5
           
       shopdemo:
-        #image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
         image: ${{needs.init.outputs.imagename}}
         ports:
           - '5000:80'
