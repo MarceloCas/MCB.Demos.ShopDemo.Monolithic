@@ -135,18 +135,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    #- name: Run ShopDemo Image
-    #  uses: addnab/docker-run-action@v3
-    #  with:
-    #    username: ${{ secrets.DOCKER_HUB_USERNAME }}
-    #    password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-    #    image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-    #    options: -p 5000:80 -e ASPNETCORE_URLS="http://+"
-
     - name: Run ShopDemo Image
-      uses: docker://${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+      uses: addnab/docker-run-action@v3
       with:
-          args: -p 5000:80 -e ASPNETCORE_URLS="http://+"
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
+        options: -p 5000:80 -e ASPNETCORE_URLS="http://+"
 
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
