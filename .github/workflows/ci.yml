@@ -33,7 +33,7 @@ jobs:
 
     if: ${{inputs.runSonar == true}} 
     runs-on: ubuntu-latest
-
+    #needs: run-info
     steps:
 
     - name: Checkout
@@ -135,7 +135,7 @@ jobs:
           
       shopdemo:
         #image: ${{ secrets.DOCKER_HUB_USERNAME }}/mcb_demos_shopdemo_monolithic:${{github.run_id}}
-        image: $IMAGE_NAME
+        image: ${{ env.IMAGE_NAME }}
         ports:
           - '5000:80'
 
