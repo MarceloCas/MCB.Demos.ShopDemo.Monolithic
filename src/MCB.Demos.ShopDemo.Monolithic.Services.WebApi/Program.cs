@@ -21,7 +21,11 @@ builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     )
 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+    });
 builder.Services.AddApiVersioning(options =>
 {
     options.AssumeDefaultVersionWhenUnspecified = true;

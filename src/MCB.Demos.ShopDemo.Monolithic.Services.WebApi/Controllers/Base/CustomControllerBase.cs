@@ -36,18 +36,18 @@ public class CustomControllerBase
     {
         var response = responseBaseFactory(useCaseInput);
 
-        response.ResponseMessageCollection = _notificationSubscriber.NotificationCollection.Select(q =>
-            new ResponseMessage(
-                type: q.NotificationType switch
+        response.Messages = _notificationSubscriber.NotificationCollection.Select(q =>
+            new ResponseMessage{
+                Type = q.NotificationType switch
                 {
                     NotificationType.Information => ResponseMessageType.Information,
                     NotificationType.Warning => ResponseMessageType.Warning,
                     NotificationType.Error => ResponseMessageType.Error,
                     _ => throw new NotImplementedException(),
                 },
-                code: q.Code,
-                description: q.Description
-            )
+                Code = q.Code,
+                Description = q.Description
+            }
         );
 
         return response;

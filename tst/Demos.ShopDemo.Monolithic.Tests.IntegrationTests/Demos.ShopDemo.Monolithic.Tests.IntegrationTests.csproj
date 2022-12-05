@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MCB.Demos.ShopDemo.Monolithic.Domain\MCB.Demos.ShopDemo.Monolithic.Domain.csproj" />
     <ProjectReference Include="..\..\src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.csproj" />
   </ItemGroup>
 
