@@ -86,7 +86,7 @@ public class ImportCustomerStepDefinitions
         _importCustomerResponse!.Messages.Should().HaveCount(1);
     }
 
-    [Then(@"an customer email message already registered must be returned")]
+    [Then(@"an customer email already registered message must be returned")]
     public void ThenAnCustomerEmailMessageAlreadyRegisteredMustBeReturned()
     {
         var message = _importCustomerResponse?.Messages?.FirstOrDefault();

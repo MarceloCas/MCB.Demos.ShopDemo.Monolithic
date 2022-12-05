@@ -15,10 +15,4 @@ Scenario: Existing client
 	Given  a customer who does have the registered email
 	When the customer import is requested
 	Then the client should not be successfully imported
-	And an customer email message already registered must be returned
-
-#Cenário 2: Cliente existente
-#Dado um cliente que já possua o e-mail cadastrado na base
-#Quando a importação for solicitada
-#Então a importação deve ser recusada
-#E um aviso de e-mail já cadastrado deve ser retornado
+	And an customer email already registered message must be returned
