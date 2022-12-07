@@ -1,4 +1,5 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.UnitOfWork;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.MongoDb.DataContexts;
@@ -19,6 +20,9 @@ public static class Bootstrapper
     // Public Methods
     public static void ConfigureDependencyInjection(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
     {
+        // Unit of Work
+        dependencyInjectionContainer.RegisterScoped<IUnitOfWork, DefaultUnitOfWork>();
+
         // Data Contexts - MongoDb
         ConfigureDependencyInjectionForMongoDb(dependencyInjectionContainer, appSettings);
 

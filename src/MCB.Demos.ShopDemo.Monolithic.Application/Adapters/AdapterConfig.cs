@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerHasBeenRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerHasBeenRegistered;
@@ -15,6 +16,7 @@ public class AdapterConfig
     public static void Configure(TypeAdapterConfig typeAdapterConfig)
     {
         typeAdapterConfig.ForType<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>();
+        typeAdapterConfig.ForType<RegisterNewCustomerBatchUseCaseInputItem, RegisterNewCustomerServiceInput>();
 
         // ExternalEvents
         typeAdapterConfig.ForType<CustomerHasBeenRegisteredDomainEvent, CustomerHasBeenRegisteredEvent>()

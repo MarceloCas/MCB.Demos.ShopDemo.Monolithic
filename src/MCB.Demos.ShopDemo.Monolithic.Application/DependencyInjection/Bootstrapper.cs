@@ -3,6 +3,8 @@ using MCB.Demos.ShopDemo.Monolithic.Application.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.DependencyInjection;
 
@@ -16,5 +18,6 @@ public static class Bootstrapper
 
         // Use Cases
         dependencyInjectionContainer.RegisterScoped<IRegisterNewCustomerUseCase, RegisterNewCustomerUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IRegisterNewCustomerBatchUseCase, RegisterNewCustomerBatchUseCase>();
     }
 }

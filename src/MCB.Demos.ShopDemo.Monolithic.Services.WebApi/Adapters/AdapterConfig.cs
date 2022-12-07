@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
@@ -20,5 +21,7 @@ public class AdapterConfig
     private static void ConfigureForWebApi()
     {
         TypeAdapterConfig<ImportCustomerPayload, RegisterNewCustomerUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerBatchPayload, RegisterNewCustomerBatchUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerBatchPayloadItem, RegisterNewCustomerBatchUseCaseInputItem>.NewConfig();
     }
 }
