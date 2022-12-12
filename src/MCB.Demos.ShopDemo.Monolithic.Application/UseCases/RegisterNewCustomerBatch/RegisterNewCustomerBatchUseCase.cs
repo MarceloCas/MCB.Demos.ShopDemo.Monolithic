@@ -24,23 +24,21 @@ public class RegisterNewCustomerBatchUseCase
     public const NotificationType CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE = NotificationType.Error;
 
     // Fields
-    private readonly INotificationPublisher _notificationPublisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly ICustomerService _customerService;
 
     // Constructors
     public RegisterNewCustomerBatchUseCase(
+        INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
         IAdapter adapter,
-        INotificationPublisher notificationPublisher,
         IUnitOfWork unitOfWork,
         IJsonSerializer jsonSerializer,
         ICustomerService customerService
-    ) : base(domainEventSubscriber, externalEventFactory, adapter)
+    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter)
     {
-        _notificationPublisher = notificationPublisher;
         _unitOfWork = unitOfWork;
         _jsonSerializer = jsonSerializer;
         _customerService = customerService;
@@ -57,13 +55,13 @@ public class RegisterNewCustomerBatchUseCase
                     var item = input.Items[i];
 
                     var processResult = await _customerService.RegisterNewCustomerAsync(
-                        input: Adapter.Adapt<RegisterNewCustomerBatchUseCaseInputItem, RegisterNewCustomerServiceInput>(item)!,
+                        input: Adapter.Adapt<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>((q.input!, item))!,
                         cancellationToken
                     );
 
                     if (!processResult)
                     {
-                        await _notificationPublisher.PublishNotificationAsync(
+                        await NotificationPublisher.PublishNotificationAsync(
                             new Notification(
                                 notificationType: CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE,
                                 code: CUSTOMER_BATCH_IMPORT_FAIL_CODE,

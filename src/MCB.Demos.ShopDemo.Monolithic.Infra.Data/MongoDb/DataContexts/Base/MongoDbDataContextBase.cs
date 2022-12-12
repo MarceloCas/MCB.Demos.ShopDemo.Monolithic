@@ -16,7 +16,7 @@ public abstract class MongoDbDataContextBase
     public const string COLLECTION_NOT_FOUNDED = "COLLECTION_NOT_FOUNDED";
 
     // Fields
-    private IClientSessionHandle? _clientSessionHandle;
+    private static bool _supportTransaction = true;
     private static Dictionary<Type, object> _mongoCollectionDictionary = new();
 
     // Static Fields
@@ -26,6 +26,7 @@ public abstract class MongoDbDataContextBase
     protected MongoDbOptions Options { get; }
     protected MongoClient Client { get; }
     protected IMongoDatabase? Database { get; private set; }
+    public IClientSessionHandle? ClientSessionHandle { get; set; }
 
     // Constructors
     protected MongoDbDataContextBase(
@@ -54,33 +55,52 @@ public abstract class MongoDbDataContextBase
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
-        if (_clientSessionHandle is not null)
+        if (!_supportTransaction)
+            return;
+
+        if (ClientSessionHandle is not null)
             throw new InvalidOperationException(TRANSACTION_ALREADY_STARTED);
 
-        _clientSessionHandle = await Client.StartSessionAsync(
+        ClientSessionHandle = await Client.StartSessionAsync(
             options: Options.MongoDbClientSessionOptions,
             cancellationToken
         );
+
+        try
+        {
+            ClientSessionHandle.StartTransaction();
+        }
+        catch (Exception ex)
+        {
+            ClientSessionHandle = null;
+            _supportTransaction = false;
+        }
     }
     public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
-        if (_clientSessionHandle is null)
+        if (!_supportTransaction)
+            return;
+
+        if (ClientSessionHandle is null)
             throw new InvalidOperationException(TRANSACTION_NOT_STARTED);
 
-        await _clientSessionHandle.CommitTransactionAsync(cancellationToken);
+        await ClientSessionHandle.CommitTransactionAsync(cancellationToken);
 
-        _clientSessionHandle.Dispose();
-        _clientSessionHandle = null;
+        ClientSessionHandle.Dispose();
+        ClientSessionHandle = null;
     }
     public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
-        if (_clientSessionHandle is null)
+        if (!_supportTransaction)
+            return;
+
+        if (ClientSessionHandle is null)
             throw new InvalidOperationException(TRANSACTION_NOT_STARTED);
 
-        await _clientSessionHandle.AbortTransactionAsync(cancellationToken);
+        await ClientSessionHandle.AbortTransactionAsync(cancellationToken);
 
-        _clientSessionHandle.Dispose();
-        _clientSessionHandle = null;
+        ClientSessionHandle.Dispose();
+        ClientSessionHandle = null;
     }
 
     public IMongoCollection<TMongoDbDataModel> GetCollection<TMongoDbDataModel>()

@@ -16,7 +16,20 @@ public class AdapterConfig
     public static void Configure(TypeAdapterConfig typeAdapterConfig)
     {
         typeAdapterConfig.ForType<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>();
-        typeAdapterConfig.ForType<RegisterNewCustomerBatchUseCaseInputItem, RegisterNewCustomerServiceInput>();
+
+        typeAdapterConfig
+            .ForType<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>()
+            .ConstructUsing(src =>
+                new RegisterNewCustomerServiceInput(
+                    src.Item1.TenantId,
+                    src.Item2.FirstName ?? string.Empty,
+                    src.Item2.LastName ?? string.Empty,
+                    src.Item2.BirthDate ?? default,
+                    src.Item2.Email ?? string.Empty,
+                    src.Item1.ExecutionUser ?? string.Empty,
+                    src.Item1.SourcePlatform ?? string.Empty
+                )
+            );
 
         // ExternalEvents
         typeAdapterConfig.ForType<CustomerHasBeenRegisteredDomainEvent, CustomerHasBeenRegisteredEvent>()

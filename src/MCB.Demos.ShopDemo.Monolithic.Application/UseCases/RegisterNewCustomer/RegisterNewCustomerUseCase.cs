@@ -1,5 +1,6 @@
 ﻿using MCB.Core.Domain.Abstractions.DomainEvents;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
@@ -18,11 +19,12 @@ public class RegisterNewCustomerUseCase
 
     // Constructors
     public RegisterNewCustomerUseCase(
+        INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
         IAdapter adapter,
         ICustomerService customerService
-    ) : base(domainEventSubscriber, externalEventFactory, adapter)
+    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter)
     {
         _customerService = customerService;
     }

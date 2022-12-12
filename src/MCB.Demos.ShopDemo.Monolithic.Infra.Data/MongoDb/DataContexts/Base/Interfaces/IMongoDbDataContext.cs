@@ -6,5 +6,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.MongoDb.DataContexts.Base.Int
 public interface IMongoDbDataContext
     : IDataContext
 {
+    IClientSessionHandle? ClientSessionHandle { get; set; }
+
     IMongoCollection<TMongoDbDataModel> GetCollection<TMongoDbDataModel>();
 }

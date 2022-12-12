@@ -26,11 +26,20 @@ public abstract class MongoDbDataModelRepositoryBase<TMongoDbDataModel>
     // Public Methods
     public Task AddAsync(TMongoDbDataModel dataModel, CancellationToken cancellationToken)
     {
-        return Collection.InsertOneAsync(
-            dataModel,
-            options: null,
-            cancellationToken: cancellationToken
-        );
+        if (DataContext.ClientSessionHandle is null)
+            return Collection.InsertOneAsync(
+                dataModel,
+                options: null,
+                cancellationToken: cancellationToken
+            );
+        else
+            return Collection.InsertOneAsync(
+                DataContext.ClientSessionHandle,
+                dataModel,
+                options: null,
+                cancellationToken: cancellationToken
+            );
+
     }
     public async Task<IEnumerable<TMongoDbDataModel>> FindAsync(Expression<Func<TMongoDbDataModel, bool>> filter, CancellationToken cancellationToken)
     {

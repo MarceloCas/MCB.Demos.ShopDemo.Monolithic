@@ -1,5 +1,4 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.UnitOfWork;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.MongoDb.DataContexts;
@@ -11,6 +10,7 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Models;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 using MongoDB.Driver;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.DependencyInjection;
