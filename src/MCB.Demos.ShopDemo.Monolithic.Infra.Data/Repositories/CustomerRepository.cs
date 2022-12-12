@@ -1,6 +1,5 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
 
