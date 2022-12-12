@@ -2,8 +2,6 @@
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.MongoDb.DataModelRepositories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.MongoDb.DataModels;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
@@ -14,27 +12,19 @@ public class CustomerRepository
 {
     // Fields
     private readonly ICustomerFactory _customerFactory;
-    private readonly ICustomerMongoDbDataModelRepository _customerMongoDbDataModelRepository;
 
     // Constructors
     public CustomerRepository(
         IAdapter adapter,
-        ICustomerFactory customerFactory,
-        ICustomerMongoDbDataModelRepository customerMongoDbDataModelRepository
+        ICustomerFactory customerFactory
     ) : base(adapter)
     {
         _customerFactory = customerFactory;
-        _customerMongoDbDataModelRepository = customerMongoDbDataModelRepository;
     }
 
-    public async Task<bool> AddAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<bool> AddAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
     {
-        await _customerMongoDbDataModelRepository.AddAsync(
-            dataModel: Adapter.Adapt<CustomerMongoDbDataModel>(aggregationRoot)!,
-            cancellationToken
-        );
-
-        return true;
+        return Task.FromResult(true);
     }
     public Task<bool> AddOrUpdateAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
     {
@@ -84,17 +74,16 @@ public class CustomerRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Domain.Entities.Customers.Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public Task<Domain.Entities.Customers.Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        var dataModel = (
-            await _customerMongoDbDataModelRepository.FindAsync(dataModel => dataModel.Email == email, cancellationToken)
-        ).FirstOrDefault();
+        //var dataModel = default(CustomerDataModel)
 
-        if (dataModel is null)
-            return null;
+        //if (dataModel is null)
+        //    return null;
 
-        return _customerFactory.Create()!.SetExistingCustomerInfo(
-            Adapter.Adapt<SetExistingCustomerInfoInput>(dataModel)!
-        );
+        //return _customerFactory.Create()!.SetExistingCustomerInfo(
+        //    Adapter.Adapt<SetExistingCustomerInfoInput>(dataModel)!
+        //);
+        return Task.FromResult(default(Domain.Entities.Customers.Customer?));
     }
 }
