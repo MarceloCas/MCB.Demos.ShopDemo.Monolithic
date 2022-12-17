@@ -12,10 +12,15 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.DependencyInjection;
 public static class Bootstrapper
 {
     // Public Methods
-    public static void ConfigureDependencyInjection(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
+    public static void ConfigureDependencyInjection(
+        IDependencyInjectionContainer dependencyInjectionContainer, 
+        AppSettings appSettings
+    )
     {
         // Unit of Work
         dependencyInjectionContainer.RegisterScoped<IUnitOfWork, DefaultUnitOfWork>();
+
+        // Default Entity Framework Data Context is configured in WebApi project to use IServiceCollection EF Core extension methods
 
         // Data Contexts - Redis
         ConfigureDependencyInjectionForRedis(dependencyInjectionContainer, appSettings);

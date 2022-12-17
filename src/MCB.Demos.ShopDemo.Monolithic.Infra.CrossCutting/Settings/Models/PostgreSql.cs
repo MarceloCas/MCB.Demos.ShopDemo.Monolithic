@@ -1,13 +1,11 @@
 ﻿namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models;
 
-public class MongoDb
+public class PostgreSql
 {
     public string ConnectionString { get; set; }
-    public string DatabaseName { get; set; }
 
-    public MongoDb()
+    public PostgreSql()
     {
         ConnectionString = string.Empty;
-        DatabaseName = string.Empty;
     }
 }

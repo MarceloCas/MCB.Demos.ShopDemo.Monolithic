@@ -8,7 +8,7 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validator
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 
-public sealed class Customer
+public class Customer
     : DomainEntityBase,
     IAggregationRoot
 {

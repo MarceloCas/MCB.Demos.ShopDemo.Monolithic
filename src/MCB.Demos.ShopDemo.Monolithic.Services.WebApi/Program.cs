@@ -1,9 +1,11 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +19,13 @@ builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
         dependencyInjectionContainer,
         adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(typeAdapterConfig),
-        appSettings
+        appSettings!
+    )
+);
+
+builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
+    options => options.UseNpgsql(
+        appSettings!.PostgreSql.ConnectionString
     )
 );
 

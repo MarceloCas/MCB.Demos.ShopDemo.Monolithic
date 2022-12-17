@@ -6,6 +6,10 @@ namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Specifications
 public interface ICustomerSpecifications
     : IDomainEntitySpecifications
 {
+    // Constants
+    public const int CUSTOMER_FIRST_NAME_MAX_LENGTH = 150;
+    public const int CUSTOMER_LAST_NAME_MAX_LENGTH = 250;
+
     // FirstName
     public static readonly string CustomerShouldHaveFirstNameErrorCode = nameof(CustomerShouldHaveFirstNameErrorCode);
     public static readonly string CustomerShouldHaveFirstNameMessage = nameof(CustomerShouldHaveFirstNameMessage);

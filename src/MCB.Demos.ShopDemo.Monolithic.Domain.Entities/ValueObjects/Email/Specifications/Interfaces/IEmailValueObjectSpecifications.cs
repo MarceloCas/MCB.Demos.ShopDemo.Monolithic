@@ -4,6 +4,9 @@ namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Speci
 
 public interface IEmailValueObjectSpecifications
 {
+    // Constants
+    public const int EMAIL_MAX_LENGTH = 256;
+
     public static readonly string EmailValueObjectShouldRequiredErrorCode = nameof(EmailValueObjectShouldRequiredErrorCode);
     public static readonly string EmailValueObjectShouldRequiredMessage = nameof(EmailValueObjectShouldRequiredMessage);
     public static readonly Severity EmailValueObjectShouldRequiredSeverity = Severity.Error;

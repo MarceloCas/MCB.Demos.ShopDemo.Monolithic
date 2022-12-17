@@ -22,7 +22,7 @@ public sealed class CustomerSpecifications
     }
     public bool CustomerShouldHaveFirstNameMaximumLength(string firstName)
     {
-        return firstName.Length <= 150;
+        return firstName.Length <= ICustomerSpecifications.CUSTOMER_FIRST_NAME_MAX_LENGTH;
     }
 
     public bool CustomerShouldHaveLastName(string lastName)
@@ -31,7 +31,7 @@ public sealed class CustomerSpecifications
     }
     public bool CustomerShouldHaveLastNameMaximumLength(string lastName)
     {
-        return lastName.Length <= 150;
+        return lastName.Length <= ICustomerSpecifications.CUSTOMER_LAST_NAME_MAX_LENGTH;
     }
 
     public bool CustomerShouldHaveBirthDate(DateTime birthDate)
