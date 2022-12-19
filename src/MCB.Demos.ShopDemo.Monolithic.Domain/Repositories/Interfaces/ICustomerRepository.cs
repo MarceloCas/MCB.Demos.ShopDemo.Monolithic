@@ -1,9 +1,11 @@
 ﻿using MCB.Core.Domain.Abstractions.Repositories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 
 public interface ICustomerRepository
-    : IRepository<Entities.Customers.Customer>
+    : IRepository<Customer>
 {
-    Task<Entities.Customers.Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<(bool Success, int ModifiedCount)> RegisterNewCustomerAsync(Customer customer, CancellationToken cancellationToken);
 }

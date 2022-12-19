@@ -70,7 +70,8 @@ public class CustomerService
             return false;
 
         // Persist
-        if (!await Repository.AddAsync(customer, cancellationToken))
+        var persistenceResult = await _customerRepository.RegisterNewCustomerAsync(customer, cancellationToken);
+        if (!persistenceResult.Success)
             return false;
 
         // Send domain event

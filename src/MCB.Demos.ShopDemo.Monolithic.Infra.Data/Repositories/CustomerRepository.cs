@@ -1,4 +1,5 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
@@ -21,34 +22,34 @@ public class CustomerRepository
         _customerFactory = customerFactory;
     }
 
-    public Task<bool> AddAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<bool> AddAsync(Customer aggregationRoot, CancellationToken cancellationToken)
     {
         return Task.FromResult(true);
     }
-    public Task<bool> AddOrUpdateAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<bool> AddOrUpdateAsync(Customer aggregationRoot, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Domain.Entities.Customers.Customer> Get(Func<Domain.Entities.Customers.Customer, bool> expression)
+    public IEnumerable<Customer> Get(Func<Customer, bool> expression)
     {
         throw new NotImplementedException();
     }
-    public Task<Domain.Entities.Customers.Customer> GetAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
+    public Task<Customer> GetAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
-    public Task<IEnumerable<Domain.Entities.Customers.Customer>> GetAsync(Func<Domain.Entities.Customers.Customer, bool> expression, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Domain.Entities.Customers.Customer> GetAll(Guid tenantId, Guid id)
+    public Task<IEnumerable<Customer>> GetAsync(Func<Customer, bool> expression, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Domain.Entities.Customers.Customer>> GetAllAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
+    public IEnumerable<Customer> GetAll(Guid tenantId, Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Customer>> GetAllAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
@@ -58,22 +59,22 @@ public class CustomerRepository
         throw new NotImplementedException();
     }
 
-    public Task<bool> RemoveAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<bool> RemoveAsync(Customer aggregationRoot, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<(bool success, int removeCount)> RemoveAsync(Func<Domain.Entities.Customers.Customer, bool> expression, CancellationToken cancellationToken)
+    public Task<(bool success, int removeCount)> RemoveAsync(Func<Customer, bool> expression, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> UpdateAsync(Domain.Entities.Customers.Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<bool> UpdateAsync(Customer aggregationRoot, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Domain.Entities.Customers.Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public Task<Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         //var dataModel = default(CustomerDataModel)
 
@@ -83,6 +84,11 @@ public class CustomerRepository
         //return _customerFactory.Create()!.SetExistingCustomerInfo(
         //    Adapter.Adapt<SetExistingCustomerInfoInput>(dataModel)!
         //);
-        return Task.FromResult(default(Domain.Entities.Customers.Customer?));
+        return Task.FromResult(default(Customer?));
+    }
+
+    public Task<(bool Success, int ModifiedCount)> RegisterNewCustomerAsync(Customer customer, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }
