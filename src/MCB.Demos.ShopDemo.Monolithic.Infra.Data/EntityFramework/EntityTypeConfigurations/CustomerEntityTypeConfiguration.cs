@@ -12,7 +12,7 @@ public class CustomerEntityTypeConfiguration
 {
     // Constructors
     public CustomerEntityTypeConfiguration ()
-        : base(schemaName: "CUSTOMERS", "CUSTOMER")
+        : base(schemaName: "customers", "customer")
     {
     }
 
@@ -21,20 +21,24 @@ public class CustomerEntityTypeConfiguration
     {
         // First Name
         builder.Property(q => q.FirstName)
+            .HasColumnName(nameof(CustomerDataModel.FirstName).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(ICustomerSpecifications.CUSTOMER_FIRST_NAME_MAX_LENGTH);
 
         // Last Name
         builder.Property(q => q.LastName)
+            .HasColumnName(nameof(CustomerDataModel.LastName).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(ICustomerSpecifications.CUSTOMER_LAST_NAME_MAX_LENGTH);
 
         // Birth Date
         builder.Property(q => q.BirthDate)
+            .HasColumnName(nameof(CustomerDataModel.BirthDate).ToLowerInvariant())
             .IsRequired();
 
         // Email
         builder.Property(q => q.Email)
+            .HasColumnName(nameof(CustomerDataModel.Email).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(IEmailValueObjectSpecifications.EMAIL_MAX_LENGTH);
         builder.HasIndex(q => q.Email)

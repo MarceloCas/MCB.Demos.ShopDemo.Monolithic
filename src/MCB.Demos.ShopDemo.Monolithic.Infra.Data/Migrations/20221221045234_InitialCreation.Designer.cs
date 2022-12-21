@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
     [DbContext(typeof(DefaultEntityFrameworkDataContext))]
-    [Migration("20221217012248_InitialCreation")]
+    [Migration("20221221045234_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -28,53 +28,65 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
             modelBuilder.Entity("MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.CustomerDataModel", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("BirthDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("birthdate");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdat");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("createdby");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("firstname");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("lastname");
 
                     b.Property<string>("LastSourcePlatform")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("lastsourceplatform");
 
                     b.Property<DateTime?>("LastUpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lastupdatedat");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("lastupdatedby");
 
                     b.Property<DateTime>("RegistryVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registryversion");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenantid");
 
                     b.HasKey("Id")
                         .HasName("PK_CUSTOMERS_CUSTOMER");
@@ -107,7 +119,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                     b.HasIndex("TenantId", "Id")
                         .HasDatabaseName("IX_TENANT_ID_ID");
 
-                    b.ToTable("CUSTOMER", "CUSTOMERS");
+                    b.ToTable("customer", "customers");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,6 +26,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // Id
         builder.Property(q => q.Id)
+            .HasColumnName(nameof(DataModelBase.Id).ToLowerInvariant())
             .IsRequired()
             .ValueGeneratedNever();
         builder.HasKey(q => q.Id)
@@ -33,6 +34,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // TenantId
         builder.Property(q => q.TenantId)
+            .HasColumnName(nameof(DataModelBase.TenantId).ToLowerInvariant())
             .IsRequired();
         builder.HasIndex(q => q.TenantId)
             .HasDatabaseName("IX_TENANT_ID");
@@ -42,6 +44,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // CreatedBy
         builder.Property(q => q.CreatedBy)
+            .HasColumnName(nameof(DataModelBase.CreatedBy).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(250);
         builder.HasIndex(q => q.CreatedBy)
@@ -49,12 +52,14 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // CreatedAt
         builder.Property(q => q.CreatedAt)
+            .HasColumnName(nameof(DataModelBase.CreatedAt).ToLowerInvariant())
             .IsRequired();
         builder.HasIndex(q => q.CreatedAt)
             .HasDatabaseName("IX_CREATED_AT");
 
         // LastUpdatedBy
         builder.Property(q => q.LastUpdatedBy)
+            .HasColumnName(nameof(DataModelBase.LastUpdatedBy).ToLowerInvariant())
             .IsRequired(false)
             .HasMaxLength(250);
         builder.HasIndex(q => q.LastUpdatedBy)
@@ -62,6 +67,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // LastUpdatedAt
         builder.Property(q => q.LastUpdatedAt)
+            .HasColumnName(nameof(DataModelBase.LastUpdatedAt).ToLowerInvariant())
             .IsRequired(false);
         builder.HasIndex(q => q.LastUpdatedAt)
             .HasDatabaseName("IX_LAST_UPDATED_AT");
@@ -71,6 +77,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // LastSourcePlatform
         builder.Property(q => q.LastSourcePlatform)
+            .HasColumnName(nameof(DataModelBase.LastSourcePlatform).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(250);
         builder.HasIndex(q => q.LastSourcePlatform)
@@ -78,6 +85,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
 
         // Registry Version
         builder.Property(q => q.RegistryVersion)
+            .HasColumnName(nameof(DataModelBase.RegistryVersion).ToLowerInvariant())
             .IsRequired()
             .IsRowVersion();
 
