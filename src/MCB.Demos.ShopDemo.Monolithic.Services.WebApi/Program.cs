@@ -18,7 +18,7 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
         dependencyInjectionContainer,
-        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(typeAdapterConfig),
+        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(typeAdapterConfig, dependencyInjectionContainer),
         appSettings!
     )
 );
