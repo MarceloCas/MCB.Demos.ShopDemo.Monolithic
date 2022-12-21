@@ -40,8 +40,8 @@ namespace Demos.ShopDemo.Monolithic.Tests.IntegrationTests.Customers
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Customers", "ImportCustomer", "As a e-commerce system administrator user\r\nI want import customers\r\nSo that custo" +
-                    "mers can be used in e-commerce", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Customers", "ImportCustomer", "As a e-commerce system administrator user\nI want import customers\nSo that custome" +
+                    "rs can be used in e-commerce", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
