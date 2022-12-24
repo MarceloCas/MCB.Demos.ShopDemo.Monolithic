@@ -183,7 +183,6 @@ jobs:
       shell: pwsh
       run: |
         dotnet tool install --global dotnet-ef
-        cd ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data
-        dotnet ef database update
+        dotnet ef database update -p ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
 
