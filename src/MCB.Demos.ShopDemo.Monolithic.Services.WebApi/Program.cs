@@ -7,9 +7,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 

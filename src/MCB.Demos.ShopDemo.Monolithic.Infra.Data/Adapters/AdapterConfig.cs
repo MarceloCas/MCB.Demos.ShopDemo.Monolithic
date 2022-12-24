@@ -6,7 +6,6 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfac
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
-using System.Linq.Expressions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Adapters;
 

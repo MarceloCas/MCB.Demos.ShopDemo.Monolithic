@@ -20,10 +20,11 @@ public class RegisterNewCustomerBatchUseCase
 {
     // Constants
     public const string CUSTOMER_BATCH_IMPORT_FAIL_CODE = nameof(CUSTOMER_BATCH_IMPORT_FAIL_CODE);
-    public const string CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE = "Fail on import customer batch|Index:{0}|Customer:{1}";
+    public const string CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE = "Fail on import customer batch|Index:{0}|Email:{1}";
     public const NotificationType CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE = NotificationType.Error;
 
     // Fields
+    private readonly INotificationSubscriber _notificationSubscriber;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly ICustomerService _customerService;
 
@@ -34,10 +35,12 @@ public class RegisterNewCustomerBatchUseCase
         IExternalEventFactory externalEventFactory,
         IAdapter adapter,
         IUnitOfWork unitOfWork,
+        INotificationSubscriber notificationSubscriber,
         IJsonSerializer jsonSerializer,
         ICustomerService customerService
     ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter, unitOfWork)
     {
+        _notificationSubscriber = notificationSubscriber;
         _jsonSerializer = jsonSerializer;
         _customerService = customerService;
     }
@@ -59,6 +62,9 @@ public class RegisterNewCustomerBatchUseCase
 
                     if (!processResult)
                     {
+                        // TODO: Create a way to clear ao notifications
+                        // _notificationSubscriber.RemoveAll
+
                         await NotificationPublisher.PublishNotificationAsync(
                             new Notification(
                                 notificationType: CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE,
@@ -66,7 +72,7 @@ public class RegisterNewCustomerBatchUseCase
                                 description: string.Format(
                                     CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE,
                                     i,
-                                    _jsonSerializer.SerializeToJson(item)
+                                    item.Email
                                 )
                             ),
                             cancellationToken
