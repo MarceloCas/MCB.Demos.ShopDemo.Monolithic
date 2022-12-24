@@ -51,10 +51,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 6
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Install Sonar Scanner
       shell: pwsh
@@ -154,10 +154,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 6
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Restore Dependencies
       run: dotnet restore
