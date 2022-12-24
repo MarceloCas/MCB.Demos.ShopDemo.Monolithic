@@ -46,7 +46,7 @@ public class CustomerService
     public async Task<bool> RegisterNewCustomerAsync(RegisterNewCustomerServiceInput input, CancellationToken cancellationToken)
     {
         // Validate input before process
-        if (await _customerRepository.GetByEmailAsync(input.Email, cancellationToken) is not null)
+        if (await _customerRepository.GetByEmailAsync(input.TenantId, input.Email, cancellationToken) is not null)
         {
             await NotificationPublisher.PublishNotificationAsync(
                 new Notification(

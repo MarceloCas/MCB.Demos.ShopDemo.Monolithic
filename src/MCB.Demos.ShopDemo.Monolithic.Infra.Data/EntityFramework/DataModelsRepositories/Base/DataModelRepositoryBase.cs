@@ -3,6 +3,7 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Expressions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Base;
 public abstract class DataModelRepositoryBase<TDataModel>
@@ -68,15 +69,29 @@ public abstract class DataModelRepositoryBase<TDataModel>
     }
     public Task<IEnumerable<TDataModel>> GetAsync(Func<TDataModel, bool> expression, CancellationToken cancellationToken)
     {
-        return Task.FromResult(DbSet.Where(expression));
-    }
+        var dbSetResult = DbSet.AsNoTracking().Where(expression);
+        var localResult = DbSet.Local.Where(expression);
 
-    public IEnumerable<TDataModel> GetAll(Guid tenantId, Guid id)
-    {
-        throw new NotImplementedException();
+        var merged = dbSetResult.UnionBy(localResult, keySelector: q => q.Id);
+
+        return Task.FromResult(merged);
     }
-    public Task<IEnumerable<TDataModel>> GetAllAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
+    public IEnumerable<TDataModel> GetAll(Guid tenantId)
     {
-        throw new NotImplementedException();
+        var dbSetResult = DbSet.AsNoTracking().Where(q => q.TenantId == tenantId);
+        var localResult = DbSet.Local.Where(q => q.TenantId == tenantId);
+
+        var merged = dbSetResult.UnionBy(localResult, keySelector: q => q.Id);
+
+        return merged;
+    }
+    public Task<IEnumerable<TDataModel>> GetAllAsync(Guid tenantId, CancellationToken cancellationToken)
+    {
+        var dbSetResult = DbSet.AsNoTracking().Where(q => q.TenantId == tenantId);
+        var localResult = DbSet.Local.Where(q => q.TenantId == tenantId);
+
+        var merged = dbSetResult.UnionBy(localResult, keySelector: q => q.Id).AsEnumerable();
+
+        return Task.FromResult(merged);
     }
 }

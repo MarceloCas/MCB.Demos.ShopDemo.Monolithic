@@ -81,9 +81,13 @@ public class CustomerRepository
         throw new NotImplementedException();
     }
 
-    public async Task<Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken)
     {
-        var customerDataModel = (await _customerDataModelRepository.GetAsync(q => q.Email == email, cancellationToken)).FirstOrDefault();
+        var customerDataModel = (await _customerDataModelRepository.GetAsync(
+            q => q.TenantId == tenantId 
+            && q.Email == email, 
+            cancellationToken
+            )).FirstOrDefault();
 
         return customerDataModel is null
             ? null
