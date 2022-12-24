@@ -132,6 +132,14 @@ jobs:
         ports:
           - "27017:27017"
 
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: 123456
+        ports:
+          - "5432:5432"
+
       redis:
         image: redis
         ports:
