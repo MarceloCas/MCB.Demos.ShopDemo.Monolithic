@@ -1,6 +1,8 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Models;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
@@ -27,6 +29,9 @@ public static class Bootstrapper
 
         // Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerRepository, CustomerRepository>();
+
+        // DataModels Repositories
+        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRepository, CustomerDataModelRepository>();
     }
 
     // Private Methods

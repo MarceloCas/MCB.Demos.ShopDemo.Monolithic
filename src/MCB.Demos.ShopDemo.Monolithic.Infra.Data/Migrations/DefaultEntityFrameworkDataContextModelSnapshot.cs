@@ -77,7 +77,6 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 
                     b.Property<DateTime>("RegistryVersion")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registryversion");
 

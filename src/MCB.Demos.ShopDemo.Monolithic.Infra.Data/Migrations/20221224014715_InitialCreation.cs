@@ -30,7 +30,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                     lastupdatedby = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     lastupdatedat = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     lastsourceplatform = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    registryversion = table.Column<DateTime>(type: "timestamp with time zone", rowVersion: true, nullable: false)
+                    registryversion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,5 +1,7 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base;
 public abstract class EntityFrameworkDataContextBase
@@ -32,6 +34,14 @@ public abstract class EntityFrameworkDataContextBase
     protected abstract void OnModelCreatingInternal(ModelBuilder modelBuilder);
 
     // Public Methods
+    public DbSet<TDataModel> GetDbSet<TDataModel>() where TDataModel : DataModelBase
+    {
+        return Set<TDataModel>();
+    }
+    public EntityEntry<TDataModel> SetEntry<TDataModel>(TDataModel dataModel) where TDataModel : DataModelBase
+    {
+        return Entry(dataModel);
+    }
     public Task OpenConnectionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;

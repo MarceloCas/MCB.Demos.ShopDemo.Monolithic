@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
     [DbContext(typeof(DefaultEntityFrameworkDataContext))]
-    [Migration("20221221045234_InitialCreation")]
+    [Migration("20221224014715_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -80,7 +80,6 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 
                     b.Property<DateTime>("RegistryVersion")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registryversion");
 

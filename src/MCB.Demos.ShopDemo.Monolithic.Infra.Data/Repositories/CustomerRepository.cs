@@ -1,7 +1,11 @@
-﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+﻿using Mapster;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
@@ -12,14 +16,17 @@ public class CustomerRepository
 {
     // Fields
     private readonly ICustomerFactory _customerFactory;
+    private readonly ICustomerDataModelRepository _customerDataModelRepository;
 
     // Constructors
     public CustomerRepository(
         IAdapter adapter,
-        ICustomerFactory customerFactory
+        ICustomerFactory customerFactory,
+        ICustomerDataModelRepository customerDataModelRepository
     ) : base(adapter)
     {
         _customerFactory = customerFactory;
+        _customerDataModelRepository = customerDataModelRepository;
     }
 
     public Task<bool> AddAsync(Customer aggregationRoot, CancellationToken cancellationToken)
@@ -74,21 +81,23 @@ public class CustomerRepository
         throw new NotImplementedException();
     }
 
-    public Task<Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<Customer?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        //var dataModel = default(CustomerDataModel)
+        var customerDataModel = (await _customerDataModelRepository.GetAsync(q => q.Email == email, cancellationToken)).FirstOrDefault();
 
-        //if (dataModel is null)
-        //    return null;
-
-        //return _customerFactory.Create()!.SetExistingCustomerInfo(
-        //    Adapter.Adapt<SetExistingCustomerInfoInput>(dataModel)!
-        //);
-        return Task.FromResult(default(Customer?));
+        return customerDataModel is null
+            ? null
+            : _customerFactory.Create()!.SetExistingCustomerInfo(
+                Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
+            );
     }
 
-    public Task<(bool Success, int ModifiedCount)> RegisterNewCustomerAsync(Customer customer, CancellationToken cancellationToken)
+    public async Task<(bool Success, int ModifiedCount)> RegisterNewCustomerAsync(Customer customer, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var customerDataModel = customer.Adapt<CustomerDataModel>();
+
+        var entry = await _customerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
+
+        return (Success: entry.IsKeySet, ModifiedCount: 1);
     }
 }

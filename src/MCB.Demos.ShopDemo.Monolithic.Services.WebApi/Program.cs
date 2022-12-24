@@ -1,12 +1,15 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,11 @@ builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
         appSettings!.PostgreSql.ConnectionString
     )
 );
+builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection => {
+    var config = serviceCollection.GetService<IConfiguration>()!;
+
+    return new DefaultEntityFrameworkDataContext(config["PostgreSql:ConnectionString"]!);
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

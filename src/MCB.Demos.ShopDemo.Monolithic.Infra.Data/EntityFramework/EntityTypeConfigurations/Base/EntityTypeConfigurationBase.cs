@@ -87,7 +87,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
         builder.Property(q => q.RegistryVersion)
             .HasColumnName(nameof(DataModelBase.RegistryVersion).ToLowerInvariant())
             .IsRequired()
-            .IsRowVersion();
+            .IsConcurrencyToken();
 
         ConfigureInternal(builder);
     }

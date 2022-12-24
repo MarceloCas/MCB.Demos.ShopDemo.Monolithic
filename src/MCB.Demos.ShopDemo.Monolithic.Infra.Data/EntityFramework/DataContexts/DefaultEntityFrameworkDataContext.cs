@@ -17,7 +17,7 @@ public class DefaultEntityFrameworkDataContext
     // Protected Methods
     protected override void OnConfiguringInternal(DbContextOptionsBuilder optionsBuilder)
     {
-
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
     protected override void OnModelCreatingInternal(ModelBuilder modelBuilder)
     {

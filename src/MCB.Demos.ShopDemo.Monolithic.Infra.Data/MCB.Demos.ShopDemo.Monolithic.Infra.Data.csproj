@@ -24,8 +24,4 @@
 		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork\MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Migrations\" />
-	</ItemGroup>
-
 </Project>

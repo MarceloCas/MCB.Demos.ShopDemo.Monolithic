@@ -24,7 +24,6 @@ public class RegisterNewCustomerBatchUseCase
     public const NotificationType CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE = NotificationType.Error;
 
     // Fields
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IJsonSerializer _jsonSerializer;
     private readonly ICustomerService _customerService;
 
@@ -37,9 +36,8 @@ public class RegisterNewCustomerBatchUseCase
         IUnitOfWork unitOfWork,
         IJsonSerializer jsonSerializer,
         ICustomerService customerService
-    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter)
+    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter, unitOfWork)
     {
-        _unitOfWork = unitOfWork;
         _jsonSerializer = jsonSerializer;
         _customerService = customerService;
     }
@@ -47,7 +45,7 @@ public class RegisterNewCustomerBatchUseCase
     // Public Methods
     protected override Task<bool> ExecuteInternalAsync(RegisterNewCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
     {
-        return _unitOfWork.ExecuteAsync(
+        return UnitOfWork.ExecuteAsync(
             handler: async q =>
             {
                 for (int i = 0; i < input.Items.Length; i++)

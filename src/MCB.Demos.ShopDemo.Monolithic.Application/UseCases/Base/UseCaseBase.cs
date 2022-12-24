@@ -5,6 +5,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Mode
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 
@@ -24,13 +25,15 @@ public abstract class UseCaseBase<TUseCaseInput>
     // Properties
     protected INotificationPublisher NotificationPublisher { get; set; }
     protected IAdapter Adapter { get; }
+    protected IUnitOfWork UnitOfWork { get; }
 
     // Constructors
     protected UseCaseBase(
         INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
-        IAdapter adapter
+        IAdapter adapter,
+        IUnitOfWork unitOfWork
     )
     {
         _domainEventSubscriber = domainEventSubscriber;
@@ -38,6 +41,7 @@ public abstract class UseCaseBase<TUseCaseInput>
 
         NotificationPublisher = notificationPublisher;
         Adapter = adapter;
+        UnitOfWork = unitOfWork;
     }
 
     // Public Methods
