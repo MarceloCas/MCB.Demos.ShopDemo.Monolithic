@@ -154,6 +154,8 @@ jobs:
         image: ${{needs.init.outputs.imagename}}
         ports:
           - '5000:80'
+        env:
+          ASPNETCORE_ENVIRONMENT: IntegrationTests
 
     steps:
 
