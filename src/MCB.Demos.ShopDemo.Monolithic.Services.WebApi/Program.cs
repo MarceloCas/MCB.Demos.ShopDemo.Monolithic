@@ -12,6 +12,9 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
 #region Config
 var appSettings = builder.Configuration.Get<AppSettings>();
 #endregion
