@@ -14,4 +14,9 @@
     <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Messages\MCB.Demos.ShopDemo.Monolithic.Messages.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Queries\Base\" />
+    <Folder Include="Queries\GetCustomerCollection\" />
+  </ItemGroup>
+
 </Project>
