@@ -17,7 +17,7 @@ public class DefaultUnitOfWork
     }
 
     // Public Methods
-    public async Task<bool> ExecuteAsync(Func<(bool openTransaction, CancellationToken cancellationToken), Task<bool>> handler, bool openTransaction, CancellationToken cancellationToken)
+    public async Task<bool> ExecuteAsync(Func<(bool OpenTransaction, CancellationToken CancellationToken), Task<bool>> handler, bool openTransaction, CancellationToken cancellationToken)
     {
         var result = await handler((openTransaction, cancellationToken));
 
@@ -29,7 +29,7 @@ public class DefaultUnitOfWork
         return result;
     }
 
-    public async Task<bool> ExecuteAsync<TInput>(Func<(TInput? input, bool openTransaction, CancellationToken cancellationToken), Task<bool>> handler, TInput? input, bool openTransaction, CancellationToken cancellationToken)
+    public async Task<bool> ExecuteAsync<TInput>(Func<(TInput? Input, bool OpenTransaction, CancellationToken CancellationToken), Task<bool>> handler, TInput? input, bool openTransaction, CancellationToken cancellationToken)
     {
         var result = await handler((input, openTransaction, cancellationToken));
 
@@ -41,7 +41,7 @@ public class DefaultUnitOfWork
         return result;
     }
 
-    public async Task<(bool success, TOutput? output)> ExecuteAsync<TInput, TOutput>(Func<(TInput? input, bool openTransaction, CancellationToken cancellationToken), Task<(bool Success, TOutput? Output)>> handler, TInput? input, bool openTransaction, CancellationToken cancellationToken)
+    public async Task<(bool Success, TOutput? Output)> ExecuteAsync<TInput, TOutput>(Func<(TInput? Input, bool OpenTransaction, CancellationToken CancellationToken), Task<(bool Success, TOutput? Output)>> handler, TInput? input, bool openTransaction, CancellationToken cancellationToken)
     {
         var result = await handler((input, openTransaction, cancellationToken));
 

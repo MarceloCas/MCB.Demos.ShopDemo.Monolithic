@@ -69,7 +69,8 @@ public abstract class UseCaseBase<TUseCaseInput>
             new Notification(
                 notificationType: USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_NOTIFICATION_TYPE,
                 code: USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_CODE,
-                description: string.Format(USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_DESCRIPTION, typeof(TUseCaseInput).Name)
+                description: string.Format(USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_DESCRIPTION, typeof(TUseCaseInput).Name),
+                notificationCollection: Enumerable.Empty<Notification>()
             ),
             cancellationToken
         );

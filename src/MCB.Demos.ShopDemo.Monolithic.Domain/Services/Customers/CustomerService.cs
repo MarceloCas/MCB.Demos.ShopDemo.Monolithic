@@ -52,7 +52,8 @@ public class CustomerService
                 new Notification(
                     CustomerEmailAlreadyRegisteredNotificationType,
                     CustomerEmailAlreadyRegisteredErrorCode,
-                    CustomerEmailAlreadyRegisteredMessage
+                    CustomerEmailAlreadyRegisteredMessage,
+                    Enumerable.Empty<Notification>()
                 ),
                 cancellationToken
             );

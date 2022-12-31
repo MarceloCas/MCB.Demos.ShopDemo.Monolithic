@@ -38,7 +38,7 @@ public class RegisterNewCustomerUseCase
             handler: q =>
             {
                 return _customerService.RegisterNewCustomerAsync(
-                    input: Adapter.Adapt<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>(q.input)!,
+                    input: Adapter.Adapt<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>(q.Input)!,
                     cancellationToken
                 );
             },

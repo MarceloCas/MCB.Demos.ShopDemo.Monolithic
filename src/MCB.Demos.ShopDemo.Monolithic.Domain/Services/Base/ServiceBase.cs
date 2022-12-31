@@ -50,36 +50,38 @@ public abstract class ServiceBase<TAggregationRoot>
 
         return domainEntityBase.ValidationInfo.IsValid;
     }
-    protected async Task<bool> CheckIfAggregationRootExistInRepositoryAsync(Func<TAggregationRoot, bool> filterExpression, CancellationToken cancellationToken)
+    protected async Task<bool> CheckIfAggregationRootExistInRepositoryAsync(Func<TAggregationRoot> getAggregationRootFunction, CancellationToken cancellationToken)
     {
-        var result = Repository.Get(filterExpression).Any();
+        var exists = getAggregationRootFunction() != null;
 
-        if (!result)
+        if (!exists)
             await NotificationPublisher.PublishNotificationAsync(
                 new Notification(
                     AggregationRootShouldExistsInRepositoryNotificationType,
                     AggregationRootShouldExistsInRepositoryErrorCode,
-                    AggregationRootShouldExistsInRepositoryMessage
+                    AggregationRootShouldExistsInRepositoryMessage,
+                    Enumerable.Empty<Notification>()
                 ),
                 cancellationToken
             );
 
-        return result;
+        return exists;
     }
-    protected async Task<bool> CheckIfAggregationRootNotExistInRepositoryAsync(Func<TAggregationRoot, bool> filterExpression, CancellationToken cancellationToken)
+    protected async Task<bool> CheckIfAggregationRootNotExistInRepositoryAsync(Func<TAggregationRoot> getAggregationRootFunction, CancellationToken cancellationToken)
     {
-        var result = !Repository.Get(filterExpression).Any();
+        var exists = getAggregationRootFunction() != null;
 
-        if (!result)
+        if (exists)
             await NotificationPublisher.PublishNotificationAsync(
                 new Notification(
                     AggregationRootShouldNotExistsInRepositoryNotificationType,
                     AggregationRootShouldNotExistsInRepositoryErrorCode,
-                    AggregationRootShouldNotExistsInRepositoryMessage
+                    AggregationRootShouldNotExistsInRepositoryMessage,
+                    Enumerable.Empty<Notification>()
                 ),
                 cancellationToken
             );
 
-        return result;
+        return exists;
     }
 }

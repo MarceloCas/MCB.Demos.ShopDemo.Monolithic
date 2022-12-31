@@ -5,6 +5,7 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators.Wrapper
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Specifications;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
+using MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators;
 
@@ -17,8 +18,9 @@ public sealed class RegisterNewCustomerInputShouldBeValidValidator
 
     // Constructors
     public RegisterNewCustomerInputShouldBeValidValidator(
+        IInputBaseSpecifications inputBaseSpecifications,
         IDateTimeProvider dateTimeProvider
-    )
+    ): base(inputBaseSpecifications)
     {
         _customerSpecifications = new CustomerSpecifications(dateTimeProvider);
     }

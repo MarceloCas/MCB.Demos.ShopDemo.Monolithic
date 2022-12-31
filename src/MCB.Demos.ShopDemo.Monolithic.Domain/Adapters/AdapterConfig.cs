@@ -18,7 +18,8 @@ public class AdapterConfig
                 converterFactory: src => new Notification(
                     (NotificationType)(int)src.ValidationMessageType,
                     src.Code,
-                    src.Description
+                    src.Description,
+                    Enumerable.Empty<Notification>()
                 ),
                 applySettings: true
             );

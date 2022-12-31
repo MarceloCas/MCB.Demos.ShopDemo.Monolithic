@@ -56,7 +56,7 @@ public class RegisterNewCustomerBatchUseCase
                     var item = input.Items[i];
 
                     var processResult = await _customerService.RegisterNewCustomerAsync(
-                        input: Adapter.Adapt<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>((q.input!, item))!,
+                        input: Adapter.Adapt<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>((q.Input!, item))!,
                         cancellationToken
                     );
 
@@ -73,7 +73,8 @@ public class RegisterNewCustomerBatchUseCase
                                     CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE,
                                     i,
                                     item.Email
-                                )
+                                ),
+                                notificationCollection: Enumerable.Empty<Notification>()
                             ),
                             cancellationToken
                         );

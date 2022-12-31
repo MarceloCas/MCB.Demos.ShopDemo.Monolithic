@@ -1,4 +1,6 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
+using MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications;
+using MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications.Interfaces;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
@@ -30,7 +32,10 @@ public class Customer
         FirstName = string.Empty;
         LastName = string.Empty;
 
-        _registerNewCustomerInputShouldBeValidValidator = new RegisterNewCustomerInputShouldBeValidValidator(dateTimeProvider);
+        _registerNewCustomerInputShouldBeValidValidator = new RegisterNewCustomerInputShouldBeValidValidator(
+            new InputBaseSpecifications(), 
+            dateTimeProvider
+        );
         _emailValueObjectShouldBeValidValidator = new EmailValueObjectShouldBeValidValidator();
     }
 

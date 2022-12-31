@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection" Version="0.8.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection" Version="0.9.0-alpha" />
 		<PackageReference Include="Grpc.AspNetCore" Version="2.50.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
