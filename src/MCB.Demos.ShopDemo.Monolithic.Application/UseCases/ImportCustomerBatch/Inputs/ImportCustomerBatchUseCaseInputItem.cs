@@ -1,6 +1,6 @@
-﻿namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
+﻿namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 
-public record RegisterNewCustomerBatchUseCaseInputItem
+public record ImportCustomerBatchUseCaseInputItem
 {
     // Properties
     public string? FirstName { get; set; }

@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
@@ -21,8 +21,8 @@ public class AdapterConfig
     // Private Methods
     private static void ConfigureForWebApi()
     {
-        TypeAdapterConfig<ImportCustomerPayload, RegisterNewCustomerUseCaseInput>.NewConfig();
-        TypeAdapterConfig<ImportCustomerBatchPayload, RegisterNewCustomerBatchUseCaseInput>.NewConfig();
-        TypeAdapterConfig<ImportCustomerBatchPayloadItem, RegisterNewCustomerBatchUseCaseInputItem>.NewConfig();
+        TypeAdapterConfig<ImportCustomerPayload, ImportCustomerUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerBatchPayloadItem, ImportCustomerBatchUseCaseInputItem>.NewConfig();
     }
 }

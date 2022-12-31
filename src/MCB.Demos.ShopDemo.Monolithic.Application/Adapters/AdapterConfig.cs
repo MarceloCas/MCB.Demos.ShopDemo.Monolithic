@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using MCB.Core.Domain.Entities.Abstractions;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerHasBeenRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerHasBeenRegistered;
@@ -15,11 +15,11 @@ public class AdapterConfig
     // Public Methods
     public static void Configure()
     {
-        TypeAdapterConfig<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerUseCaseInput, ImportCustomerServiceInput>.NewConfig();
 
-        TypeAdapterConfig<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>.NewConfig()
+        TypeAdapterConfig<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>.NewConfig()
             .MapWith(src =>
-                new RegisterNewCustomerServiceInput(
+                new ImportCustomerServiceInput(
                     src.Item1.TenantId,
                     src.Item2.FirstName ?? string.Empty,
                     src.Item2.LastName ?? string.Empty,

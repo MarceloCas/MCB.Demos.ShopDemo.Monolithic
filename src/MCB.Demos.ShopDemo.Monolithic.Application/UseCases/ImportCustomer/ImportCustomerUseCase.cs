@@ -3,23 +3,23 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer;
+namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer;
 
-public class RegisterNewCustomerUseCase
-    : UseCaseBase<RegisterNewCustomerUseCaseInput>,
-    IRegisterNewCustomerUseCase
+public class ImportCustomerUseCase
+    : UseCaseBase<ImportCustomerUseCaseInput>,
+    IImportCustomerUseCase
 {
     // Fields
     private readonly ICustomerService _customerService;
 
     // Constructors
-    public RegisterNewCustomerUseCase(
+    public ImportCustomerUseCase(
         INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
@@ -32,13 +32,13 @@ public class RegisterNewCustomerUseCase
     }
 
     // Public Methods
-    protected override Task<bool> ExecuteInternalAsync(RegisterNewCustomerUseCaseInput input, CancellationToken cancellationToken)
+    protected override Task<bool> ExecuteInternalAsync(ImportCustomerUseCaseInput input, CancellationToken cancellationToken)
     {
         return UnitOfWork.ExecuteAsync(
             handler: q =>
             {
-                return _customerService.RegisterNewCustomerAsync(
-                    input: Adapter.Adapt<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>(q.Input)!,
+                return _customerService.ImportCustomerAsync(
+                    input: Adapter.Adapt<ImportCustomerUseCaseInput, ImportCustomerServiceInput>(q.Input)!,
                     cancellationToken
                 );
             },

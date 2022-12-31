@@ -1,9 +1,9 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Responses;
@@ -18,19 +18,19 @@ public class CustomersController
     : CustomControllerBase
 {
     // Field
-    private readonly IRegisterNewCustomerUseCase _registerNewCustomerUseCase;
-    private readonly IRegisterNewCustomerBatchUseCase _registerNewCustomerBatchUseCase;
+    private readonly IImportCustomerUseCase _importCustomerUseCase;
+    private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
 
     // Constructors
     public CustomersController(
         INotificationSubscriber notificationSubscriber,
         IAdapter adapter,
-        IRegisterNewCustomerUseCase registerNewCustomerUseCase,
-        IRegisterNewCustomerBatchUseCase registerNewCustomerBatchUseCase
+        IImportCustomerUseCase importCustomerUseCase,
+        IImportCustomerBatchUseCase importCustomerBatchUseCase
     ) : base(notificationSubscriber, adapter)
     {
-        _registerNewCustomerUseCase = registerNewCustomerUseCase;
-        _registerNewCustomerBatchUseCase = registerNewCustomerBatchUseCase;
+        _importCustomerUseCase = importCustomerUseCase;
+        _importCustomerBatchUseCase = importCustomerBatchUseCase;
     }
 
     [HttpPost("import")]
@@ -42,8 +42,8 @@ public class CustomersController
     )
     {
         return await RunUseCaseAsync(
-            useCase: _registerNewCustomerUseCase!,
-            useCaseInput: Adapter.Adapt<ImportCustomerPayload, RegisterNewCustomerUseCaseInput>(payload)!,
+            useCase: _importCustomerUseCase!,
+            useCaseInput: Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(payload)!,
             responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
             successStatusCode: (int) System.Net.HttpStatusCode.Created,
             failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
@@ -61,8 +61,8 @@ public class CustomersController
     )
     {
         return await RunUseCaseAsync(
-            useCase: _registerNewCustomerBatchUseCase!,
-            useCaseInput: Adapter.Adapt<ImportCustomerBatchPayload, RegisterNewCustomerBatchUseCaseInput>(payload)!,
+            useCase: _importCustomerBatchUseCase!,
+            useCaseInput: Adapter.Adapt<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>(payload)!,
             responseBaseFactory: (useCaseInput) => new ImportCustomerBatchResponse(),
             successStatusCode: (int)System.Net.HttpStatusCode.Created,
             failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,

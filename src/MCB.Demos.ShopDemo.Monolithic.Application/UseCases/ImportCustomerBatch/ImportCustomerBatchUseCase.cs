@@ -6,17 +6,17 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Mode
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 using IUnitOfWork = MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces.IUnitOfWork;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch;
+namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
 
-public class RegisterNewCustomerBatchUseCase
-    : UseCaseBase<RegisterNewCustomerBatchUseCaseInput>,
-    IRegisterNewCustomerBatchUseCase
+public class ImportCustomerBatchUseCase
+    : UseCaseBase<ImportCustomerBatchUseCaseInput>,
+    IImportCustomerBatchUseCase
 {
     // Constants
     public const string CUSTOMER_BATCH_IMPORT_FAIL_CODE = nameof(CUSTOMER_BATCH_IMPORT_FAIL_CODE);
@@ -29,7 +29,7 @@ public class RegisterNewCustomerBatchUseCase
     private readonly ICustomerService _customerService;
 
     // Constructors
-    public RegisterNewCustomerBatchUseCase(
+    public ImportCustomerBatchUseCase(
         INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
@@ -46,7 +46,7 @@ public class RegisterNewCustomerBatchUseCase
     }
 
     // Public Methods
-    protected override Task<bool> ExecuteInternalAsync(RegisterNewCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
+    protected override Task<bool> ExecuteInternalAsync(ImportCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
     {
         return UnitOfWork.ExecuteAsync(
             handler: async q =>
@@ -55,8 +55,8 @@ public class RegisterNewCustomerBatchUseCase
                 {
                     var item = input.Items[i];
 
-                    var processResult = await _customerService.RegisterNewCustomerAsync(
-                        input: Adapter.Adapt<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>((q.Input!, item))!,
+                    var processResult = await _customerService.ImportCustomerAsync(
+                        input: Adapter.Adapt<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>((q.Input!, item))!,
                         cancellationToken
                     );
 

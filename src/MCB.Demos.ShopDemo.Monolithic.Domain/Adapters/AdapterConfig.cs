@@ -12,7 +12,7 @@ public class AdapterConfig
     // Public Methods
     public static void Configure()
     {
-        TypeAdapterConfig<RegisterNewCustomerServiceInput, RegisterNewCustomerInput>.NewConfig();
+        TypeAdapterConfig<ImportCustomerServiceInput, RegisterNewCustomerInput>.NewConfig();
 
         TypeAdapterConfig<ValidationMessage, Notification>.NewConfig()
             .MapWith(

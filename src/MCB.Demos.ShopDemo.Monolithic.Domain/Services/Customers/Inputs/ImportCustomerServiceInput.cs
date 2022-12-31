@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 
-public record RegisterNewCustomerServiceInput
+public record ImportCustomerServiceInput
     : ServiceInputBase
 {
     // Properties
@@ -11,7 +11,7 @@ public record RegisterNewCustomerServiceInput
     public DateTime BirthDate { get; }
     public string Email { get; }
 
-    public RegisterNewCustomerServiceInput(
+    public ImportCustomerServiceInput(
         Guid tenantId,
         string firstName,
         string lastName,

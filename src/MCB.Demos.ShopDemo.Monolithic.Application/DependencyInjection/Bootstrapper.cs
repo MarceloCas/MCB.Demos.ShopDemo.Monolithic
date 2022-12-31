@@ -1,10 +1,10 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.DependencyInjection;
 
@@ -17,7 +17,7 @@ public static class Bootstrapper
         dependencyInjectionContainer.RegisterSingleton<IExternalEventFactory, ExternalEventFactory>();
 
         // Use Cases
-        dependencyInjectionContainer.RegisterScoped<IRegisterNewCustomerUseCase, RegisterNewCustomerUseCase>();
-        dependencyInjectionContainer.RegisterScoped<IRegisterNewCustomerBatchUseCase, RegisterNewCustomerBatchUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IImportCustomerUseCase, ImportCustomerUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IImportCustomerBatchUseCase, ImportCustomerBatchUseCase>();
     }
 }

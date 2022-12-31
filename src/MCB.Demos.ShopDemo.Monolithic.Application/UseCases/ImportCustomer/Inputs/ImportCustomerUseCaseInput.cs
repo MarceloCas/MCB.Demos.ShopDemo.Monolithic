@@ -1,8 +1,8 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.RegisterNewCustomer.Inputs;
+namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 
-public record RegisterNewCustomerUseCaseInput
+public record ImportCustomerUseCaseInput
     : UseCaseInputBase
 {
     // Properties

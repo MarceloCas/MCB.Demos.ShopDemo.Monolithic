@@ -43,7 +43,7 @@ public class CustomerService
     }
 
     // Public Methods
-    public async Task<bool> RegisterNewCustomerAsync(RegisterNewCustomerServiceInput input, CancellationToken cancellationToken)
+    public async Task<bool> ImportCustomerAsync(ImportCustomerServiceInput input, CancellationToken cancellationToken)
     {
         // Validate input before process
         if (await _customerRepository.GetByEmailAsync(input.TenantId, input.Email, cancellationToken) is not null)
@@ -64,14 +64,14 @@ public class CustomerService
         // Process
         var customer = _customerFactory
             .Create()!
-            .RegisterNewCustomer(Adapter.Adapt<RegisterNewCustomerServiceInput, RegisterNewCustomerInput>(input)!);
+            .RegisterNewCustomer(Adapter.Adapt<ImportCustomerServiceInput, RegisterNewCustomerInput>(input)!);
 
         // Validate domain entity after process
         if (!await ValidateDomainEntityAndSendNotificationsAsync(customer, cancellationToken))
             return false;
 
         // Persist
-        var persistenceResult = await _customerRepository.RegisterNewCustomerAsync(customer, cancellationToken);
+        var persistenceResult = await _customerRepository.ImportCustomerAsync(customer, cancellationToken);
         if (!persistenceResult.Success)
             return false;
 

@@ -96,7 +96,7 @@ public class CustomerRepository
             );
     }
 
-    public async Task<(bool Success, int ModifiedCount)> RegisterNewCustomerAsync(Customer customer, CancellationToken cancellationToken)
+    public async Task<(bool Success, int ModifiedCount)> ImportCustomerAsync(Customer customer, CancellationToken cancellationToken)
     {
         var customerDataModel = customer.Adapt<CustomerDataModel>();
 

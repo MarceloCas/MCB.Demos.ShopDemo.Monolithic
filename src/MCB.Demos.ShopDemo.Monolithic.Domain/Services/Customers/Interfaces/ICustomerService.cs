@@ -6,5 +6,5 @@ namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 public interface ICustomerService
     : IService<Entities.Customers.Customer>
 {
-    Task<bool> RegisterNewCustomerAsync(RegisterNewCustomerServiceInput input, CancellationToken cancellationToken);
+    Task<bool> ImportCustomerAsync(ImportCustomerServiceInput input, CancellationToken cancellationToken);
 }
