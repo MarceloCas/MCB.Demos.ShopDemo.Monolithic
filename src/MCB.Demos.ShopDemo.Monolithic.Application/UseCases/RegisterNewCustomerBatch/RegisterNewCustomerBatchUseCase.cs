@@ -62,8 +62,8 @@ public class RegisterNewCustomerBatchUseCase
 
                     if (!processResult)
                     {
-                        // TODO: Create a way to clear ao notifications
-                        // _notificationSubscriber.RemoveAll
+                        var notifications = _notificationSubscriber.NotificationCollection.ToArray();
+                        _notificationSubscriber.ClearAllNotifications();
 
                         await NotificationPublisher.PublishNotificationAsync(
                             new Notification(
@@ -74,7 +74,7 @@ public class RegisterNewCustomerBatchUseCase
                                     i,
                                     item.Email
                                 ),
-                                notificationCollection: Enumerable.Empty<Notification>()
+                                notificationCollection: notifications
                             ),
                             cancellationToken
                         );

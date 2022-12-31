@@ -9,13 +9,13 @@ namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 public class AdapterConfig
 {
     // Public Methods
-    public static void Configure(TypeAdapterConfig typeAdapterConfig, IDependencyInjectionContainer dependencyInjectionContainer)
+    public static void Configure(IDependencyInjectionContainer dependencyInjectionContainer)
     {
         ConfigureForWebApi();
 
-        Application.Adapters.AdapterConfig.Configure(typeAdapterConfig);
-        Domain.Adapters.AdapterConfig.Configure(typeAdapterConfig);
-        Infra.Data.Adapters.AdapterConfig.Configure(typeAdapterConfig, dependencyInjectionContainer);
+        Application.Adapters.AdapterConfig.Configure();
+        Domain.Adapters.AdapterConfig.Configure();
+        Infra.Data.Adapters.AdapterConfig.Configure(dependencyInjectionContainer);
     }
 
     // Private Methods

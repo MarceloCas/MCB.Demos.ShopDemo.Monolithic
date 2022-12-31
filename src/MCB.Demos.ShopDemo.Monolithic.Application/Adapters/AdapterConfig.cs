@@ -13,13 +13,12 @@ namespace MCB.Demos.ShopDemo.Monolithic.Application.Adapters;
 public class AdapterConfig
 {
     // Public Methods
-    public static void Configure(TypeAdapterConfig typeAdapterConfig)
+    public static void Configure()
     {
-        typeAdapterConfig.ForType<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>();
+        TypeAdapterConfig<RegisterNewCustomerUseCaseInput, RegisterNewCustomerServiceInput>.NewConfig();
 
-        typeAdapterConfig
-            .ForType<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>()
-            .ConstructUsing(src =>
+        TypeAdapterConfig<(RegisterNewCustomerBatchUseCaseInput, RegisterNewCustomerBatchUseCaseInputItem), RegisterNewCustomerServiceInput>.NewConfig()
+            .MapWith(src =>
                 new RegisterNewCustomerServiceInput(
                     src.Item1.TenantId,
                     src.Item2.FirstName ?? string.Empty,
@@ -32,7 +31,7 @@ public class AdapterConfig
             );
 
         // ExternalEvents
-        typeAdapterConfig.ForType<CustomerHasBeenRegisteredDomainEvent, CustomerHasBeenRegisteredEvent>()
+        TypeAdapterConfig<CustomerHasBeenRegisteredDomainEvent, CustomerHasBeenRegisteredEvent>.NewConfig()
             .Map(dest => dest.Customer, src => ((Domain.Entities.Customers.Customer)src.AggregationRoot).Adapt<CustomerDto>());
 
         MapDomainEntityToDto<Domain.Entities.Customers.Customer, CustomerDto>();

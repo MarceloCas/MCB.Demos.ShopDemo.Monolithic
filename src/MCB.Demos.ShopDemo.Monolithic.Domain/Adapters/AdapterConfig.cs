@@ -10,10 +10,11 @@ namespace MCB.Demos.ShopDemo.Monolithic.Domain.Adapters;
 public class AdapterConfig
 {
     // Public Methods
-    public static void Configure(TypeAdapterConfig typeAdapterConfig)
+    public static void Configure()
     {
-        typeAdapterConfig.ForType<RegisterNewCustomerServiceInput, RegisterNewCustomerInput>();
-        typeAdapterConfig.ForType<ValidationMessage, Notification>()
+        TypeAdapterConfig<RegisterNewCustomerServiceInput, RegisterNewCustomerInput>.NewConfig();
+
+        TypeAdapterConfig<ValidationMessage, Notification>.NewConfig()
             .MapWith(
                 converterFactory: src => new Notification(
                     (NotificationType)(int)src.ValidationMessageType,

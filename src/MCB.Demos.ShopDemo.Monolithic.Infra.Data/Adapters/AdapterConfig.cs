@@ -12,7 +12,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Adapters;
 public class AdapterConfig
 {
     // Public Methods
-    public static void Configure(TypeAdapterConfig typeAdapterConfig, IDependencyInjectionContainer dependencyInjectionContainer)
+    public static void Configure(IDependencyInjectionContainer dependencyInjectionContainer)
     {
         MapDomainEntityToDataModel();
         MapDataModelToDomainEntity(dependencyInjectionContainer);
@@ -59,7 +59,6 @@ public class AdapterConfig
             dataModel.LastUpdatedBy = domainEntity.AuditableInfo.LastUpdatedBy;
             dataModel.LastUpdatedAt = domainEntity.AuditableInfo.LastUpdatedAt;
             dataModel.LastSourcePlatform = domainEntity.AuditableInfo.LastSourcePlatform;
-            //dataModel.RegistryVersion = BitConverter.GetBytes(domainEntity.RegistryVersion.ToBinary());
             dataModel.RegistryVersion = domainEntity.RegistryVersion;
 
             additionalMapConfigHandler?.Invoke(domainEntity, dataModel);
@@ -68,9 +67,6 @@ public class AdapterConfig
         });
 
         var config = TypeAdapterConfig<TDomainEntityBase, TDataModelBase>.NewConfig()
-            //.MapWith(
-            //    converterFactory: domainEntityBase => mapFunction(domainEntityBase)
-            //);
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.TenantId, src => src.TenantId)
             .Map(dest => dest.CreatedBy, src => src.AuditableInfo.CreatedBy)

@@ -8,6 +8,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
         dependencyInjectionContainer,
-        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(typeAdapterConfig, dependencyInjectionContainer),
+        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
         appSettings!
     )
 );
@@ -39,6 +40,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 builder.Services.AddApiVersioning(options =>
 {

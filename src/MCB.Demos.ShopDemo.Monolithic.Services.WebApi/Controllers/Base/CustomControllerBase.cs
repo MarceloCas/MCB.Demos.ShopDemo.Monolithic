@@ -46,7 +46,19 @@ public class CustomControllerBase
                     _ => throw new NotImplementedException(),
                 },
                 Code = q.Code,
-                Description = q.Description
+                Description = q.Description,
+                ResponseMessageCollection = q.NotificationCollection.Select(r => new ResponseMessage
+                {
+                    Type = r.NotificationType switch
+                    {
+                        NotificationType.Information => ResponseMessageType.Information,
+                        NotificationType.Warning => ResponseMessageType.Warning,
+                        NotificationType.Error => ResponseMessageType.Error,
+                        _ => throw new NotImplementedException(),
+                    },
+                    Code = r.Code,
+                    Description = r.Description,
+                }).ToArray()
             }
         );
 
