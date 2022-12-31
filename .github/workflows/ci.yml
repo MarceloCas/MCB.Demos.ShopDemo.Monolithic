@@ -179,12 +179,18 @@ jobs:
       run: |
         dotnet build --no-restore
 
-    - name: Integration Tests
+    - name: Apply Migration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
         dotnet tool install --global dotnet-ef
         dotnet ef database update -p ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data
+
+    - name: Integration Tests
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
         dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
 
