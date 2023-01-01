@@ -7,6 +7,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Base;
 
@@ -25,6 +26,7 @@ public abstract class ServiceBase<TAggregationRoot>
     // Properties
     protected INotificationPublisher NotificationPublisher { get; }
     protected IDomainEventPublisher DomainEventPublisher { get; }
+    protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
     protected IRepository<TAggregationRoot> Repository { get; }
 
@@ -32,12 +34,14 @@ public abstract class ServiceBase<TAggregationRoot>
     protected ServiceBase(
         INotificationPublisher notificationPublisher,
         IDomainEventPublisher domainEventPublisher,
+        ITraceManager traceManager,
         IAdapter adapter,
         IRepository<TAggregationRoot> repository
     )
     {
         NotificationPublisher = notificationPublisher;
         DomainEventPublisher = domainEventPublisher;
+        TraceManager = traceManager;
         Adapter = adapter;
         Repository = repository;
     }

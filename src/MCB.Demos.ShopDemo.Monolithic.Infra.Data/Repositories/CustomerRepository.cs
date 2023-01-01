@@ -1,5 +1,5 @@
-﻿using Mapster;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
@@ -20,90 +20,68 @@ public class CustomerRepository
 
     // Constructors
     public CustomerRepository(
+        ITraceManager traceManager,
         IAdapter adapter,
         ICustomerFactory customerFactory,
         ICustomerDataModelRepository customerDataModelRepository
-    ) : base(adapter)
+    ) : base(traceManager, adapter)
     {
         _customerFactory = customerFactory;
         _customerDataModelRepository = customerDataModelRepository;
     }
 
-    public Task<bool> AddAsync(Customer aggregationRoot, CancellationToken cancellationToken)
+    public Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken)
     {
-        return Task.FromResult(true);
-    }
-    public Task<bool> AddOrUpdateAsync(Customer aggregationRoot, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+        return TraceManager.StartActivityAsync(
+            name: $"{nameof(CustomerRepository)}.{nameof(GetByEmailAsync)}",
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: Guid.Empty,
+            tenantId: tenantId,
+            executionUser: string.Empty,
+            sourcePlatform: string.Empty,
+            input: (TenantId: tenantId, Email: email, CustomerDataModelRepository: _customerDataModelRepository, CustomerFactory: _customerFactory, Adapter),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                var customerDataModel = (
+                    await input.CustomerDataModelRepository.GetAsync(q =>
+                        q.TenantId == input.TenantId
+                        && q.Email == input.Email,
+                        cancellationToken
+                    )
+                ).FirstOrDefault();
 
-    public IEnumerable<Customer> Get(Func<Customer, bool> expression)
-    {
-        throw new NotImplementedException();
-    }
-    public Task<Customer> GetAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-    public Task<IEnumerable<Customer>> GetAsync(Func<Customer, bool> expression, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Customer> GetAll(Guid tenantId, Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<Customer>> GetAllAsync(Guid tenantId, Guid id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+                return customerDataModel is null
+                    ? null
+                    : input.CustomerFactory.Create()!.SetExistingCustomerInfo(
+                        input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
+                    );
+            },
+            cancellationToken
+        )!;
     }
 
-    public Task<(bool success, int removeCount)> RemoveAllAsync(CancellationToken cancellationToken)
+    public Task<(bool Success, int ModifiedCount)> ImportCustomerAsync(Customer customer, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
+        return TraceManager.StartActivityAsync(
+            name: $"{nameof(CustomerRepository)}.{nameof(ImportCustomerAsync)}",
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: Guid.Empty,
+            tenantId: customer.TenantId,
+            executionUser: customer.AuditableInfo.CreatedBy,
+            sourcePlatform: customer.AuditableInfo.LastSourcePlatform,
+            input: (Customer: customer, Adapter, CustomerDataModelRepository: _customerDataModelRepository),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                var customerDataModel = input.Adapter.Adapt<Customer, CustomerDataModel>(input.Customer);
 
-    public Task<bool> RemoveAsync(Customer aggregationRoot, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+                if (customerDataModel is null)
+                    return default;
 
-    public Task<(bool success, int removeCount)> RemoveAsync(Func<Customer, bool> expression, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+                var entry = await input.CustomerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
 
-    public Task<bool> UpdateAsync(Customer aggregationRoot, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken)
-    {
-        var customerDataModel = (
-            await _customerDataModelRepository.GetAsync(q => 
-                q.TenantId == tenantId 
-                && q.Email == email, 
-                cancellationToken
-            )
-        ).FirstOrDefault();
-
-        return customerDataModel is null
-            ? null
-            : _customerFactory.Create()!.SetExistingCustomerInfo(
-                Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
-            );
-    }
-
-    public async Task<(bool Success, int ModifiedCount)> ImportCustomerAsync(Customer customer, CancellationToken cancellationToken)
-    {
-        var customerDataModel = customer.Adapt<CustomerDataModel>();
-
-        var entry = await _customerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
-
-        return (Success: entry.IsKeySet, ModifiedCount: 1);
+                return (Success: entry.IsKeySet, ModifiedCount: 1);
+            },
+            cancellationToken
+        )!;
     }
 }

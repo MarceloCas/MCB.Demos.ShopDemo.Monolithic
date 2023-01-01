@@ -2,7 +2,6 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using System.Reflection;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection;
 

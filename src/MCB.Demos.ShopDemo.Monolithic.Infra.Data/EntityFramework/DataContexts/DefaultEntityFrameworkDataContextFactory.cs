@@ -8,6 +8,7 @@ public class DefaultEntityFrameworkDataContextFactory
     public DefaultEntityFrameworkDataContext CreateDbContext(string[] args)
     {
         return new DefaultEntityFrameworkDataContext(
+            traceManager: null!,
             connectionString: "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
         );
     }

@@ -1,5 +1,4 @@
-﻿using Mapster;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
@@ -51,12 +50,12 @@ public class CustomersController
             tenantId: payload.TenantId,
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
-            input: (payload, _importCustomerUseCase, Adapter),
+            input: (Payload: payload, ImportCustomerUseCase: _importCustomerUseCase, Adapter),
             handler: (input, activity, cancellationToken) =>
             {
                 return RunUseCaseAsync(
-                    useCase: input._importCustomerUseCase!,
-                    useCaseInput: input.Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(input.payload)!,
+                    useCase: input!.ImportCustomerUseCase,
+                    useCaseInput: input.Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(input.Payload)!,
                     responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
@@ -65,7 +64,6 @@ public class CustomersController
             },
             cancellationToken
         )!;
-        
     }
 
 
@@ -84,12 +82,12 @@ public class CustomersController
             tenantId: payload.TenantId,
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
-            input: (payload, _importCustomerBatchUseCase, Adapter),
+            input: (Payload: payload, ImportCustomerBatchUseCase: _importCustomerBatchUseCase, Adapter),
             handler: (input, activity, cancellationToken) =>
             {
                 return RunUseCaseAsync(
-                    useCase: input._importCustomerBatchUseCase!,
-                    useCaseInput: input.Adapter.Adapt<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>(input.payload)!,
+                    useCase: input.ImportCustomerBatchUseCase!,
+                    useCaseInput: input.Adapter.Adapt<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>(input.Payload)!,
                     responseBaseFactory: (useCaseInput) => new ImportCustomerBatchResponse(),
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
@@ -98,6 +96,5 @@ public class CustomersController
             },
             cancellationToken
         )!;
-        
     }
 }

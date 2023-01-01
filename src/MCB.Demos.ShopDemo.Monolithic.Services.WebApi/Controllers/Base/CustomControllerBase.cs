@@ -2,7 +2,6 @@
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
-using MCB.Core.Infra.CrossCutting.Observability.OpenTelemetry;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Enums;

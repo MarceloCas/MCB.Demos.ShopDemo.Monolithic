@@ -1,5 +1,9 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
+﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Adapter;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -9,11 +13,16 @@ public abstract class EntityFrameworkDataContextBase
     IEntityFrameworkDataContext
 {
     // Properties
+    protected ITraceManager TraceManager { get; }
     protected string ConnectionString { get; }
 
     // Constructors
-    protected EntityFrameworkDataContextBase(string connectionString)
+    protected EntityFrameworkDataContextBase(
+        ITraceManager traceManager,
+        string connectionString
+    )
     {
+        TraceManager = traceManager;
         ConnectionString = connectionString;
     }
 
@@ -54,9 +63,22 @@ public abstract class EntityFrameworkDataContextBase
     {
         return Task.CompletedTask;
     }
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken)
+    public Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
-        await SaveChangesAsync(cancellationToken);
+        return TraceManager.StartActivityAsync(
+            name: $"{nameof(EntityFrameworkDataContextBase)}.{nameof(CommitTransactionAsync)}",
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: Guid.Empty,
+            tenantId: Guid.Empty,
+            executionUser: string.Empty,
+            sourcePlatform: string.Empty,
+            input: default(object),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                await SaveChangesAsync(cancellationToken);
+            },
+            cancellationToken
+        )!;
     }
     public Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {

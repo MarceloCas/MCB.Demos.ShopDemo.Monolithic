@@ -4,6 +4,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
@@ -33,12 +34,13 @@ public class ImportCustomerBatchUseCase
         INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
+        ITraceManager traceManager,
         IAdapter adapter,
         IUnitOfWork unitOfWork,
         INotificationSubscriber notificationSubscriber,
         IJsonSerializer jsonSerializer,
         ICustomerService customerService
-    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, adapter, unitOfWork)
+    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, traceManager, adapter, unitOfWork)
     {
         _notificationSubscriber = notificationSubscriber;
         _jsonSerializer = jsonSerializer;
@@ -48,46 +50,59 @@ public class ImportCustomerBatchUseCase
     // Public Methods
     protected override Task<bool> ExecuteInternalAsync(ImportCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
     {
-        return UnitOfWork.ExecuteAsync(
-            handler: async q =>
+        return TraceManager.StartActivityAsync(
+            name: $"{nameof(ImportCustomerBatchUseCase)}.{nameof(ExecuteInternalAsync)}",
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: input.CorrelationId,
+            tenantId: input.TenantId,
+            executionUser: input.ExecutionUser,
+            sourcePlatform: input.SourcePlatform,
+            input: (Input: input, UnitOfWork, CustomerService: _customerService, Adapter, NotificationSubscriber: _notificationSubscriber, NotificationPublisher),
+            handler: (input, activity, cancellationToken) =>
             {
-                for (int i = 0; i < input.Items.Length; i++)
-                {
-                    var item = input.Items[i];
-
-                    var processResult = await _customerService.ImportCustomerAsync(
-                        input: Adapter.Adapt<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>((q.Input!, item))!,
-                        cancellationToken
-                    );
-
-                    if (!processResult)
+                return input.UnitOfWork.ExecuteAsync(
+                    handler: async q =>
                     {
-                        var notifications = _notificationSubscriber.NotificationCollection.ToArray();
-                        _notificationSubscriber.ClearAllNotifications();
+                        for (int i = 0; i < q.Input.Input.Items.Length; i++)
+                        {
+                            var item = q.Input.Input.Items[i];
 
-                        await NotificationPublisher.PublishNotificationAsync(
-                            new Notification(
-                                notificationType: CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE,
-                                code: CUSTOMER_BATCH_IMPORT_FAIL_CODE,
-                                description: string.Format(
-                                    CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE,
-                                    i,
-                                    item.Email
-                                ),
-                                notificationCollection: notifications
-                            ),
-                            cancellationToken
-                        );
+                            var processResult = await q.Input.CustomerService.ImportCustomerAsync(
+                                input: q.Input.Adapter.Adapt<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>((q.Input.Input!, item))!,
+                                cancellationToken
+                            );
 
-                        return false;
-                    }
-                }
+                            if (!processResult)
+                            {
+                                var notifications = q.Input.NotificationSubscriber.NotificationCollection.ToArray();
+                                q.Input.NotificationSubscriber.ClearAllNotifications();
 
-                return true;
+                                await q.Input.NotificationPublisher.PublishNotificationAsync(
+                                    new Notification(
+                                        notificationType: CUSTOMER_BATCH_IMPORT_FAIL_NOTIFICATION_TYPE,
+                                        code: CUSTOMER_BATCH_IMPORT_FAIL_CODE,
+                                        description: string.Format(
+                                            CUSTOMER_BATCH_IMPORT_FAIL_MESSAGE,
+                                            i,
+                                            item.Email
+                                        ),
+                                        notificationCollection: notifications
+                                    ),
+                                    cancellationToken
+                                );
+
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    },
+                    input: input,
+                    openTransaction: true,
+                    cancellationToken
+                );
             },
-            input: input,
-            openTransaction: true,
             cancellationToken
-        );
+        )!;
     }
 }

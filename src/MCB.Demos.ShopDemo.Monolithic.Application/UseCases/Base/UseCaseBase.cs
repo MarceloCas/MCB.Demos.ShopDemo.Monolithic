@@ -3,6 +3,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
@@ -24,6 +25,7 @@ public abstract class UseCaseBase<TUseCaseInput>
 
     // Properties
     protected INotificationPublisher NotificationPublisher { get; set; }
+    protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
     protected IUnitOfWork UnitOfWork { get; }
 
@@ -32,6 +34,7 @@ public abstract class UseCaseBase<TUseCaseInput>
         INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
         IExternalEventFactory externalEventFactory,
+        ITraceManager traceManager,
         IAdapter adapter,
         IUnitOfWork unitOfWork
     )
@@ -40,6 +43,7 @@ public abstract class UseCaseBase<TUseCaseInput>
         _externalEventFactory = externalEventFactory;
 
         NotificationPublisher = notificationPublisher;
+        TraceManager = traceManager;
         Adapter = adapter;
         UnitOfWork = unitOfWork;
     }

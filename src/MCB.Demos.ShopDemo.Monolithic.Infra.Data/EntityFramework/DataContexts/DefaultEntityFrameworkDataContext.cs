@@ -1,4 +1,5 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base;
+﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.EntityTypeConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +9,9 @@ public class DefaultEntityFrameworkDataContext
 {
     // Constructors
     public DefaultEntityFrameworkDataContext(
+        ITraceManager traceManager,
         string connectionString
-    ) : base(connectionString)
+    ) : base(traceManager, connectionString)
     {
 
     }

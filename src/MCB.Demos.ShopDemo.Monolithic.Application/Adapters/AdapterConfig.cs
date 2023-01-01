@@ -20,6 +20,7 @@ public class AdapterConfig
         TypeAdapterConfig<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>.NewConfig()
             .MapWith(src =>
                 new ImportCustomerServiceInput(
+                    src.Item1.CorrelationId,
                     src.Item1.TenantId,
                     src.Item2.FirstName ?? string.Empty,
                     src.Item2.LastName ?? string.Empty,

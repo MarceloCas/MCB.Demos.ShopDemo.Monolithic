@@ -1,4 +1,5 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
@@ -57,7 +58,10 @@ builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
 builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection => {
     var config = serviceCollection.GetService<IConfiguration>()!;
 
-    return new DefaultEntityFrameworkDataContext(config["PostgreSql:ConnectionString"]!);
+    return new DefaultEntityFrameworkDataContext(
+        serviceCollection.GetService<ITraceManager>()!,
+        config["PostgreSql:ConnectionString"]!
+    );
 });
 
 builder.Services.AddControllers()

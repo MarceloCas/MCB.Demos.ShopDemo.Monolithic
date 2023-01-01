@@ -12,6 +12,7 @@ public record ImportCustomerServiceInput
     public string Email { get; }
 
     public ImportCustomerServiceInput(
+        Guid correlationId,
         Guid tenantId,
         string firstName,
         string lastName,
@@ -19,7 +20,7 @@ public record ImportCustomerServiceInput
         string email,
         string executionUser,
         string sourcePlatform
-    ) : base(tenantId, executionUser, sourcePlatform)
+    ) : base(correlationId, tenantId, executionUser, sourcePlatform)
     {
         FirstName = firstName;
         LastName = lastName;
