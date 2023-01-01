@@ -6,8 +6,6 @@ This project is a source code of [MCB.Demos.ShopDemo.Monolithic](https://www.nug
 
 ## Labels
 
-![Nuget](https://img.shields.io/nuget/v/MCB.Demos.ShopDemo.Monolithic)
-
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Demos.ShopDemo.Monolithic&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Demos.ShopDemo.Monolithic)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Demos.ShopDemo.Monolithic&metric=coverage)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Demos.ShopDemo.Monolithic)
 
