@@ -45,7 +45,7 @@ public class CustomersController
             useCase: _importCustomerUseCase!,
             useCaseInput: Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(payload)!,
             responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
-            successStatusCode: (int) System.Net.HttpStatusCode.Created,
+            successStatusCode: (int)System.Net.HttpStatusCode.Created,
             failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
             cancellationToken
         );
