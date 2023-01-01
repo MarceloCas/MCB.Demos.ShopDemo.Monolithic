@@ -8,22 +8,46 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region Config
 var appSettings = builder.Configuration.Get<AppSettings>();
+
+if (appSettings == null)
+    throw new Exception("AppSettings cannot be null");
 #endregion
 
 #region Configure Service
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
+        applicationName: appSettings.ApplicationName,
         dependencyInjectionContainer,
         adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
         appSettings!
     )
 );
+
+builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
+{
+    tracerProviderBuilder
+        .AddOtlpExporter(opt =>
+        {
+            opt.Protocol = OtlpExportProtocol.Grpc;
+        })
+        .AddSource(appSettings.ApplicationName)
+        .SetResourceBuilder(
+            ResourceBuilder
+                .CreateDefault()
+                .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
+        )
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation();
+});
 
 builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
     options => options.UseNpgsql(

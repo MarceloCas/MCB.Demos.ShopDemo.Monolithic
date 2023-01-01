@@ -2,6 +2,7 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
+using System.Reflection;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection;
 
@@ -9,12 +10,14 @@ public static class Bootstrapper
 {
     // Public Methods
     public static void ConfigureDependencyInjection(
+        string applicationName,
         IDependencyInjectionContainer dependencyInjectionContainer,
         Action<TypeAdapterConfig> adapterMapAction,
         AppSettings appSettings
     )
     {
         // Inject Dependencies
+        Core.Infra.CrossCutting.Observability.OpenTelemetry.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer, applicationName);
         Core.Infra.CrossCutting.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer);
         Core.Infra.CrossCutting.DesignPatterns.DependencyInjection.Bootstrapper.ConfigureServices(
             dependencyInjectionContainer,

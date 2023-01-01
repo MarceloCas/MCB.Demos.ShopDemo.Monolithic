@@ -19,4 +19,8 @@
     <Folder Include="Queries\GetCustomerCollection\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MCB.Core.Infra.CrossCutting.Observability.Abstractions" Version="0.8.0-alpha" />
+  </ItemGroup>
+
 </Project>

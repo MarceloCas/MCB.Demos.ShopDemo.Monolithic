@@ -1,6 +1,8 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Core.Infra.CrossCutting.Observability.OpenTelemetry;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Enums;
@@ -16,15 +18,18 @@ public class CustomControllerBase
     private readonly INotificationSubscriber _notificationSubscriber;
 
     // Properties
+    protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
 
     // Constructors
     protected CustomControllerBase(
         INotificationSubscriber notificationSubscriber,
+        ITraceManager traceManager,
         IAdapter adapter
     )
     {
         _notificationSubscriber = notificationSubscriber;
+        TraceManager = traceManager;
         Adapter = adapter;
     }
 

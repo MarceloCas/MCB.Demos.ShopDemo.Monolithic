@@ -11,6 +11,7 @@
 		<PackageReference Include="MCB.Core.Domain.Abstractions" Version="0.36.0-alpha" />
 		<PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.42.0-alpha" />
 		<PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions" Version="0.7.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.Observability.Abstractions" Version="0.8.0-alpha" />
 	</ItemGroup>
 
 	<ItemGroup>
