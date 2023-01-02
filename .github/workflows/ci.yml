@@ -173,7 +173,7 @@ jobs:
           - '5000:80'
         env:
           ASPNETCORE_ENVIRONMENT: IntegrationTests
-          PostgreSql.ConnectionString: ${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}
+          PostgreSql:ConnectionString: ${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}
 
     steps:
 
