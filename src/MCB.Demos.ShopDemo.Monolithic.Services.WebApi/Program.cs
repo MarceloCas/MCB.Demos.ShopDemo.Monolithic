@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.Get<AppSettings>();
 
 if (appSettings == null)
-    throw new Exception("AppSettings cannot be null");
+    throw new InvalidOperationException("AppSettings cannot be null");
 #endregion
 
 #region Configure Service

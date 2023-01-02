@@ -9,7 +9,7 @@ public class DefaultEntityFrameworkDataContextFactory
     {
         return new DefaultEntityFrameworkDataContext(
             traceManager: null!,
-            connectionString: "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
+            connectionString: args[0]
         );
     }
 }
