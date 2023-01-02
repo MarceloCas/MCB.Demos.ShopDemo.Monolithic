@@ -12,7 +12,7 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
     private readonly string _tableName;
 
     // Constructors
-    public EntityTypeConfigurationBase(string schemaName, string tableName)
+    protected EntityTypeConfigurationBase(string schemaName, string tableName)
     {
         _schemaName = schemaName;
         _tableName = tableName;

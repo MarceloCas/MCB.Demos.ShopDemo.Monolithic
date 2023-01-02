@@ -26,7 +26,6 @@ public class ImportCustomerBatchUseCase
 
     // Fields
     private readonly INotificationSubscriber _notificationSubscriber;
-    private readonly IJsonSerializer _jsonSerializer;
     private readonly ICustomerService _customerService;
 
     // Constructors
@@ -38,12 +37,10 @@ public class ImportCustomerBatchUseCase
         IAdapter adapter,
         IUnitOfWork unitOfWork,
         INotificationSubscriber notificationSubscriber,
-        IJsonSerializer jsonSerializer,
         ICustomerService customerService
     ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, traceManager, adapter, unitOfWork)
     {
         _notificationSubscriber = notificationSubscriber;
-        _jsonSerializer = jsonSerializer;
         _customerService = customerService;
     }
 

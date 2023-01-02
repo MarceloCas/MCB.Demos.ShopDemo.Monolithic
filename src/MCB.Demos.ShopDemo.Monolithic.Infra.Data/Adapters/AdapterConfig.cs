@@ -21,15 +21,7 @@ public class AdapterConfig
     // Private Methods
     private static void MapDomainEntityToDataModel()
     {
-        ConfigureMapFromDomainEntityBaseToDataModelBase<Customer, CustomerDataModel>(
-            dataModelBaseFactory: () => new CustomerDataModel(),
-            additionalMapConfigHandler: (domainModel, dataModel) =>
-            {
-                dataModel.FirstName = domainModel.FirstName;
-                dataModel.LastName = domainModel.LastName;
-                dataModel.BirthDate = domainModel.BirthDate;
-            }
-        );
+        ConfigureMapFromDomainEntityBaseToDataModelBase<Customer, CustomerDataModel>();
     }
     private static void MapDataModelToDomainEntity(IDependencyInjectionContainer dependencyInjectionContainer)
     {
@@ -43,30 +35,10 @@ public class AdapterConfig
             );
     }
     private static void ConfigureMapFromDomainEntityBaseToDataModelBase<TDomainEntityBase, TDataModelBase>(
-        Func<TDataModelBase> dataModelBaseFactory,
-        Action<TDomainEntityBase, TDataModelBase>? additionalMapConfigHandler = null
     )   where TDomainEntityBase : DomainEntityBase
         where TDataModelBase : DataModelBase
     {
-        var mapFunction = new Func<TDomainEntityBase, TDataModelBase>(domainEntity =>
-        {
-            var dataModel = dataModelBaseFactory();
-
-            dataModel.Id = domainEntity.Id;
-            dataModel.TenantId = domainEntity.TenantId;
-            dataModel.CreatedBy = domainEntity.AuditableInfo.CreatedBy;
-            dataModel.CreatedAt = domainEntity.AuditableInfo.CreatedAt;
-            dataModel.LastUpdatedBy = domainEntity.AuditableInfo.LastUpdatedBy;
-            dataModel.LastUpdatedAt = domainEntity.AuditableInfo.LastUpdatedAt;
-            dataModel.LastSourcePlatform = domainEntity.AuditableInfo.LastSourcePlatform;
-            dataModel.RegistryVersion = domainEntity.RegistryVersion;
-
-            additionalMapConfigHandler?.Invoke(domainEntity, dataModel);
-
-            return dataModel;
-        });
-
-        var config = TypeAdapterConfig<TDomainEntityBase, TDataModelBase>.NewConfig()
+        TypeAdapterConfig<TDomainEntityBase, TDataModelBase>.NewConfig()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.TenantId, src => src.TenantId)
             .Map(dest => dest.CreatedBy, src => src.AuditableInfo.CreatedBy)
