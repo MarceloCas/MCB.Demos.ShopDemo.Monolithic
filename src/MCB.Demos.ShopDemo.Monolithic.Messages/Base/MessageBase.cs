@@ -8,7 +8,7 @@ public abstract record MessageBase
     public string ExecutionUser { get; set; }
     public string SourcePlatform { get; set; }
 
-    public MessageBase()
+    protected MessageBase()
     {
         ExecutionUser = string.Empty;
         SourcePlatform = string.Empty;

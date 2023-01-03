@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validators.Wrappers;
 
-public class EmailValueObjectValidatorWrapper
+public static class EmailValueObjectValidatorWrapper
 {
     // Street
     public static void AddEmailValueObjectShouldRequired<TInput, TProperty>(
