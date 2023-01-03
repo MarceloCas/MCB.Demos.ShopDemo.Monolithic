@@ -6,7 +6,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloa
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 
-public class AdapterConfig
+public static class AdapterConfig
 {
     // Public Methods
     public static void Configure(IDependencyInjectionContainer dependencyInjectionContainer)

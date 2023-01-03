@@ -9,7 +9,7 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Adapters;
 
-public class AdapterConfig
+public static class AdapterConfig
 {
     // Public Methods
     public static void Configure(IDependencyInjectionContainer dependencyInjectionContainer)

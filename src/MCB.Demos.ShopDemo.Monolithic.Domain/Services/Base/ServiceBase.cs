@@ -11,8 +11,7 @@ using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Base;
 
-public abstract class ServiceBase<TAggregationRoot>
-    where TAggregationRoot : IAggregationRoot
+public abstract class ServiceBase
 {
     // Messages
     public static readonly string AggregationRootShouldExistsInRepositoryErrorCode = nameof(AggregationRootShouldExistsInRepositoryErrorCode);
@@ -23,6 +22,12 @@ public abstract class ServiceBase<TAggregationRoot>
     public static readonly string AggregationRootShouldNotExistsInRepositoryMessage = nameof(AggregationRootShouldNotExistsInRepositoryMessage);
     public static readonly NotificationType AggregationRootShouldNotExistsInRepositoryNotificationType = NotificationType.Error;
 
+}
+public abstract class ServiceBase<TAggregationRoot>
+    : ServiceBase
+    where TAggregationRoot : IAggregationRoot
+{
+    
     // Properties
     protected INotificationPublisher NotificationPublisher { get; }
     protected IDomainEventPublisher DomainEventPublisher { get; }

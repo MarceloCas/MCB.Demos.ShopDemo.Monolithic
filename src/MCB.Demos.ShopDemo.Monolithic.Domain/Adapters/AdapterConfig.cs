@@ -7,7 +7,7 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Adapters;
 
-public class AdapterConfig
+public static class AdapterConfig
 {
     // Public Methods
     public static void Configure()

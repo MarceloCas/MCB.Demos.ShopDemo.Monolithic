@@ -10,7 +10,7 @@ using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.Adapters;
 
-public class AdapterConfig
+public static class AdapterConfig
 {
     // Public Methods
     public static void Configure()
