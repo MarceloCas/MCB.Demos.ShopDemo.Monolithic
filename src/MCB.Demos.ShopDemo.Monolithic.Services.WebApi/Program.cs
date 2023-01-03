@@ -12,7 +12,10 @@ using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Collections;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using static Grpc.Core.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +24,14 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 
 if (appSettings == null)
     throw new InvalidOperationException("AppSettings cannot be null");
+
+Console.WriteLine("AppSettings:");
+Console.Write(JsonSerializer.Serialize(appSettings, new JsonSerializerOptions() { WriteIndented = true }));
+
+Console.WriteLine("\nEnvironment variables:");
+foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
+    Console.WriteLine("{0} = {1}", entry.Key, entry.Value);
+
 #endregion
 
 #region Configure Service
