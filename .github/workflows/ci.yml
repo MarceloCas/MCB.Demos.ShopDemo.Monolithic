@@ -173,7 +173,7 @@ jobs:
           - '5000:80'
         env:
           ASPNETCORE_ENVIRONMENT: IntegrationTests
-          PostgreSql:ConnectionString: "${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}"
+          PostgreSql:ConnectionString: ${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}
 
     steps:
 
@@ -203,7 +203,7 @@ jobs:
       shell: pwsh
       run: |
         dotnet tool install --global dotnet-ef
-        dotnet ef database update -p ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data -- "${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}"
+        dotnet ef database update -p ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data -- ${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}
 
     - name: Integration Tests
       env:
