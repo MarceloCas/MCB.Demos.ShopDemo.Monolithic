@@ -32,6 +32,11 @@ Console.WriteLine("\nEnvironment variables:");
 foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
     Console.WriteLine("{0} = {1}", entry.Key, entry.Value);
 
+
+Console.WriteLine("\nPostgres:");
+Console.WriteLine(appSettings.PostgreSql.ConnectionString.Length.ToString());
+Console.WriteLine(appSettings.PostgreSql.ConnectionString.ToString());
+
 #endregion
 
 #region Configure Service
