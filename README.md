@@ -1,7 +1,7 @@
 
 # MCB.Demos.ShopDemo.Monolithic
 
-This project is a source code of [MCB.Demos.ShopDemo.Monolithic](https://www.nuget.org/packages/MCB.Demos.ShopDemo.Monolithic/).
+This project is a source code of MCB.Demos.ShopDemo.Monolithic
 
 
 ## Labels
