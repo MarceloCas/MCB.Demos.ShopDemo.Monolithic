@@ -24,19 +24,6 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 
 if (appSettings == null)
     throw new InvalidOperationException("AppSettings cannot be null");
-
-Console.WriteLine("AppSettings:");
-Console.Write(JsonSerializer.Serialize(appSettings, new JsonSerializerOptions() { WriteIndented = true }));
-
-Console.WriteLine("\nEnvironment variables:");
-foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
-    Console.WriteLine("{0} = {1}", entry.Key, entry.Value);
-
-
-Console.WriteLine("\nPostgres:");
-Console.WriteLine(appSettings.PostgreSql.ConnectionString.Length.ToString());
-Console.WriteLine(appSettings.PostgreSql.ConnectionString.ToString());
-
 #endregion
 
 #region Configure Service
