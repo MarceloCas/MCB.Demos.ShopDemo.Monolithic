@@ -4,6 +4,7 @@ using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Specifications.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
@@ -41,7 +42,7 @@ public class GetCustomerByEmailQuery
             {
                 var customer = await _customerRepository.GetByEmailAsync(input!.TenantId, input.Email, cancellationToken);
 
-                if (customer?.Age < 18)
+                if (customer?.Age < ICustomerSpecifications.CUSTOMER_LEGAL_AGE)
                     await _notificationPublisher.PublishNotificationAsync(
                         new Notification(
                             notificationType: IGetCustomerByEmailQuery.CUSTOMER_IS_UNDER_AGE_NOTIFICATION_TYPE,

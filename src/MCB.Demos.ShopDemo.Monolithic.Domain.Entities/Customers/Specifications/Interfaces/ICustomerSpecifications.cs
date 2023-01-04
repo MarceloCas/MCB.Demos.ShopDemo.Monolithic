@@ -9,6 +9,7 @@ public interface ICustomerSpecifications
     // Constants
     public const int CUSTOMER_FIRST_NAME_MAX_LENGTH = 150;
     public const int CUSTOMER_LAST_NAME_MAX_LENGTH = 250;
+    public const int CUSTOMER_LEGAL_AGE = 18;
 
     // FirstName
     public static readonly string CustomerShouldHaveFirstNameErrorCode = nameof(CustomerShouldHaveFirstNameErrorCode);
