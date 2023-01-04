@@ -7,5 +7,5 @@ public struct ResponseMessage
     public ResponseMessageType Type { get; set; }
     public string Code { get; set; }
     public string Description { get; set; }
-    public ResponseMessage[] ResponseMessageCollection { get; set; }
+    public ResponseMessage[]? ResponseMessageCollection { get; set; }
 }

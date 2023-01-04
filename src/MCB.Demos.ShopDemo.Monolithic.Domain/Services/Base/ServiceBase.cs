@@ -68,8 +68,7 @@ public abstract class ServiceBase<TAggregationRoot>
                 new Notification(
                     AggregationRootShouldExistsInRepositoryNotificationType,
                     AggregationRootShouldExistsInRepositoryErrorCode,
-                    AggregationRootShouldExistsInRepositoryMessage,
-                    Enumerable.Empty<Notification>()
+                    AggregationRootShouldExistsInRepositoryMessage
                 ),
                 cancellationToken
             );
@@ -85,8 +84,7 @@ public abstract class ServiceBase<TAggregationRoot>
                 new Notification(
                     AggregationRootShouldNotExistsInRepositoryNotificationType,
                     AggregationRootShouldNotExistsInRepositoryErrorCode,
-                    AggregationRootShouldNotExistsInRepositoryMessage,
-                    Enumerable.Empty<Notification>()
+                    AggregationRootShouldNotExistsInRepositoryMessage
                 ),
                 cancellationToken
             );

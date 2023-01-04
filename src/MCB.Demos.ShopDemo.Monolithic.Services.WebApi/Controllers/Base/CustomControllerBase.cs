@@ -50,7 +50,7 @@ public class CustomControllerBase
                 },
                 Code = q.Code,
                 Description = q.Description,
-                ResponseMessageCollection = q.NotificationCollection.Select(r => new ResponseMessage
+                ResponseMessageCollection = q.NotificationCollection?.Select(r => new ResponseMessage
                 {
                     Type = r.NotificationType switch
                     {
@@ -61,7 +61,7 @@ public class CustomControllerBase
                     },
                     Code = r.Code,
                     Description = r.Description,
-                }).ToArray()
+                })?.ToArray()
             }
         );
 

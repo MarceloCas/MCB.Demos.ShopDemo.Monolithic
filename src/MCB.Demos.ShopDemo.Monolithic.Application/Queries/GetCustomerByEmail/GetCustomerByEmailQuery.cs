@@ -47,8 +47,7 @@ public class GetCustomerByEmailQuery
                         new Notification(
                             notificationType: IGetCustomerByEmailQuery.CUSTOMER_IS_UNDER_AGE_NOTIFICATION_TYPE,
                             code: IGetCustomerByEmailQuery.CUSTOMER_IS_UNDER_AGE_MESSAGE_CODE,
-                            description: IGetCustomerByEmailQuery.CUSTOMER_IS_UNDER_AGE_MESSAGE_DESCRIPTION,
-                            notificationCollection: Enumerable.Empty<Notification>()
+                            description: IGetCustomerByEmailQuery.CUSTOMER_IS_UNDER_AGE_MESSAGE_DESCRIPTION
                         ),
                         cancellationToken
                     );

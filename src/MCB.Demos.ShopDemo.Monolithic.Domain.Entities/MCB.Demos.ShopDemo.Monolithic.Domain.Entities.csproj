@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="MCB.Core.Domain.Entities" Version="0.38.0-alpha" />
-	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.42.0-alpha" />
+	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.43.0-alpha" />
 	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Validator" Version="0.18.0-alpha" />
 	  <PackageReference Include="MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions" Version="0.7.0-alpha" />
 	  <PackageReference Include="FluentValidation" Version="11.4.0" />
