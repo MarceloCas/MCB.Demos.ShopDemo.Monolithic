@@ -1,11 +1,15 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
+using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +25,7 @@ public class CustomersController
     // Field
     private readonly IImportCustomerUseCase _importCustomerUseCase;
     private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
+    private readonly IGetCustomerByEmailQuery _getCustomerByEmailQuery;
 
     // Constructors
     public CustomersController(
@@ -28,11 +33,66 @@ public class CustomersController
         ITraceManager traceManager,
         IAdapter adapter,
         IImportCustomerUseCase importCustomerUseCase,
-        IImportCustomerBatchUseCase importCustomerBatchUseCase
+        IImportCustomerBatchUseCase importCustomerBatchUseCase,
+        IGetCustomerByEmailQuery getCustomerByEmailQuery
     ) : base(notificationSubscriber, traceManager, adapter)
     {
         _importCustomerUseCase = importCustomerUseCase;
         _importCustomerBatchUseCase = importCustomerBatchUseCase;
+        _getCustomerByEmailQuery = getCustomerByEmailQuery;
+    }
+
+    [HttpGet()]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCustomerReponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseBase))]
+    public Task<IActionResult> GetCustomerCollectionAsync(
+        [FromQuery]Guid correlationId,
+        [FromQuery]Guid tenantId,
+        [FromQuery]string executionUser,
+        [FromQuery]string sourcePlatform,
+        [FromQuery] string email,
+        CancellationToken cancellationToken    
+    )
+    {
+        return TraceManager.StartActivityAsync(
+            name: Request.Path.Value ?? nameof(ImportCustomerAsync),
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: correlationId,
+            tenantId: tenantId,
+            executionUser: executionUser,
+            sourcePlatform: sourcePlatform,
+            input: (
+                CorrelationId: correlationId, 
+                TenantId: tenantId,
+                ExecutionUser: executionUser,
+                SourcePlatform: sourcePlatform,
+                Email: email,
+                GetCustomerByEmailQuery: _getCustomerByEmailQuery,
+                Adapter
+            ),
+            handler: (input, activity, cancellationToken) => 
+                RunQueryAsync(
+                    input,
+                    handler: async (input, cancellationToken) =>
+                    {
+                        var getCustomerByQueryInput = new GetCustomerByEmailQueryInput(
+                            input.CorrelationId,
+                            input.TenantId,
+                            input.ExecutionUser,
+                            input.SourcePlatform,
+                            input.Email
+                        );
+
+                        var queryResult = await input.GetCustomerByEmailQuery.ExecuteAsync(getCustomerByQueryInput, cancellationToken);
+
+                        return queryResult is null ? null : input.Adapter.Adapt<CustomerDto>(queryResult);
+                    },
+                    responseBaseFactory: () => new GetCustomerReponse(),
+                    cancellationToken
+                )!
+            ,
+            cancellationToken
+        )!;
     }
 
     [HttpPost("import")]

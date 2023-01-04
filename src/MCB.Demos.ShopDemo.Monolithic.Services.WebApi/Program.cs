@@ -12,10 +12,7 @@ using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Collections;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using static Grpc.Core.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 

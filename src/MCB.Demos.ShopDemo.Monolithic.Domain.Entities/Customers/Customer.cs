@@ -18,6 +18,19 @@ public class Customer
     public string LastName { get; private set; }
     public DateTime BirthDate { get; private set; }
     public EmailValueObject Email { get; private set; }
+    public int Age
+    {
+        get
+        {
+            var currentDate = DateTimeProvider.GetDate();
+            var age = currentDate.Year - BirthDate.Year;
+
+            if (currentDate.Month < BirthDate.Month || (currentDate.Month == BirthDate.Month && currentDate.Day < BirthDate.Day))
+                age--;
+
+            return age;
+        }
+    }
 
     // Validators
     private readonly RegisterNewCustomerInputShouldBeValidValidator _registerNewCustomerInputShouldBeValidValidator;

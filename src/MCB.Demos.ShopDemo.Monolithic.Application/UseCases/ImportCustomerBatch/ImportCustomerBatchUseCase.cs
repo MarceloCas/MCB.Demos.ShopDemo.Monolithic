@@ -1,5 +1,4 @@
 ﻿using MCB.Core.Domain.Abstractions.DomainEvents;
-using MCB.Core.Infra.CrossCutting.Abstractions.Serialization;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;

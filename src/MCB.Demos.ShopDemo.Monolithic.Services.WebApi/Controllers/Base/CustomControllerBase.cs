@@ -7,6 +7,8 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 
@@ -33,15 +35,14 @@ public class CustomControllerBase
     }
 
     // Private Methods
-    private ResponseBase CreateResponse<TUseCaseInput>(
-        Func<TUseCaseInput, ResponseBase> responseBaseFactory,
-        TUseCaseInput useCaseInput
-    )
+    private ResponseBase AddMessagesToResponse(ResponseBase response)
     {
-        var response = responseBaseFactory(useCaseInput);
+        if (!_notificationSubscriber.NotificationCollection.Any())
+            return response;
 
         response.Messages = _notificationSubscriber.NotificationCollection.Select(q =>
-            new ResponseMessage{
+            new ResponseMessage
+            {
                 Type = q.NotificationType switch
                 {
                     NotificationType.Information => ResponseMessageType.Information,
@@ -68,6 +69,13 @@ public class CustomControllerBase
 
         return response;
     }
+    private ResponseBase CreateResponse<TUseCaseInput>(
+        Func<TUseCaseInput, ResponseBase> responseBaseFactory,
+        TUseCaseInput useCaseInput
+    )
+    {
+        return AddMessagesToResponse(responseBaseFactory(useCaseInput));
+    }
 
     // Protected Methods
     protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput>(
@@ -93,6 +101,25 @@ public class CustomControllerBase
 
         return StatusCode(
             statusCode: success ? successStatusCode : failStatusCode,
+            value: response
+        );
+    }
+    protected async Task<IActionResult> RunQueryAsync<TInput, TResult>(
+        TInput input,
+        Func<TInput, CancellationToken, Task<TResult?>> handler,
+        Func<ResponseBase<TResult>> responseBaseFactory,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = responseBaseFactory();
+        var result = await handler(input, cancellationToken);
+
+        response.Data = result;
+
+        AddMessagesToResponse(response);
+
+        return StatusCode(
+            statusCode: response.Data != null ? StatusCodes.Status200OK : StatusCodes.Status404NotFound,
             value: response
         );
     }

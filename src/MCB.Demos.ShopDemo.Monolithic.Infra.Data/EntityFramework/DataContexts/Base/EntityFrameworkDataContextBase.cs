@@ -1,9 +1,6 @@
-﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Adapter;
-using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
+﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
