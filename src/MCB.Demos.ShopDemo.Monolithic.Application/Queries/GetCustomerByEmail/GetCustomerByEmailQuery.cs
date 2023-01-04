@@ -1,14 +1,13 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
+
 public class GetCustomerByEmailQuery
     : QueryBase<GetCustomerByEmailQueryInput, Customer?>,
     IGetCustomerByEmailQuery

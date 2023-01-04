@@ -7,8 +7,6 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Threading;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 
