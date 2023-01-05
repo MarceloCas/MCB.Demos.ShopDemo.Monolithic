@@ -4,8 +4,8 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
@@ -42,13 +42,11 @@ public class CustomerRepository
             input: (TenantId: tenantId, Email: email, CustomerDataModelRepository: _customerDataModelRepository, CustomerFactory: _customerFactory, Adapter),
             handler: async (input, activity, cancellationToken) =>
             {
-                var customerDataModel = (
-                    await input.CustomerDataModelRepository.GetAsync(q =>
-                        q.TenantId == input.TenantId
-                        && q.Email == input.Email,
+                var customerDataModel = await input.CustomerDataModelRepository.GetByEmailAsync(
+                        input.TenantId,
+                        input.Email,
                         cancellationToken
-                    )
-                ).FirstOrDefault();
+                    );
 
                 return customerDataModel is null
                     ? null

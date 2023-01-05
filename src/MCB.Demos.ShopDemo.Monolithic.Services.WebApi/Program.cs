@@ -1,8 +1,8 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;

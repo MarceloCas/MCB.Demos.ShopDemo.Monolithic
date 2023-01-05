@@ -1,11 +1,11 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Models;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Base.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Models;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
@@ -31,14 +31,15 @@ public static class Bootstrapper
         dependencyInjectionContainer.RegisterScoped<ICustomerRepository, CustomerRepository>();
 
         // DataModels Repositories
-        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRepository, CustomerDataModelRepository>();
+        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRepository, CustomerDataModelRedisRepository>();
+        dependencyInjectionContainer.RegisterScoped<CustomerDataModelEntityFrameworkRepository>();
     }
 
     // Private Methods
     private static void ConfigureDependencyInjectionForRedis(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
     {
         // DataContext
-        dependencyInjectionContainer.RegisterSingleton<IDefaultRedisDataContext>(dependencyInjectionContainer =>
+        dependencyInjectionContainer.RegisterSingleton<IRedisDataContext>(dependencyInjectionContainer =>
             new DefaultRedisDataContext(
                 new RedisOptions(
                     connectionString: appSettings.Redis.ConnectionString

@@ -4,8 +4,8 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.Base;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Adapters;
 
