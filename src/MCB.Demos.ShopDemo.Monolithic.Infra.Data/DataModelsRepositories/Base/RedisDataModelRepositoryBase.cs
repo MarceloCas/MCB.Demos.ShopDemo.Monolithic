@@ -1,4 +1,5 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Base.Interfaces;
+﻿using MCB.Core.Infra.CrossCutting.Abstractions.Serialization;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels.Base;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories.Base.Interfaces;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -12,21 +13,39 @@ public abstract class RedisDataModelRepositoryBase<TDataModel>
     // Properties
     protected IRedisDataContext RedisDataContext { get; }
     protected EntityFrameworkDataModelRepositoryBase<TDataModel> EntityFrameworkDataModelRepository { get; }
+    protected IJsonSerializer JsonSerializer { get; }
 
     // Constructors
     protected RedisDataModelRepositoryBase(
         IRedisDataContext redisDataContext,
-        EntityFrameworkDataModelRepositoryBase<TDataModel> entityFrameworkDataModelRepository
+        EntityFrameworkDataModelRepositoryBase<TDataModel> entityFrameworkDataModelRepository,
+        IJsonSerializer jsonSerializer
     )
     {
         RedisDataContext = redisDataContext;
         EntityFrameworkDataModelRepository = entityFrameworkDataModelRepository;
+        JsonSerializer = jsonSerializer;
     }
 
+    // Protected Methods
+    protected abstract string? GetKey(TDataModel? dataModel);
+
     // Public Methods
-    public virtual ValueTask<EntityEntry<TDataModel>> AddAsync(TDataModel dataModel, CancellationToken cancellationToken)
+    public virtual async ValueTask<EntityEntry<TDataModel>> AddAsync(TDataModel dataModel, CancellationToken cancellationToken)
     {
-        return EntityFrameworkDataModelRepository.AddAsync(dataModel, cancellationToken);
+        await RedisDataContext.TryOpenConnectionAsync(cancellationToken);
+        var key = GetKey(dataModel);
+
+        if (key is null)
+            return default;
+
+        await RedisDataContext.StringSetAsync(
+            key,
+            value: JsonSerializer.SerializeToJson(dataModel),
+            expiry: TimeSpan.FromMinutes(30)
+        );
+
+        return default;
     }
     public virtual ValueTask<EntityEntry<TDataModel>> AddOrUpdateAsync(TDataModel dataModel, CancellationToken cancellationToken)
     {

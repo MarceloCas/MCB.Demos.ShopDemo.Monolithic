@@ -48,7 +48,7 @@ public abstract class EntityFrameworkDataContextBase
     {
         return Entry(dataModel);
     }
-    public Task OpenConnectionAsync(CancellationToken cancellationToken)
+    public Task TryOpenConnectionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

@@ -3,7 +3,7 @@
 public interface IDataContext
     : IDisposable
 {
-    Task OpenConnectionAsync(CancellationToken cancellationToken);
+    Task TryOpenConnectionAsync(CancellationToken cancellationToken);
     Task CloseConnectionAsync(CancellationToken cancellationToken);
 
     Task BeginTransactionAsync(CancellationToken cancellationToken);

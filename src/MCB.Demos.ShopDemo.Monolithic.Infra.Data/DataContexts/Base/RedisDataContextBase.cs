@@ -31,21 +31,27 @@ public abstract class RedisDataContextBase
         if (!IsConnected)
             throw new InvalidOperationException(CONNECTION_CLOSED);
     }
-    private void ProcessTransaction()
+    private async Task ProcessTransactionAsync()
     {
-        _connectionMultiplexer!.Wait(_currentTransaction!.ExecuteAsync());
+        if (_currentTransaction == null)
+            return;
+
+        await _currentTransaction.ExecuteAsync();
+
         _currentTransaction = null;
     }
 
     // Public Methods
-    public async Task OpenConnectionAsync(CancellationToken cancellationToken)
+    public Task TryOpenConnectionAsync(CancellationToken cancellationToken)
     {
         if (IsConnected)
-            return;
+            return Task.CompletedTask;
 
-        _connectionMultiplexer = await ConnectionMultiplexer.ConnectAsync(_redisOptions.ConnectionString);
+        _connectionMultiplexer = ConnectionMultiplexer.Connect(_redisOptions.ConnectionString);
 
         Database = _connectionMultiplexer.GetDatabase();
+
+        return Task.CompletedTask;
     }
     public async Task CloseConnectionAsync(CancellationToken cancellationToken)
     {
@@ -63,39 +69,31 @@ public abstract class RedisDataContextBase
 
         return Task.CompletedTask;
     }
-    public Task CommitTransactionAsync(CancellationToken cancellationToken)
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         ValidateConnection();
 
-        ProcessTransaction();
-
-        return Task.CompletedTask;
+        await ProcessTransactionAsync();
     }
     public Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
-        ValidateConnection();
-
-        // Force false condition to rollback
-        var tempGuid = Guid.NewGuid().ToString();
-        _currentTransaction!.AddCondition(Condition.StringEqual(key: tempGuid, value: tempGuid));
-
-        ProcessTransaction();
+        _currentTransaction = null;
 
         return Task.CompletedTask;
     }
 
-    public Task<RedisValue> StringGetAsync(string key, CommandFlags commandFlags = CommandFlags.None)
+    public async Task<RedisValue> StringGetAsync(string key, CommandFlags commandFlags = CommandFlags.None)
     {
         ValidateConnection();
 
-        return Database!.StringGetAsync(key, flags: commandFlags);
+        return await Database!.StringGetAsync(key, flags: commandFlags);
     }
     public Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry, CommandFlags commandFlags = CommandFlags.None)
     {
         ValidateConnection();
 
         return _currentTransaction is null
-            ? Task.FromResult(Database!.StringSet(key, value, expiry, flags: commandFlags))
+            ? Database!.StringSetAsync(key, value, expiry, flags: commandFlags)
             : _currentTransaction.StringSetAsync(key, value, expiry, flags: commandFlags);
     }
     public Task<double> StringIncrementAsync(string key, double value = 1, CommandFlags commandFlags = CommandFlags.None)
