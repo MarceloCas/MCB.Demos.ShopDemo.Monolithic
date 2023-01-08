@@ -84,8 +84,8 @@ public class CustomerRepository
                     );
 
                 return input.CustomerFactory.Create()!.SetExistingCustomerInfo(
-                        input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
-                    ); ;
+                    input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
+                );
             },
             cancellationToken
         )!;
