@@ -1,4 +1,5 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.RedisConfig;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 

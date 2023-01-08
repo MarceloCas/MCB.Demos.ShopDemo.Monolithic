@@ -13,6 +13,9 @@ public class GetCustomerByEmailQuery
     : QueryBase<GetCustomerByEmailQueryInput, Customer?>,
     IGetCustomerByEmailQuery
 {
+    // Constants
+    public const string GET_CUSTOMER_BY_EMAIL_QUERY_TRACE_NAME = $"{nameof(GetCustomerByEmailQuery)}.{nameof(ExecuteAsync)}";
+
     // Fields
     private readonly ICustomerRepository _customerRepository;
     private readonly INotificationPublisher _notificationPublisher;
@@ -31,7 +34,7 @@ public class GetCustomerByEmailQuery
     public override Task<Customer?> ExecuteAsync(GetCustomerByEmailQueryInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: $"{nameof(GetCustomerByEmailQuery)}.{nameof(ExecuteAsync)}",
+            name: GET_CUSTOMER_BY_EMAIL_QUERY_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             input.CorrelationId,
             input.TenantId,

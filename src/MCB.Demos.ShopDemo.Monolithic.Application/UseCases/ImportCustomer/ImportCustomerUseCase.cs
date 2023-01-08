@@ -16,6 +16,9 @@ public class ImportCustomerUseCase
     : UseCaseBase<ImportCustomerUseCaseInput>,
     IImportCustomerUseCase
 {
+    // Constants
+    public const string IMPORT_CUSTOMER_USE_CASE_TRACE_NAME = $"{nameof(ImportCustomerUseCase)}.{nameof(ExecuteInternalAsync)}";
+
     // Fields
     private readonly ICustomerService _customerService;
 
@@ -37,7 +40,7 @@ public class ImportCustomerUseCase
     protected override Task<bool> ExecuteInternalAsync(ImportCustomerUseCaseInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: $"{nameof(ImportCustomerUseCase)}.{nameof(ExecuteInternalAsync)}",
+            name: IMPORT_CUSTOMER_USE_CASE_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: input.CorrelationId,
             tenantId: input.TenantId,

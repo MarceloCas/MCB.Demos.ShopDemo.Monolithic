@@ -1,11 +1,13 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Base.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Models;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Models;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataModelsRepositories;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
@@ -31,8 +33,8 @@ public static class Bootstrapper
         dependencyInjectionContainer.RegisterScoped<ICustomerRepository, CustomerRepository>();
 
         // DataModels Repositories
-        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRepository, CustomerDataModelRedisRepository>();
-        dependencyInjectionContainer.RegisterScoped<CustomerDataModelEntityFrameworkRepository>();
+        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelEntityFrameworkRepository, CustomerDataModelEntityFrameworkRepository>();
+        dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRedisRepository, CustomerDataModelRedisRepository>();
     }
 
     // Private Methods

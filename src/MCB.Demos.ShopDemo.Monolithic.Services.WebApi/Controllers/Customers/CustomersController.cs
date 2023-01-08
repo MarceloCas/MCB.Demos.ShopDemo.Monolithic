@@ -136,7 +136,7 @@ public class CustomersController
     )
     {
         return TraceManager.StartActivityAsync(
-            name: nameof(Request.Path.Value),
+            name: nameof(Request.Path.Value) ?? nameof(ImportCustomerBatchAsync),
             kind: System.Diagnostics.ActivityKind.Server,
             correlationId: payload.CorrelationId,
             tenantId: payload.TenantId,

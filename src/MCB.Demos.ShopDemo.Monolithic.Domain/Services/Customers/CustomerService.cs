@@ -18,6 +18,9 @@ public class CustomerService
     : ServiceBase<Entities.Customers.Customer>,
     ICustomerService
 {
+    // Constants
+    public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(ImportCustomerAsync)}";
+
     // Messages
     public static readonly string CustomerEmailAlreadyRegisteredErrorCode = nameof(CustomerEmailAlreadyRegisteredErrorCode);
     public static readonly string CustomerEmailAlreadyRegisteredMessage = nameof(CustomerEmailAlreadyRegisteredMessage);
@@ -48,7 +51,7 @@ public class CustomerService
     public Task<bool> ImportCustomerAsync(ImportCustomerServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: $"{nameof(CustomerService)}.{nameof(ImportCustomerAsync)}",
+            name: IMPORT_CUSTOMER_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: input.CorrelationId,
             tenantId: input.TenantId,

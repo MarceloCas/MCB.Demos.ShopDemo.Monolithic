@@ -4,8 +4,10 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels;
-using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModelsRepositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataModelsRepositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
@@ -14,45 +16,76 @@ public class CustomerRepository
     : RepositoryBase,
     ICustomerRepository
 {
+    // Constants
+    public const string GET_BY_EMAIL_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(GetByEmailAsync)}";
+    public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(ImportCustomerAsync)}";
+
     // Fields
+    private readonly TimeSpan _customerDataModelTTL;
     private readonly ICustomerFactory _customerFactory;
-    private readonly ICustomerDataModelRepository _customerDataModelRepository;
+    private readonly ICustomerDataModelEntityFrameworkRepository _customerDataModelRepository;
+    private readonly ICustomerDataModelRedisRepository _customerDataModelRedisRepository;
 
     // Constructors
     public CustomerRepository(
         ITraceManager traceManager,
         IAdapter adapter,
+        AppSettings appSettings,
         ICustomerFactory customerFactory,
-        ICustomerDataModelRepository customerDataModelRepository
+        ICustomerDataModelEntityFrameworkRepository customerDataModelRepository,
+        ICustomerDataModelRedisRepository customerDataModelRedisRepository
     ) : base(traceManager, adapter)
     {
+        _customerDataModelTTL = TimeSpan.FromSeconds(appSettings.Redis.TTLSeconds.CustomerDataModel);
         _customerFactory = customerFactory;
         _customerDataModelRepository = customerDataModelRepository;
+        _customerDataModelRedisRepository = customerDataModelRedisRepository;
     }
 
     public Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: $"{nameof(CustomerRepository)}.{nameof(GetByEmailAsync)}",
+            name: GET_BY_EMAIL_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: Guid.Empty,
             tenantId: tenantId,
             executionUser: string.Empty,
             sourcePlatform: string.Empty,
-            input: (TenantId: tenantId, Email: email, CustomerDataModelRepository: _customerDataModelRepository, CustomerFactory: _customerFactory, Adapter),
+            input: (
+                TenantId: tenantId, 
+                Email: email, 
+                CustomerDataModelRepository: _customerDataModelRepository,
+                CustomerDataModelRedisRepository: _customerDataModelRedisRepository,
+                CustomerFactory: _customerFactory, 
+                Adapter
+            ),
             handler: async (input, activity, cancellationToken) =>
             {
-                var customerDataModel = await input.CustomerDataModelRepository.GetByEmailAsync(
-                        input.TenantId,
-                        input.Email,
+                var customerDataModel = await input.CustomerDataModelRedisRepository.GetAsync(
+                    input.CustomerDataModelRedisRepository.GetKey(input.TenantId, input.Email)
+                );
+
+                if (customerDataModel != null)
+                    return input.CustomerFactory.Create()!.SetExistingCustomerInfo(
+                        input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
+                    );
+
+                customerDataModel = await input.CustomerDataModelRepository.GetByEmailAsync(
+                    input.TenantId,
+                    input.Email,
+                    cancellationToken
+                );
+
+                if (customerDataModel != null)
+                    await input.CustomerDataModelRedisRepository.AddOrUpdateAsync(
+                        customerDataModel, 
+                        expiry: _customerDataModelTTL, 
                         cancellationToken
                     );
 
-                return customerDataModel is null
-                    ? null
-                    : input.CustomerFactory.Create()!.SetExistingCustomerInfo(
+                return input.CustomerFactory.Create()!.SetExistingCustomerInfo(
                         input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!
-                    );
+                    ); ;
             },
             cancellationToken
         )!;
@@ -61,7 +94,7 @@ public class CustomerRepository
     public Task<(bool Success, int ModifiedCount)> ImportCustomerAsync(Customer customer, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: $"{nameof(CustomerRepository)}.{nameof(ImportCustomerAsync)}",
+            name: IMPORT_CUSTOMER_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: Guid.Empty,
             tenantId: customer.TenantId,
