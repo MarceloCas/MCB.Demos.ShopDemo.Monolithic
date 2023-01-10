@@ -1,6 +1,5 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.RedisConfig;
-using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.RabbitMqConfig;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 

@@ -115,7 +115,14 @@ app.UseSwaggerUI(options =>
 
 app.UseAuthorization();
 app.MapControllers();
-app.MapHealthChecks("/health");
+app.MapHealthChecks(
+    "/health",
+    options: new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        AllowCachingResponses = false,
+        ResponseWriter = DefaultHealthCheck.WriteReport 
+    }  
+);
 #endregion
 
 app.Run();
