@@ -8,5 +8,6 @@ public abstract class DtoBase
     public string? LastUpdatedBy { get; set; }
     public DateTime? LastUpdatedAt { get; set; }
     public string LastSourcePlatform { get; set; } = null!;
+    public Guid LastCorrelationId { get; set; }
     public DateTime RegistryVersion { get; set; }
 }

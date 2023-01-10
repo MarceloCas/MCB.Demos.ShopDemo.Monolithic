@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using MCB.Core.Domain.Entities.DomainEntitiesBase.Inputs;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
@@ -25,7 +26,7 @@ public static class AdapterConfig
     }
     private static void MapDataModelToDomainEntity(IDependencyInjectionContainer dependencyInjectionContainer)
     {
-        TypeAdapterConfig<CustomerDataModel, SetExistingCustomerInfoInput>.NewConfig();
+        ConfigureMapFromDataModelToInputBase<CustomerDataModel, SetExistingCustomerInfoInput>();
         TypeAdapterConfig<CustomerDataModel, Customer>.NewConfig()
             .MapWith(converterFactory: src =>
                 dependencyInjectionContainer
@@ -34,8 +35,8 @@ public static class AdapterConfig
                     .SetExistingCustomerInfo(src.Adapt<SetExistingCustomerInfoInput>())
             );
     }
-    private static void ConfigureMapFromDomainEntityBaseToDataModelBase<TDomainEntityBase, TDataModelBase>(
-    )   where TDomainEntityBase : DomainEntityBase
+    private static void ConfigureMapFromDomainEntityBaseToDataModelBase<TDomainEntityBase, TDataModelBase>()   
+        where TDomainEntityBase : DomainEntityBase
         where TDataModelBase : DataModelBase
     {
         TypeAdapterConfig<TDomainEntityBase, TDataModelBase>.NewConfig()
@@ -46,6 +47,14 @@ public static class AdapterConfig
             .Map(dest => dest.LastUpdatedBy, src => src.AuditableInfo.LastUpdatedBy)
             .Map(dest => dest.LastUpdatedAt, src => src.AuditableInfo.LastUpdatedAt)
             .Map(dest => dest.LastSourcePlatform, src => src.AuditableInfo.LastSourcePlatform)
+            .Map(dest => dest.LastCorrelationId, src => src.AuditableInfo.LastCorrelationId)
             .Map(dest => dest.RegistryVersion, src => src.RegistryVersion);
+    }
+    private static void ConfigureMapFromDataModelToInputBase<TDataModel, TInput>()
+        where TDataModel : DataModelBase
+        where TInput : InputBase
+    {
+        TypeAdapterConfig<TDataModel, TInput>.NewConfig()
+            .Map(dest => dest.CorrelationId, src => src.LastCorrelationId);
     }
 }
