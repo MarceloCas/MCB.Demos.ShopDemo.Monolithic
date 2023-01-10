@@ -16,10 +16,9 @@ public class DefaultHealthCheck
 
     //Fields
     private readonly AppSettings _appSettings;
-    private static JsonSerializerOptions _jsonSerializeOptions = new JsonSerializerOptions
+    private static JsonSerializerOptions _jsonSerializeOptions = new()
     {
-        PropertyNameCaseInsensitive = false,
-        WriteIndented = true
+        PropertyNameCaseInsensitive = false
     };
 
     // Constructors
