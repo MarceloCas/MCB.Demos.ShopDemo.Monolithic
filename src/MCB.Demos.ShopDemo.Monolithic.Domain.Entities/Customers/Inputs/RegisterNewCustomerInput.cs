@@ -19,8 +19,9 @@ public sealed record RegisterNewCustomerInput
         DateTime birthDate,
         string email,
         string executionUser,
-        string sourcePlatform
-    ) : base(tenantId, executionUser, sourcePlatform)
+        string sourcePlatform,
+        Guid correlationId
+    ) : base(tenantId, executionUser, sourcePlatform, correlationId)
     {
         FirstName = firstName;
         LastName = lastName;

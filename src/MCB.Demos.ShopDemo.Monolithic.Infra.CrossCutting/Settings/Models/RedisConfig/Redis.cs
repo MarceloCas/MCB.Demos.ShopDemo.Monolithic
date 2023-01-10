@@ -3,5 +3,5 @@
 public class Redis
 {
     public string ConnectionString { get; set; } = null!;
-    public TTLSeconds TTLSeconds { get; set; } = null!;
+    public TtlSeconds TtlSeconds { get; set; } = null!;
 }

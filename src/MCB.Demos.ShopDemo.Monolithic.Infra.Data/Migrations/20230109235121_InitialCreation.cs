@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -29,7 +30,8 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                     lastupdatedby = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     lastupdatedat = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     lastsourceplatform = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    registryversion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    registryversion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    lastcorrelationid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,37 +42,43 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                 name: "IX_CREATED_AT",
                 schema: "customers",
                 table: "customer",
-                column: "createdat");
+                columns: new[] { "tenantid", "createdat" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CREATED_BY",
                 schema: "customers",
                 table: "customer",
-                column: "createdby");
+                columns: new[] { "tenantid", "createdby" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CREATED_BY_LAST_UPDATED_BY",
                 schema: "customers",
                 table: "customer",
-                columns: new[] { "createdby", "lastupdatedby" });
+                columns: new[] { "tenantid", "createdby", "lastupdatedby" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LAST_CORRELATION_ID",
+                schema: "customers",
+                table: "customer",
+                columns: new[] { "tenantid", "lastcorrelationid" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LAST_SOURCE_PLATFORM",
                 schema: "customers",
                 table: "customer",
-                column: "lastsourceplatform");
+                columns: new[] { "tenantid", "lastsourceplatform" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LAST_UPDATED_AT",
                 schema: "customers",
                 table: "customer",
-                column: "lastupdatedat");
+                columns: new[] { "tenantid", "lastupdatedat" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LAST_UPDATED_BY",
                 schema: "customers",
                 table: "customer",
-                column: "lastupdatedby");
+                columns: new[] { "tenantid", "lastupdatedby" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_TENANT_ID",

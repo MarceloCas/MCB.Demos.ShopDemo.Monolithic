@@ -1,10 +1,12 @@
-﻿namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
+﻿using MCB.Core.Domain.Entities.DomainEntitiesBase.Inputs;
+
+namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 
 public record SetExistingCustomerInfoInput
+    : InputBase
 {
     // Properties
     public Guid Id { get; set; }
-    public Guid TenantId { get; set; }
     public string CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? LastUpdatedBy { get; set; }
@@ -18,8 +20,8 @@ public record SetExistingCustomerInfoInput
 
     // Constructors
     public SetExistingCustomerInfoInput(
-        Guid id,
         Guid tenantId,
+        Guid id,
         string createdBy,
         DateTime createdAt,
         string? lastUpdatedBy,
@@ -29,10 +31,13 @@ public record SetExistingCustomerInfoInput
         string firstName,
         string lastName,
         DateTime birthDate,
-        string email)
+        string email,
+        string executionUser,
+        string sourcePlatform,
+        Guid correlationId
+    ) : base(tenantId, executionUser, sourcePlatform, correlationId)
     {
         Id = id;
-        TenantId = tenantId;
         CreatedBy = createdBy;
         CreatedAt = createdAt;
         LastUpdatedBy = lastUpdatedBy;

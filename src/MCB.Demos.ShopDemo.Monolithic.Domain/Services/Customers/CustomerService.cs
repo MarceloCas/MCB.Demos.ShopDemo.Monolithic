@@ -91,7 +91,7 @@ public class CustomerService
 
                 // Send domain event
                 await input.DomainEventPublisher.PublishDomainEventAsync(
-                    input.CustomerHasBeenRegisteredDomainEventFactory.Create((customer, input.Input.ExecutionUser, input.Input.SourcePlatform))!,
+                    input.CustomerHasBeenRegisteredDomainEventFactory.Create((customer, input.Input.ExecutionUser, input.Input.SourcePlatform, input.Input.CorrelationId))!,
                     cancellationToken
                 );
 

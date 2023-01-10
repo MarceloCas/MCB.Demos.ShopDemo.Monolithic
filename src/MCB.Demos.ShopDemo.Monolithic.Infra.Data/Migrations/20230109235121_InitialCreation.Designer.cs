@@ -3,6 +3,7 @@ using System;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
     [DbContext(typeof(DefaultEntityFrameworkDataContext))]
-    partial class DefaultEntityFrameworkDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230109235121_InitialCreation")]
+    partial class InitialCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModels.CustomerDataModel", b =>
+            modelBuilder.Entity("MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels.CustomerDataModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -53,6 +56,10 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)")
                         .HasColumnName("firstname");
+
+                    b.Property<Guid>("LastCorrelationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("lastcorrelationid");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -87,33 +94,36 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_CUSTOMERS_CUSTOMER");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CREATED_AT");
-
-                    b.HasIndex("CreatedBy")
-                        .HasDatabaseName("IX_CREATED_BY");
-
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasDatabaseName("UK_EMAIL");
 
-                    b.HasIndex("LastSourcePlatform")
-                        .HasDatabaseName("IX_LAST_SOURCE_PLATFORM");
-
-                    b.HasIndex("LastUpdatedAt")
-                        .HasDatabaseName("IX_LAST_UPDATED_AT");
-
-                    b.HasIndex("LastUpdatedBy")
-                        .HasDatabaseName("IX_LAST_UPDATED_BY");
-
                     b.HasIndex("TenantId")
                         .HasDatabaseName("IX_TENANT_ID");
 
-                    b.HasIndex("CreatedBy", "LastUpdatedBy")
-                        .HasDatabaseName("IX_CREATED_BY_LAST_UPDATED_BY");
+                    b.HasIndex("TenantId", "CreatedAt")
+                        .HasDatabaseName("IX_CREATED_AT");
+
+                    b.HasIndex("TenantId", "CreatedBy")
+                        .HasDatabaseName("IX_CREATED_BY");
 
                     b.HasIndex("TenantId", "Id")
                         .HasDatabaseName("IX_TENANT_ID_ID");
+
+                    b.HasIndex("TenantId", "LastCorrelationId")
+                        .HasDatabaseName("IX_LAST_CORRELATION_ID");
+
+                    b.HasIndex("TenantId", "LastSourcePlatform")
+                        .HasDatabaseName("IX_LAST_SOURCE_PLATFORM");
+
+                    b.HasIndex("TenantId", "LastUpdatedAt")
+                        .HasDatabaseName("IX_LAST_UPDATED_AT");
+
+                    b.HasIndex("TenantId", "LastUpdatedBy")
+                        .HasDatabaseName("IX_LAST_UPDATED_BY");
+
+                    b.HasIndex("TenantId", "CreatedBy", "LastUpdatedBy")
+                        .HasDatabaseName("IX_CREATED_BY_LAST_UPDATED_BY");
 
                     b.ToTable("customer", "customers");
                 });

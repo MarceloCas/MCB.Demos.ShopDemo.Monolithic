@@ -36,7 +36,7 @@ public class CustomerRepository
         ICustomerDataModelRedisRepository customerDataModelRedisRepository
     ) : base(traceManager, adapter)
     {
-        _customerDataModelTTL = TimeSpan.FromSeconds(appSettings.Redis.TTLSeconds.CustomerDataModel);
+        _customerDataModelTTL = TimeSpan.FromSeconds(appSettings.Redis.TtlSeconds.CustomerDataModel);
         _customerFactory = customerFactory;
         _customerDataModelRepository = customerDataModelRepository;
         _customerDataModelRedisRepository = customerDataModelRedisRepository;
@@ -76,12 +76,14 @@ public class CustomerRepository
                     cancellationToken
                 );
 
-                if (customerDataModel != null)
-                    await input.CustomerDataModelRedisRepository.AddOrUpdateAsync(
-                        customerDataModel, 
-                        expiry: _customerDataModelTTL, 
-                        cancellationToken
-                    );
+                if (customerDataModel is null)
+                    return null;
+
+                await input.CustomerDataModelRedisRepository.AddOrUpdateAsync(
+                    customerDataModel, 
+                    expiry: _customerDataModelTTL, 
+                    cancellationToken
+                );
 
                 return input.CustomerFactory.Create()!.SetExistingCustomerInfo(
                     input.Adapter.Adapt<SetExistingCustomerInfoInput>(customerDataModel)!

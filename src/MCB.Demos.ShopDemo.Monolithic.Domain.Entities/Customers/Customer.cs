@@ -63,7 +63,7 @@ public class Customer
         return SetName(input.FirstName, input.LastName)
             .SetBirthDate(input.BirthDate)
             .SetEmail(input.Email)
-            .RegisterNewInternal<Customer>(input.TenantId, input.ExecutionUser, input.SourcePlatform);
+            .RegisterNewInternal<Customer>(input.TenantId, input.ExecutionUser, input.SourcePlatform, input.CorrelationId);
     }
     public Customer SetExistingCustomerInfo(SetExistingCustomerInfoInput input)
     {
@@ -75,7 +75,8 @@ public class Customer
             input.LastUpdatedBy,
             input.LastUpdatedAt,
             input.LastSourcePlatform,
-            input.RegistryVersion
+            input.RegistryVersion,
+            input.CorrelationId
         );
 
         SetName(input.FirstName, input.LastName);

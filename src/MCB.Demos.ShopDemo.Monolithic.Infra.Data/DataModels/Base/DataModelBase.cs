@@ -10,4 +10,5 @@ public abstract class DataModelBase
     public DateTime? LastUpdatedAt { get; set; }
     public string LastSourcePlatform { get; set; } = null!;
     public DateTime RegistryVersion { get; set; }
+    public Guid LastCorrelationId { get; set; }
 }

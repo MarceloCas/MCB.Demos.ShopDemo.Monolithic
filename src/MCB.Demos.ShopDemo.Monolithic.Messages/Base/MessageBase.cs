@@ -2,6 +2,7 @@
 
 public abstract record MessageBase
 {
+    // Properties
     public Guid Id { get; set; }
     public Guid TenantId { get; set; }
     public DateTime Timestamp { get; set; }

@@ -3,6 +3,6 @@
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerHasBeenRegistered.Factories.Interfaces;
 
 public interface ICustomerHasBeenRegisteredDomainEventFactory
-    : IFactoryWithParameter<CustomerHasBeenRegisteredDomainEvent, (Customer customer, string executionUser, string sourcePlatform)>
+    : IFactoryWithParameter<CustomerHasBeenRegisteredDomainEvent, (Customer Customer, string ExecutionUser, string SourcePlatform, Guid CorrelationId)>
 {
 }

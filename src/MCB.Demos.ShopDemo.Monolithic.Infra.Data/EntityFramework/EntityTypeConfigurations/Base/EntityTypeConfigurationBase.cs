@@ -47,14 +47,14 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
             .HasColumnName(nameof(DataModelBase.CreatedBy).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(250);
-        builder.HasIndex(q => q.CreatedBy)
+        builder.HasIndex(q => new { q.TenantId, q.CreatedBy })
             .HasDatabaseName("IX_CREATED_BY");
 
         // CreatedAt
         builder.Property(q => q.CreatedAt)
             .HasColumnName(nameof(DataModelBase.CreatedAt).ToLowerInvariant())
             .IsRequired();
-        builder.HasIndex(q => q.CreatedAt)
+        builder.HasIndex(q => new { q.TenantId, q.CreatedAt })
             .HasDatabaseName("IX_CREATED_AT");
 
         // LastUpdatedBy
@@ -62,17 +62,17 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
             .HasColumnName(nameof(DataModelBase.LastUpdatedBy).ToLowerInvariant())
             .IsRequired(false)
             .HasMaxLength(250);
-        builder.HasIndex(q => q.LastUpdatedBy)
+        builder.HasIndex(q => new { q.TenantId, q.LastUpdatedBy })
             .HasDatabaseName("IX_LAST_UPDATED_BY");
 
         // LastUpdatedAt
         builder.Property(q => q.LastUpdatedAt)
             .HasColumnName(nameof(DataModelBase.LastUpdatedAt).ToLowerInvariant())
             .IsRequired(false);
-        builder.HasIndex(q => q.LastUpdatedAt)
+        builder.HasIndex(q => new { q.TenantId, q.LastUpdatedAt })
             .HasDatabaseName("IX_LAST_UPDATED_AT");
 
-        builder.HasIndex(q => new { q.CreatedBy, q.LastUpdatedBy })
+        builder.HasIndex(q => new { q.TenantId, q.CreatedBy, q.LastUpdatedBy })
             .HasDatabaseName("IX_CREATED_BY_LAST_UPDATED_BY");
 
         // LastSourcePlatform
@@ -80,10 +80,17 @@ public abstract class EntityTypeConfigurationBase<TDataModelBase>
             .HasColumnName(nameof(DataModelBase.LastSourcePlatform).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(250);
-        builder.HasIndex(q => q.LastSourcePlatform)
+        builder.HasIndex(q => new { q.TenantId, q.LastSourcePlatform })
             .HasDatabaseName("IX_LAST_SOURCE_PLATFORM");
 
-        // Registry Version
+        // LastCorrelationId
+        builder.Property(q => q.LastCorrelationId)
+            .HasColumnName(nameof(DataModelBase.LastCorrelationId).ToLowerInvariant())
+            .IsRequired();
+        builder.HasIndex(q => new { q.TenantId, q.LastCorrelationId })
+            .HasDatabaseName("IX_LAST_CORRELATION_ID");
+
+        // RegistryVersion
         builder.Property(q => q.RegistryVersion)
             .HasColumnName(nameof(DataModelBase.RegistryVersion).ToLowerInvariant())
             .IsRequired()

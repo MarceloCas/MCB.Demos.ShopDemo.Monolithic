@@ -6,6 +6,7 @@ public record CustomerHasBeenRegisteredDomainEvent
     : DomainEventBase
 {
     public CustomerHasBeenRegisteredDomainEvent(
+        Guid correlationId,
         Guid id,
         Guid tenantId,
         DateTime timestamp,
@@ -13,7 +14,7 @@ public record CustomerHasBeenRegisteredDomainEvent
         string sourcePlatform,
         string domainEventType,
         Customer customer
-    ) : base(id, tenantId, timestamp, executionUser, sourcePlatform, domainEventType, customer)
+    ) : base(correlationId, id, tenantId, timestamp, executionUser, sourcePlatform, domainEventType, customer)
     {
     }
 }
