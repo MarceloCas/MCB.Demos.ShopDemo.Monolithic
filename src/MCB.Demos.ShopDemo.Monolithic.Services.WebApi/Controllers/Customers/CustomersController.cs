@@ -126,7 +126,6 @@ public class CustomersController
         )!;
     }
 
-
     [HttpPost("batch-import")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ImportCustomerBatchResponse))]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(ImportCustomerBatchResponse))]

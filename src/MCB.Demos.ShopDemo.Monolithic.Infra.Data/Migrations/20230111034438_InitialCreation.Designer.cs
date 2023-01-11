@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
     [DbContext(typeof(DefaultEntityFrameworkDataContext))]
-    [Migration("20230109235121_InitialCreation")]
+    [Migration("20230111034438_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -94,10 +94,6 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_CUSTOMERS_CUSTOMER");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasDatabaseName("UK_EMAIL");
-
                     b.HasIndex("TenantId")
                         .HasDatabaseName("IX_TENANT_ID");
 
@@ -106,6 +102,10 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 
                     b.HasIndex("TenantId", "CreatedBy")
                         .HasDatabaseName("IX_CREATED_BY");
+
+                    b.HasIndex("TenantId", "Email")
+                        .IsUnique()
+                        .HasDatabaseName("UK_EMAIL");
 
                     b.HasIndex("TenantId", "Id")
                         .HasDatabaseName("IX_TENANT_ID_ID");

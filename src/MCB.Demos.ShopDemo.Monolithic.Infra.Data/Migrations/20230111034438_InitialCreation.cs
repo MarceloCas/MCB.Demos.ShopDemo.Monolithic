@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -95,7 +96,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
                 name: "UK_EMAIL",
                 schema: "customers",
                 table: "customer",
-                column: "email",
+                columns: new[] { "tenantid", "email" },
                 unique: true);
         }
 

@@ -1,5 +1,6 @@
 ﻿using MCB.Core.Infra.CrossCutting.Abstractions.Serialization;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models.Enums;
@@ -48,6 +49,7 @@ public static class Bootstrapper
                     AutoDelete: appSettings.RabbitMq.EventsExchange.AutoDelete,
                     Arguments: null
                 ),
+                traceManager: d.Resolve<ITraceManager>()!,
                 protobufSerializer: d.Resolve<IProtobufSerializer>()!
             );
         });

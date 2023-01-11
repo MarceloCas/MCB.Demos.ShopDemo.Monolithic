@@ -41,7 +41,7 @@ public class CustomerEntityTypeConfiguration
             .HasColumnName(nameof(CustomerDataModel.Email).ToLowerInvariant())
             .IsRequired()
             .HasMaxLength(IEmailValueObjectSpecifications.EMAIL_MAX_LENGTH);
-        builder.HasIndex(q => q.Email)
+        builder.HasIndex(q => new { q.TenantId, q.Email })
             .IsUnique()
             .HasDatabaseName("UK_EMAIL");
     }
