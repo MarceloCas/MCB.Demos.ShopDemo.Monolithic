@@ -1,4 +1,5 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
+﻿using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models.Enums;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -13,18 +14,24 @@ public class DefaultHealthCheck
     // Constants
     public const string POSTGRESQL_SERVICE_NAME = "PostgreSQL";
     public const string REDIS_SERVICE_NAME = "Redis";
+    public const string RABBIT_MQ_SERVICE_NAME = "RabbitMq";
 
     //Fields
     private readonly AppSettings _appSettings;
-    private static JsonSerializerOptions _jsonSerializeOptions = new()
+    private readonly IRabbitMqConnection _rabbitMqConnection;
+    private static readonly JsonSerializerOptions _jsonSerializeOptions = new()
     {
         PropertyNameCaseInsensitive = false
     };
 
     // Constructors
-    public DefaultHealthCheck(AppSettings appSettings)
+    public DefaultHealthCheck(
+        AppSettings appSettings,
+        IRabbitMqConnection rabbitMqConnection
+    )
     {
         _appSettings = appSettings;
+        _rabbitMqConnection = rabbitMqConnection;
     }
 
     // Public Methods
@@ -38,6 +45,9 @@ public class DefaultHealthCheck
         // Validate Redis
         var redisStatus = await ValidateRedisConnectionAsync(_appSettings.Redis.ConnectionString, cancellationToken);
         serviceStatusDictionary.Add(redisStatus.Name, redisStatus.Status);
+        // Validate RabbitMq
+        var rabbitMqStatus = ValidateRabbitMqConnection(_rabbitMqConnection);
+        serviceStatusDictionary.Add(rabbitMqStatus.Name, rabbitMqStatus.Status);
 
         var isHealthy = !serviceStatusDictionary.Any(q => (ServiceStatus)q.Value == ServiceStatus.Unhealthy);
 
@@ -109,5 +119,12 @@ public class DefaultHealthCheck
         {
             return new Service(REDIS_SERVICE_NAME, ServiceStatus.Unhealthy);
         }
+    }
+    private static Service ValidateRabbitMqConnection(IRabbitMqConnection rabbitMqConnection)
+    {
+        if (rabbitMqConnection.IsOpen)
+            return new Service(RABBIT_MQ_SERVICE_NAME, ServiceStatus.Healthy);
+        else
+            return new Service(RABBIT_MQ_SERVICE_NAME, ServiceStatus.Unhealthy);
     }
 }

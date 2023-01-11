@@ -6,6 +6,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Mode
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
@@ -22,17 +23,19 @@ public abstract class UseCaseBase<TUseCaseInput>
     // Fields
     private readonly IDomainEventSubscriber _domainEventSubscriber;
     private readonly IExternalEventFactory _externalEventFactory;
+    private readonly IEventsExchangeRabbitMqPublisher _eventsExchangeRabbitMqPublisher;
 
     // Properties
-    protected INotificationPublisher NotificationPublisher { get; set; }
+    protected INotificationPublisher NotificationPublisher { get; }
     protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
     protected IUnitOfWork UnitOfWork { get; }
 
     // Constructors
     protected UseCaseBase(
-        INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
+        INotificationPublisher notificationPublisher,
+        IEventsExchangeRabbitMqPublisher eventsExchangeRabbitMqPublisher,
         IExternalEventFactory externalEventFactory,
         ITraceManager traceManager,
         IAdapter adapter,
@@ -41,6 +44,7 @@ public abstract class UseCaseBase<TUseCaseInput>
     {
         _domainEventSubscriber = domainEventSubscriber;
         _externalEventFactory = externalEventFactory;
+        _eventsExchangeRabbitMqPublisher = eventsExchangeRabbitMqPublisher;
 
         NotificationPublisher = notificationPublisher;
         TraceManager = traceManager;
@@ -88,6 +92,10 @@ public abstract class UseCaseBase<TUseCaseInput>
                 continue;
 
             var externalEvent = _externalEventFactory.Create((Adapter, domainEventBase));
+            if(externalEvent is null)
+                continue;
+
+            await _eventsExchangeRabbitMqPublisher.PublishAsync(externalEvent, cancellationToken);
         }
 
         await Task.Delay(1);

@@ -10,6 +10,7 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inp
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using IUnitOfWork = MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces.IUnitOfWork;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
@@ -29,15 +30,16 @@ public class ImportCustomerBatchUseCase
 
     // Constructors
     public ImportCustomerBatchUseCase(
-        INotificationPublisher notificationPublisher,
         IDomainEventSubscriber domainEventSubscriber,
+        INotificationPublisher notificationPublisher,
+        IEventsExchangeRabbitMqPublisher eventsExchangeRabbitMqPublisher,
         IExternalEventFactory externalEventFactory,
         ITraceManager traceManager,
         IAdapter adapter,
         IUnitOfWork unitOfWork,
         INotificationSubscriber notificationSubscriber,
         ICustomerService customerService
-    ) : base(notificationPublisher, domainEventSubscriber, externalEventFactory, traceManager, adapter, unitOfWork)
+    ) : base(domainEventSubscriber, notificationPublisher, eventsExchangeRabbitMqPublisher, externalEventFactory, traceManager, adapter, unitOfWork)
     {
         _notificationSubscriber = notificationSubscriber;
         _customerService = customerService;

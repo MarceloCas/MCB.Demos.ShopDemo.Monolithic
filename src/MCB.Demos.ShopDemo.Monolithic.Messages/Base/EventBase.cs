@@ -1,6 +1,6 @@
 ﻿namespace MCB.Demos.ShopDemo.Monolithic.Messages.Base;
 
-public record EventBase
+public class EventBase
     : MessageBase
 {
 }

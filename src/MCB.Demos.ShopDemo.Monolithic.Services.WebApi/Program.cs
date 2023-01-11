@@ -1,5 +1,9 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
+using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
+using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
+using MCB.Core.Infra.CrossCutting.RabbitMq.Models.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
@@ -123,6 +127,24 @@ app.MapHealthChecks(
         ResponseWriter = DefaultHealthCheck.WriteReport 
     }  
 );
+#endregion
+
+#region Initialize
+// Initialize RabbitMQ
+var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionContainer>()!;
+
+var rabbitMqConnection = dependencyInjectionContainer.Resolve<IRabbitMqConnection>()!;
+rabbitMqConnection.OpenConnection();
+rabbitMqConnection.ExchangeDeclare(
+    new RabbitMqExchangeConfig(
+        ExchangeName: appSettings.RabbitMq.EventsExchange.Name,
+        ExchangeType: RabbitMqExchangeType.Header,
+        Durable: appSettings.RabbitMq.EventsExchange.Durable,
+        AutoDelete: appSettings.RabbitMq.EventsExchange.AutoDelete,
+        Arguments: null
+    )
+);
+
 #endregion
 
 app.Run();
