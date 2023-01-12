@@ -1,14 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.43.0-alpha" />
-    <PackageReference Include="MCB.Core.Infra.CrossCutting.Observability.Abstractions" Version="0.8.0-alpha" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.43.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.Observability.Abstractions" Version="0.8.0-alpha" />
+	</ItemGroup>
 
 </Project>

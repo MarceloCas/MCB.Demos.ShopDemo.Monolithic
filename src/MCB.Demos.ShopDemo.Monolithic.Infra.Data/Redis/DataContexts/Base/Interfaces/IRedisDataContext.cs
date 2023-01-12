@@ -1,7 +1,7 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataContexts.Base.Interfaces;
 using StackExchange.Redis;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
+namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Interfaces;
 
 public interface IRedisDataContext
     : IDataContext

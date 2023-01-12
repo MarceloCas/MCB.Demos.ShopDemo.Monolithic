@@ -43,27 +43,27 @@ public abstract class EntityFrameworkDataContextBase
     protected abstract void OnModelCreatingInternal(ModelBuilder modelBuilder);
 
     // Public Methods
-    public DbSet<TDataModel> GetDbSet<TDataModel>() where TDataModel : DataModelBase
+    public virtual DbSet<TDataModel> GetDbSet<TDataModel>() where TDataModel : DataModelBase
     {
         return Set<TDataModel>();
     }
-    public EntityEntry<TDataModel> SetEntry<TDataModel>(TDataModel dataModel) where TDataModel : DataModelBase
+    public virtual EntityEntry<TDataModel> SetEntry<TDataModel>(TDataModel dataModel) where TDataModel : DataModelBase
     {
         return Entry(dataModel);
     }
-    public Task TryOpenConnectionAsync(CancellationToken cancellationToken)
+    public virtual Task TryOpenConnectionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
-    public Task CloseConnectionAsync(CancellationToken cancellationToken)
+    public virtual Task CloseConnectionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
-    public Task BeginTransactionAsync(CancellationToken cancellationToken)
+    public virtual Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
-    public Task CommitTransactionAsync(CancellationToken cancellationToken)
+    public virtual Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: COMMIT_TRANSACTION_TRACE_NAME,
@@ -80,7 +80,7 @@ public abstract class EntityFrameworkDataContextBase
             cancellationToken
         )!;
     }
-    public Task RollbackTransactionAsync(CancellationToken cancellationToken)
+    public virtual Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

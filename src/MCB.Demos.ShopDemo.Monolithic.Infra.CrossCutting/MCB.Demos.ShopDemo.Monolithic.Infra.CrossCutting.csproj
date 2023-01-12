@@ -7,15 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns" Version="0.20.0-alpha" />
 		<PackageReference Include="MCB.Core.Infra.CrossCutting" Version="0.14.0-alpha" />
 		<PackageReference Include="MCB.Core.Infra.CrossCutting.Observability.Abstractions" Version="0.8.0-alpha" />
-		<PackageReference Include="MCB.Core.Infra.CrossCutting.RabbitMq" Version="0.5.0-alpha" />
+		<PackageReference Include="MCB.Core.Infra.CrossCutting.RabbitMq" Version="0.6.0-alpha" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions" Version="0.43.0-alpha" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Messages\MCB.Demos.ShopDemo.Monolithic.Messages.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Messages\MCB.Demos.ShopDemo.Monolithic.Messages.csproj" />
 	</ItemGroup>
 
 </Project>

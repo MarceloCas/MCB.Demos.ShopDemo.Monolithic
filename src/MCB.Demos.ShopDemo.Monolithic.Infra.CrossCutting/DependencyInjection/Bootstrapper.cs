@@ -7,6 +7,8 @@ using MCB.Core.Infra.CrossCutting.RabbitMq.Models.Enums;
 using MCB.Core.Infra.CrossCutting.Serialization;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerHasBeenRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models;
@@ -35,7 +37,8 @@ public static class Bootstrapper
                     NetworkRecoveryInterval: TimeSpan.FromSeconds(appSettings.RabbitMq.Connection.NetworkRecoveryIntervalSeconds),
                     TopologyRecoveryEnabled: appSettings.RabbitMq.Connection.TopologyRecoveryEnabled,
                     RequestedHeartbeat: TimeSpan.FromSeconds(appSettings.RabbitMq.Connection.RequestedHeartbeatSeconds)
-                )
+                ),
+                dependencyInjectionContainer.Resolve<IRabbitMqResiliencePolicy>()!
             )
         );
         dependencyInjectionContainer.RegisterSingleton<IEventsExchangeRabbitMqPublisher>(d =>
@@ -53,6 +56,8 @@ public static class Bootstrapper
                 protobufSerializer: d.Resolve<IProtobufSerializer>()!
             );
         });
+
+        dependencyInjectionContainer.RegisterSingleton<IRabbitMqResiliencePolicy, RabbitMqResiliencePolicy>();
 
         ConfigureProtobufSerializationForMessages();
     }

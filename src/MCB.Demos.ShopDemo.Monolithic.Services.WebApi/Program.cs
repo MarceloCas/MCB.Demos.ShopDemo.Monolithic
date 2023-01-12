@@ -1,12 +1,15 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models.Enums;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models;
@@ -14,6 +17,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
@@ -63,12 +67,14 @@ builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
         appSettings!.PostgreSql.ConnectionString
     )
 );
-builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection => {
+builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection =>
+{
     var config = serviceCollection.GetService<IConfiguration>()!;
 
     return new DefaultEntityFrameworkDataContext(
         serviceCollection.GetService<ITraceManager>()!,
-        config["PostgreSql:ConnectionString"]!
+        config["PostgreSql:ConnectionString"]!,
+        serviceCollection.GetService<IPostgreSqlResiliencePolicy>()!
     );
 });
 
@@ -149,7 +155,7 @@ app.MapHealthChecks(
         AllowCachingResponses = false,
         ResponseWriter = ReportWriter.WriteReport,
         Predicate = healthCheck => healthCheck.Tags.Contains("liveness")
-    } 
+    }
 );
 #endregion
 
@@ -168,6 +174,68 @@ rabbitMqConnection.ExchangeDeclare(
         Arguments: null
     )
 );
+
+// Configure resilience policies
+var postgreSqlResiliencePolicy = dependencyInjectionContainer.Resolve<IPostgreSqlResiliencePolicy>()!;
+postgreSqlResiliencePolicy.Configure(() => new ResiliencePolicyConfig
+{
+    // Identification
+    Name = appSettings.PostgreSql.ResiliencePolicy.Name,
+    // Retry
+    RetryMaxAttemptCount = appSettings.PostgreSql.ResiliencePolicy.RetryMaxAttemptCount,
+    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.PostgreSql.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
+    OnRetryAditionalHandler = null,
+    // Circuit Breaker
+    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.PostgreSql.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
+    OnCircuitBreakerHalfOpenAditionalHandler = null,
+    OnCircuitBreakerOpenAditionalHandler = null,
+    OnCircuitBreakerCloseAditionalHandler = null,
+    // Exceptions
+    ExceptionHandleConfigArray = new[] {
+        new Func<Exception, bool>(ex => ex.GetType() == typeof(Npgsql.NpgsqlException)),
+        new Func<Exception, bool>(ex => ex.GetType() == typeof(Npgsql.PostgresException)),
+    }
+});
+
+var redisResiliencePolicy = dependencyInjectionContainer.Resolve<IRedisResiliencePolicy>()!;
+redisResiliencePolicy.Configure(() => new ResiliencePolicyConfig
+{
+    // Identification
+    Name = appSettings.Redis.ResiliencePolicy.Name,
+    // Retry
+    RetryMaxAttemptCount = appSettings.Redis.ResiliencePolicy.RetryMaxAttemptCount,
+    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.Redis.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
+    OnRetryAditionalHandler = null,
+    // Circuit Breaker
+    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.Redis.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
+    OnCircuitBreakerHalfOpenAditionalHandler = null,
+    OnCircuitBreakerOpenAditionalHandler = null,
+    OnCircuitBreakerCloseAditionalHandler = null,
+    // Exceptions
+    ExceptionHandleConfigArray = new[] {
+        new Func<Exception, bool>(ex => ex.GetType() == typeof(StackExchange.Redis.RedisException)),
+    }
+});
+
+var rabbitMqResiliencePolicy = dependencyInjectionContainer.Resolve<IRabbitMqResiliencePolicy>()!;
+rabbitMqResiliencePolicy.Configure(() => new ResiliencePolicyConfig
+{
+    // Identification
+    Name = appSettings.RabbitMq.ResiliencePolicy.Name,
+    // Retry
+    RetryMaxAttemptCount = appSettings.RabbitMq.ResiliencePolicy.RetryMaxAttemptCount,
+    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.RabbitMq.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
+    OnRetryAditionalHandler = null,
+    // Circuit Breaker
+    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.RabbitMq.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
+    OnCircuitBreakerHalfOpenAditionalHandler = null,
+    OnCircuitBreakerOpenAditionalHandler = null,
+    OnCircuitBreakerCloseAditionalHandler = null,
+    // Exceptions
+    ExceptionHandleConfigArray = new[] {
+        new Func<Exception, bool>(ex => ex.GetType() == typeof(RabbitMQ.Client.Exceptions.ConnectFailureException)),
+    }
+});
 
 StartupCheck.CompleteStartup();
 

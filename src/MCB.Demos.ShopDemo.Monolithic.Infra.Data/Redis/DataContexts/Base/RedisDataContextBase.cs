@@ -1,8 +1,8 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Interfaces;
+﻿using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Models;
 using StackExchange.Redis;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts;
+namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base;
 
 public abstract class RedisDataContextBase
     : IRedisDataContext
@@ -42,13 +42,13 @@ public abstract class RedisDataContextBase
     }
 
     // Public Methods
-    public Task TryOpenConnectionAsync(CancellationToken cancellationToken)
+    public virtual Task TryOpenConnectionAsync(CancellationToken cancellationToken)
     {
         TryOpenConnectionInternal();
 
         return Task.CompletedTask;
     }
-    public async Task CloseConnectionAsync(CancellationToken cancellationToken)
+    public virtual async Task CloseConnectionAsync(CancellationToken cancellationToken)
     {
         if (!IsConnected)
             return;
@@ -56,7 +56,7 @@ public abstract class RedisDataContextBase
         await _connectionMultiplexer!.CloseAsync(allowCommandsToComplete: true);
     }
 
-    public Task BeginTransactionAsync(CancellationToken cancellationToken)
+    public virtual Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         ValidateConnection();
 
@@ -64,7 +64,7 @@ public abstract class RedisDataContextBase
 
         return Task.CompletedTask;
     }
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken)
+    public virtual async Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
         ValidateConnection();
 
@@ -75,20 +75,20 @@ public abstract class RedisDataContextBase
 
         _currentTransaction = null;
     }
-    public Task RollbackTransactionAsync(CancellationToken cancellationToken)
+    public virtual Task RollbackTransactionAsync(CancellationToken cancellationToken)
     {
         _currentTransaction = null;
 
         return Task.CompletedTask;
     }
 
-    public Task<RedisValue> StringGetAsync(string key, CommandFlags commandFlags = CommandFlags.None)
+    public virtual Task<RedisValue> StringGetAsync(string key, CommandFlags commandFlags = CommandFlags.None)
     {
         TryOpenConnectionInternal();
 
         return Database!.StringGetAsync(key, flags: commandFlags);
     }
-    public Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry, CommandFlags commandFlags = CommandFlags.None)
+    public virtual Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry, CommandFlags commandFlags = CommandFlags.None)
     {
         TryOpenConnectionInternal();
 
@@ -96,7 +96,7 @@ public abstract class RedisDataContextBase
             ? Database!.StringSetAsync(key, value, expiry, flags: commandFlags)
             : _currentTransaction.StringSetAsync(key, value, expiry, flags: commandFlags);
     }
-    public Task<double> StringIncrementAsync(string key, double value = 1, CommandFlags commandFlags = CommandFlags.None)
+    public virtual Task<double> StringIncrementAsync(string key, double value = 1, CommandFlags commandFlags = CommandFlags.None)
     {
         TryOpenConnectionInternal();
 
@@ -104,7 +104,7 @@ public abstract class RedisDataContextBase
             ? Database!.StringIncrementAsync(key, value, flags: commandFlags)
             : _currentTransaction.StringIncrementAsync(key, value, flags: commandFlags);
     }
-    public Task<bool> RemoveAsync(string key, CommandFlags commandFlags = CommandFlags.None)
+    public virtual Task<bool> RemoveAsync(string key, CommandFlags commandFlags = CommandFlags.None)
     {
         TryOpenConnectionInternal();
 

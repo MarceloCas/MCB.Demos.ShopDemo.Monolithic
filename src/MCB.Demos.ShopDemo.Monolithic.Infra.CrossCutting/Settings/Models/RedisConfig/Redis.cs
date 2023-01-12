@@ -4,4 +4,5 @@ public class Redis
 {
     public string ConnectionString { get; set; } = null!;
     public TtlSeconds TtlSeconds { get; set; } = null!;
+    public ResiliencePolicy ResiliencePolicy { get; set; } = null!;
 }

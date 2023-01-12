@@ -1,6 +1,7 @@
 ﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.EntityTypeConfigurations;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -9,13 +10,17 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 public class DefaultEntityFrameworkDataContext
     : EntityFrameworkDataContextBase
 {
+    // Fields
+    private readonly IPostgreSqlResiliencePolicy _postgreSqlResiliencePolicy;
+
     // Constructors
     public DefaultEntityFrameworkDataContext(
         ITraceManager traceManager,
-        string connectionString
+        string connectionString,
+        IPostgreSqlResiliencePolicy postgreSqlResiliencePolicy
     ) : base(traceManager, connectionString)
     {
-
+        _postgreSqlResiliencePolicy = postgreSqlResiliencePolicy;
     }
 
     // Protected Methods
@@ -27,6 +32,15 @@ public class DefaultEntityFrameworkDataContext
     {
         modelBuilder.ApplyConfiguration(new CustomerEntityTypeConfiguration());
     }
+
+    // Public Methods
+    public override Task CommitTransactionAsync(CancellationToken cancellationToken)
+    {
+        return _postgreSqlResiliencePolicy.ExecuteAsync(
+            handler: base.CommitTransactionAsync,
+            cancellationToken
+        );
+    }
 }
 
 public class DefaultEntityFrameworkDataContextFactory
@@ -36,7 +50,8 @@ public class DefaultEntityFrameworkDataContextFactory
     {
         return new DefaultEntityFrameworkDataContext(
             traceManager: null!,
-            connectionString: args[0]
+            connectionString: args[0],
+            postgreSqlResiliencePolicy: null!
         );
     }
 }
