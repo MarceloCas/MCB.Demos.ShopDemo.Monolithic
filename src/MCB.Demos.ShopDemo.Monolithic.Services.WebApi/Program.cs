@@ -9,7 +9,9 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -104,7 +106,10 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddHealthChecks().AddCheck<DefaultHealthCheck>("Default");
+builder.Services.AddHealthChecks()
+    .AddCheck<StartupCheck>("/health/startup", tags: new[] { "startup" })
+    .AddCheck<ReadinessCheck>("/health/readiness", tags: new[] { "readiness" })
+    .AddCheck<LivenessCheck>("/health/liveness", tags: new[] { "liveness" });
 #endregion
 
 #region Configure Pipeline
@@ -120,17 +125,36 @@ app.UseSwaggerUI(options =>
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks(
-    "/health",
-    options: new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    "/health/startup",
+    options: new HealthCheckOptions
     {
         AllowCachingResponses = false,
-        ResponseWriter = DefaultHealthCheck.WriteReport 
-    }  
+        ResponseWriter = ReportWriter.WriteReport,
+        Predicate = healthCheck => healthCheck.Tags.Contains("startup")
+    }
+);
+app.MapHealthChecks(
+    "/health/readiness",
+    options: new HealthCheckOptions
+    {
+        AllowCachingResponses = false,
+        ResponseWriter = ReportWriter.WriteReport,
+        Predicate = healthCheck => healthCheck.Tags.Contains("readiness")
+    }
+);
+app.MapHealthChecks(
+    "/health/liveness",
+    options: new HealthCheckOptions
+    {
+        AllowCachingResponses = false,
+        ResponseWriter = ReportWriter.WriteReport,
+        Predicate = healthCheck => healthCheck.Tags.Contains("liveness")
+    } 
 );
 #endregion
 
-#region Initialize
-// Initialize RabbitMQ
+#region Startup
+// Startup RabbitMQ
 var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionContainer>()!;
 
 var rabbitMqConnection = dependencyInjectionContainer.Resolve<IRabbitMqConnection>()!;
@@ -144,6 +168,8 @@ rabbitMqConnection.ExchangeDeclare(
         Arguments: null
     )
 );
+
+StartupCheck.CompleteStartup();
 
 #endregion
 
