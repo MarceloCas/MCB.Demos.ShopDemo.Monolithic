@@ -98,8 +98,6 @@ public abstract class UseCaseBase<TUseCaseInput>
             await _eventsExchangeRabbitMqPublisher.PublishAsync(externalEvent, cancellationToken);
         }
 
-        await Task.Delay(1);
-
         return true;
     }
 }

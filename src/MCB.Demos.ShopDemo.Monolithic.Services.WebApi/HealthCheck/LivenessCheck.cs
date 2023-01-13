@@ -38,7 +38,7 @@ public class LivenessCheck
         var postgreSqlStatus = await ValidatePostgreSqlConnectionAsync(_appSettings.PostgreSql.ConnectionString, cancellationToken);
         serviceStatusDictionary.Add(postgreSqlStatus.Name, postgreSqlStatus.Status);
         // Validate Redis
-        var redisStatus = await ValidateRedisConnectionAsync(_appSettings.Redis.ConnectionString, cancellationToken);
+        var redisStatus = await ValidateRedisConnectionAsync(_appSettings.Redis.ConnectionString);
         serviceStatusDictionary.Add(redisStatus.Name, redisStatus.Status);
         // Validate RabbitMq
         var rabbitMqStatus = ValidateRabbitMqConnection(_rabbitMqConnection);
@@ -66,7 +66,7 @@ public class LivenessCheck
             return new Service(POSTGRESQL_SERVICE_NAME, ServiceStatus.Unhealthy);
         }
     }
-    private static async Task<Service> ValidateRedisConnectionAsync(string connectionString, CancellationToken cancellationToken)
+    private static async Task<Service> ValidateRedisConnectionAsync(string connectionString)
     {
         try
         {

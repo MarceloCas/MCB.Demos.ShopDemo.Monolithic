@@ -14,6 +14,7 @@ public abstract class RedisDataContextBase
     private readonly RedisOptions _redisOptions;
     private ConnectionMultiplexer? _connectionMultiplexer;
     private ITransaction? _currentTransaction;
+    private bool disposedValue;
 
     // Properties
     protected bool IsConnected => _connectionMultiplexer?.IsConnected == true;
@@ -113,8 +114,18 @@ public abstract class RedisDataContextBase
             : _currentTransaction.KeyDeleteAsync(key, flags: commandFlags);
     }
 
+    #region Dispose
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            disposedValue = true;
+        }
+    }
     public void Dispose()
     {
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
+    } 
+    #endregion
 }

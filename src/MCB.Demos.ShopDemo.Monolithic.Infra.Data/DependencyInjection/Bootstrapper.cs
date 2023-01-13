@@ -29,7 +29,7 @@ public static class Bootstrapper
         // Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerRepository, CustomerRepository>();
 
-        ConfigureDependencyInjectionForEntityFramework(dependencyInjectionContainer, appSettings);
+        ConfigureDependencyInjectionForEntityFramework(dependencyInjectionContainer);
         ConfigureDependencyInjectionForRedis(dependencyInjectionContainer, appSettings);
 
         // Resilience Policies
@@ -38,7 +38,7 @@ public static class Bootstrapper
     }
 
     // Private Methods
-    private static void ConfigureDependencyInjectionForEntityFramework(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
+    private static void ConfigureDependencyInjectionForEntityFramework(IDependencyInjectionContainer dependencyInjectionContainer)
     {
         // Default Entity Framework Data Context is configured in WebApi project to use IServiceCollection EF Core extension methods
 
