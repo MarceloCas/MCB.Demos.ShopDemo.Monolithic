@@ -1,5 +1,6 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
@@ -11,6 +12,7 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
@@ -236,6 +238,12 @@ rabbitMqResiliencePolicy.Configure(() => new ResiliencePolicyConfig
         new Func<Exception, bool>(ex => ex.GetType() == typeof(RabbitMQ.Client.Exceptions.ConnectFailureException)),
     }
 });
+
+ResiliencePoliciesController.SetResiliencePolicyCollection(
+    dependencyInjectionContainer.GetRegistrationCollection()
+    .Where(q => typeof(IResiliencePolicy).IsAssignableFrom(q.ServiceType))
+    .Select(q => (IResiliencePolicy)dependencyInjectionContainer.Resolve(q.ServiceType!)!)!
+);
 
 StartupCheck.CompleteStartup();
 
