@@ -53,6 +53,7 @@ public static class Bootstrapper
                     Arguments: null
                 ),
                 traceManager: d.Resolve<ITraceManager>()!,
+                rabbitMqResiliencePolicy: d.Resolve<IRabbitMqResiliencePolicy>()!,
                 protobufSerializer: d.Resolve<IProtobufSerializer>()!
             );
         });

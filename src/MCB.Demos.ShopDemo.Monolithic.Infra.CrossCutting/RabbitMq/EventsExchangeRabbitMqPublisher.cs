@@ -1,9 +1,11 @@
 ﻿using MCB.Core.Infra.CrossCutting.Abstractions.Serialization;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Strategy;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Publishers;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Messages.Base;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq;
@@ -23,17 +25,20 @@ public class EventsExchangeRabbitMqPublisher
     // Fields
     private readonly ITraceManager _traceManager;
     private readonly IProtobufSerializer _protobufSerializer;
+    private readonly IRabbitMqResiliencePolicy _rabbitMqResiliencePolicy;
 
     // Constructors
     public EventsExchangeRabbitMqPublisher(
         IRabbitMqConnection connection, 
         RabbitMqExchangeConfig exchangeConfig,
         ITraceManager traceManager,
+        IRabbitMqResiliencePolicy rabbitMqResiliencePolicy,
         IProtobufSerializer protobufSerializer
     ) : base(connection, exchangeConfig)
     {
-        _traceManager = traceManager;
         _protobufSerializer = protobufSerializer;
+        _rabbitMqResiliencePolicy = rabbitMqResiliencePolicy;
+        _traceManager = traceManager;
     }
 
     // Public Methods
@@ -78,18 +83,25 @@ public class EventsExchangeRabbitMqPublisher
     {
         var eventBase = subject as EventBase;
 
-        return _traceManager.StartActivityAsync(
-            name: PUBLISH_ASYNC_TRACE_NAME,
-            kind: System.Diagnostics.ActivityKind.Internal,
-            correlationId: eventBase?.CorrelationId ?? Guid.Empty,
-            tenantId: eventBase?.TenantId ?? Guid.Empty,
-            executionUser: eventBase?.ExecutionUser,
-            sourcePlatform: eventBase?.SourcePlatform,
-            input: (Subject: subject, SubjectBaseType: subjectBaseType),
-            handler: (input, activity, cancellationToken) =>
+        return _rabbitMqResiliencePolicy.ExecuteAsync(
+            handler: (input, cancellationToken) =>
             {
-                return base.PublishAsync(input.Subject, input.SubjectBaseType, cancellationToken);
+                return input.TraceManager.StartActivityAsync(
+                    name: PUBLISH_ASYNC_TRACE_NAME,
+                    kind: System.Diagnostics.ActivityKind.Internal,
+                    correlationId: input.EventBase?.CorrelationId ?? Guid.Empty,
+                    tenantId: input.EventBase?.TenantId ?? Guid.Empty,
+                    executionUser: input.EventBase?.ExecutionUser,
+                    sourcePlatform: input.EventBase?.SourcePlatform,
+                    input: (input.Subject, input.SubjectBaseType),
+                    handler: (input, activity, cancellationToken) =>
+                    {
+                        return base.PublishAsync(input.Subject, input.SubjectBaseType, cancellationToken);
+                    },
+                    cancellationToken
+                );
             },
+            input: (EventBase: eventBase, Subject: subject, SubjectBaseType: subjectBaseType, TraceManager: _traceManager),
             cancellationToken
         );
     }
