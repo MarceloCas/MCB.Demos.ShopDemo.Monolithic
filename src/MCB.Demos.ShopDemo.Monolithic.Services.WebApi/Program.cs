@@ -22,8 +22,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
+using OpenTelemetry.Instrumentation.Runtime;
 using OpenTelemetry.Trace;
 using System.Text.Json.Serialization;
+using OpenTelemetry;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +40,46 @@ builder.Services.AddSingleton(appSettings);
 #endregion
 
 #region Configure Service
+var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
+    .ConfigureResource(builder =>
+    {
+
+    })
+    .WithTracing(builder => builder
+        .AddHttpClientInstrumentation(options =>
+        {
+
+        })
+        .AddAspNetCoreInstrumentation(options =>
+        {
+
+        })
+        .AddOtlpExporter(options =>
+        {
+            options.Protocol = OtlpExportProtocol.Grpc;
+        })
+        .AddSource(appSettings.ApplicationName)
+        .SetResourceBuilder(
+            ResourceBuilder
+                .CreateDefault()
+                .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
+        )
+        .AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForText = true;
+        })
+        .AddRedisInstrumentation()
+        .AddNpgsql(options =>
+        {
+
+        })
+        //.AddConsoleExporter()
+    )
+    .WithMetrics(builder => builder
+        .AddMeter(appSettings.ApplicationName)
+    )
+    .StartWithHost();
+
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
         applicationName: appSettings.ApplicationName,
@@ -46,23 +89,6 @@ builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
         appSettings!
     )
 );
-
-builder.Services.AddOpenTelemetryTracing(tracerProviderBuilder =>
-{
-    tracerProviderBuilder
-        .AddOtlpExporter(opt =>
-        {
-            opt.Protocol = OtlpExportProtocol.Grpc;
-        })
-        .AddSource(appSettings.ApplicationName)
-        .SetResourceBuilder(
-            ResourceBuilder
-                .CreateDefault()
-                .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
-        )
-        .AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation();
-});
 
 builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
     options => options.UseNpgsql(

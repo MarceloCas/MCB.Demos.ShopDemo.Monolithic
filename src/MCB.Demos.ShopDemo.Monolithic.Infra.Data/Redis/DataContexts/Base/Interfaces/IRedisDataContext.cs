@@ -6,6 +6,8 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Inter
 public interface IRedisDataContext
     : IDataContext
 {
+    ConnectionMultiplexer? ConnectionMultiplexer { get; }
+
     Task<bool> StringSetAsync(string key, string value, TimeSpan? expiry, CommandFlags commandFlags = CommandFlags.None);
 
     Task<RedisValue> StringGetAsync(string key, CommandFlags commandFlags = CommandFlags.None);

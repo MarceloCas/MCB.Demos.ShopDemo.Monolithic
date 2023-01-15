@@ -12,12 +12,14 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Repositories;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
+using StackExchange.Redis;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.DependencyInjection;
 
 public static class Bootstrapper
 {
-    // Public Methods
+    // Properties
     public static void ConfigureDependencyInjection(
         IDependencyInjectionContainer dependencyInjectionContainer,
         AppSettings appSettings
@@ -48,14 +50,24 @@ public static class Bootstrapper
     private static void ConfigureDependencyInjectionForRedis(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
     {
         // DataContext
-        dependencyInjectionContainer.RegisterSingleton<IRedisDataContext>(dependencyInjectionContainer =>
-            new DefaultRedisDataContext(
+        dependencyInjectionContainer.RegisterSingleton<IRedisDataContext>(dependencyInjectionContainer => {
+            var dataContext = new DefaultRedisDataContext(
                 new RedisOptions(
                     connectionString: appSettings.Redis.ConnectionString
                 ),
                 dependencyInjectionContainer.Resolve<IRedisResiliencePolicy>()!
-            )
-        );
+            );
+
+            dataContext.TryOpenConnectionAsync(cancellationToken: default).GetAwaiter().GetResult();
+
+            return dataContext;
+        });
+
+        // Connection
+        dependencyInjectionContainer.RegisterSingleton<IConnectionMultiplexer>(dependencyInjectionContainer =>
+        {
+            return dependencyInjectionContainer.Resolve<IRedisDataContext>()!.ConnectionMultiplexer;
+        });
 
         // DataModels Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRedisRepository, CustomerDataModelRedisRepository>();

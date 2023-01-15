@@ -56,7 +56,7 @@ public class CustomersController
     {
         return TraceManager.StartActivityAsync(
             name: Request.Path.Value ?? nameof(ImportCustomerAsync),
-            kind: System.Diagnostics.ActivityKind.Internal,
+            kind: System.Diagnostics.ActivityKind.Server,
             correlationId: correlationId,
             tenantId: tenantId,
             executionUser: executionUser,
@@ -105,7 +105,7 @@ public class CustomersController
     {
         return TraceManager.StartActivityAsync(
             name: Request.Path.Value ?? nameof(ImportCustomerAsync),
-            kind: System.Diagnostics.ActivityKind.Internal,
+            kind: System.Diagnostics.ActivityKind.Server,
             correlationId: payload.CorrelationId,
             tenantId: payload.TenantId,
             executionUser: payload.ExecutionUser,

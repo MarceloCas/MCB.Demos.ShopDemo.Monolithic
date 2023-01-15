@@ -17,6 +17,7 @@ public abstract class RedisDataContextBase
     private bool disposedValue;
 
     // Properties
+    public ConnectionMultiplexer? ConnectionMultiplexer => _connectionMultiplexer;
     protected bool IsConnected => _connectionMultiplexer?.IsConnected == true;
     protected IDatabase? Database { get; private set; }
 
