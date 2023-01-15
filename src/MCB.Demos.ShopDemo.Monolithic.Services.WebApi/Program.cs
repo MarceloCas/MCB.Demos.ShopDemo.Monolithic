@@ -19,7 +19,6 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
@@ -41,6 +40,7 @@ builder.Services.AddSingleton(appSettings);
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
         applicationName: appSettings.ApplicationName,
+        applicationVersion: appSettings.ApplicationVersion,
         dependencyInjectionContainer,
         adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
         appSettings!
@@ -124,6 +124,9 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 app.UseMcbDependencyInjection();
+app.UseMcbGlobalExceptionMiddleware();
+app.UseMcbRequestCounterMetricMiddleware();
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -244,6 +247,17 @@ ResiliencePoliciesController.SetResiliencePolicyCollection(
     .Where(q => typeof(IResiliencePolicy).IsAssignableFrom(q.ServiceType))
     .Select(q => (IResiliencePolicy)dependencyInjectionContainer.Resolve(q.ServiceType!)!)!
 );
+
+// Configure Metrics
+var metricsManager = dependencyInjectionContainer.Resolve<IMetricsManager>()!;
+
+metricsManager.CreateCounter<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_COUNTER_NAME);
+metricsManager.CreateCounter<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
+
+metricsManager.CreateHistogram<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_HISTOGRAM_NAME);
+
+McbGlobalExceptionMiddleware.SetMetricsManager(metricsManager, MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
+McbRequestCounterMetricMiddleware.SetMetricsManager(metricsManager, MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_COUNTER_NAME);
 
 StartupCheck.CompleteStartup();
 

@@ -10,13 +10,18 @@ public static class Bootstrapper
     // Public Methods
     public static void ConfigureDependencyInjection(
         string applicationName,
+        string? applicationVersion,
         IDependencyInjectionContainer dependencyInjectionContainer,
         Action<TypeAdapterConfig> adapterMapAction,
         AppSettings appSettings
     )
     {
         // Inject Dependencies
-        Core.Infra.CrossCutting.Observability.OpenTelemetry.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer, applicationName);
+        Core.Infra.CrossCutting.Observability.OpenTelemetry.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
+            dependencyInjectionContainer, 
+            applicationName,
+            applicationVersion
+        );
         Core.Infra.CrossCutting.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer);
         Core.Infra.CrossCutting.DesignPatterns.DependencyInjection.Bootstrapper.ConfigureServices(
             dependencyInjectionContainer,
