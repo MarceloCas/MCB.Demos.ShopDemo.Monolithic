@@ -38,6 +38,7 @@ public static class Bootstrapper
                     TopologyRecoveryEnabled: appSettings.RabbitMq.Connection.TopologyRecoveryEnabled,
                     RequestedHeartbeat: TimeSpan.FromSeconds(appSettings.RabbitMq.Connection.RequestedHeartbeatSeconds)
                 ),
+                dependencyInjectionContainer.Resolve<ITraceManager>()!,
                 dependencyInjectionContainer.Resolve<IRabbitMqResiliencePolicy>()!
             )
         );

@@ -13,13 +13,6 @@ public class EventsExchangeRabbitMqPublisher
     : RabbitMqExchangePublisherBase,
     IEventsExchangeRabbitMqPublisher
 {
-    // Constants
-    public const string MESSAGE_TYPE_PROPERTY_NAME = "mcb-message-type";
-    public const string TENANT_ID_PROPERTY_NAME = "mcb-tenant-id";
-    public const string SOURCE_PLATFORM_PROPERTY_NAME = "mcb-source-platform";
-    public const string EXECUTION_USER_PROPERTY_NAME = "mcb-execution-user-platform";
-    public const string CORRELATION_ID_PROPERTY_NAME = "mcb-correlation-id";
-
     public const string PUBLISH_ASYNC_TRACE_NAME = $"{nameof(EventsExchangeRabbitMqPublisher)}.{nameof(PublishAsync)}";
 
     // Fields
@@ -45,15 +38,15 @@ public class EventsExchangeRabbitMqPublisher
     protected override IDictionary<string, object>? GetBasicProperties(object subject, Type subjectBaseType)
     {
         var dictionary = new Dictionary<string, object> {
-            { MESSAGE_TYPE_PROPERTY_NAME, subjectBaseType.FullName! }
+            { RabbitMqConnection.MESSAGE_TYPE_PROPERTY_NAME, subjectBaseType.FullName! }
         };
 
         if(subject is EventBase eventBase)
         {
-            dictionary.Add(key: TENANT_ID_PROPERTY_NAME, value: eventBase.TenantId.ToString());
-            dictionary.Add(key: SOURCE_PLATFORM_PROPERTY_NAME, value: eventBase.SourcePlatform);
-            dictionary.Add(key: EXECUTION_USER_PROPERTY_NAME, value: eventBase.ExecutionUser);
-            dictionary.Add(key: CORRELATION_ID_PROPERTY_NAME, value: eventBase.CorrelationId.ToString());
+            dictionary.Add(key: RabbitMqConnection.TENANT_ID_PROPERTY_NAME, value: eventBase.TenantId.ToString());
+            dictionary.Add(key: RabbitMqConnection.SOURCE_PLATFORM_PROPERTY_NAME, value: eventBase.SourcePlatform);
+            dictionary.Add(key: RabbitMqConnection.EXECUTION_USER_PROPERTY_NAME, value: eventBase.ExecutionUser);
+            dictionary.Add(key: RabbitMqConnection.CORRELATION_ID_PROPERTY_NAME, value: eventBase.CorrelationId.ToString());
         }
 
         return dictionary;

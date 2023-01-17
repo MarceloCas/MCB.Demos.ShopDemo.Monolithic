@@ -1,0 +1,140 @@
+version: "3.9"
+services:
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+      COLLECTOR_OTLP_ENABLED: true
+    ports:
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 9411:9411
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - /mcb/docker/volumes/postgres/data:/var/lib/postgresql/data
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "mcb@mcb.com"
+      PGADMIN_DEFAULT_PASSWORD: "123456"
+    ports:
+      - "8080:80"
+    restart: always
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    ports:
+      - "27017:27017"
+    volumes:
+      - /mcb/docker/volumes/mongo/data:/data/db
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - 8081:8081
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - /mcb/docker/volumes/redis/data:/data
+    networks:
+      - mcb-demos-shopdemo-monolithic
+  
+  redis-insight:
+    image: redislabs/redisinsight
+    container_name: redis-insight
+    ports:
+      - '8001:8001'
+    restart: always
+    depends_on:
+      - redis
+    links:
+      - redis
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mcb/docker/volumes/portainer/data:/data
+    ports:
+      - 9000:9000
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
+networks:
+  mcb-demos-shopdemo-monolithic:
+    driver: bridge

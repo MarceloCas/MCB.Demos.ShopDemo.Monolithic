@@ -41,39 +41,20 @@ builder.Services.AddSingleton(appSettings);
 
 #region Configure Service
 var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
-    .ConfigureResource(builder =>
-    {
-
-    })
+    .ConfigureResource(builder => { })
     .WithTracing(builder => builder
-        .AddHttpClientInstrumentation(options =>
-        {
-
-        })
-        .AddAspNetCoreInstrumentation(options =>
-        {
-
-        })
-        .AddOtlpExporter(options =>
-        {
-            options.Protocol = OtlpExportProtocol.Grpc;
-        })
+        .AddHttpClientInstrumentation(options => { })
+        .AddAspNetCoreInstrumentation(options => { })
+        .AddOtlpExporter(options => { options.Protocol = OtlpExportProtocol.Grpc; })
         .AddSource(appSettings.ApplicationName)
         .SetResourceBuilder(
             ResourceBuilder
                 .CreateDefault()
                 .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
         )
-        .AddEntityFrameworkCoreInstrumentation(options =>
-        {
-            options.SetDbStatementForText = true;
-        })
+        .AddEntityFrameworkCoreInstrumentation(options => { })
         .AddRedisInstrumentation()
-        .AddNpgsql(options =>
-        {
-
-        })
-        //.AddConsoleExporter()
+        .AddNpgsql(options => { })
     )
     .WithMetrics(builder => builder
         .AddMeter(appSettings.ApplicationName)
