@@ -7,7 +7,7 @@ This project is a source code of MCB.Demos.ShopDemo.Monolithic used during the m
 
 This project has some applied concepts like Domain-Driven Design, Event-Driven, CQRS, Distributed Cache, Observability, Devops and more.
 
-:information_source: Apparently this project has an excess of engineering, but aspects such as the business context, size and qualification of the team, volume of accesses, availability, elasticity, etc. are addressed during mentoring and contextualized there.
+:information_source: Apparently this project has over-engineering, but aspects such as the business context, size and qualification of the team, volume of accesses, availability, elasticity, etc. are addressed during mentoring and contextualized there.
 
 :warning: This project is not recommended under any circumstances to be used as a template or model of any project.
 
