@@ -5,6 +5,10 @@
 
 This project is a source code of MCB.Demos.ShopDemo.Monolithic used during the mentorships carried out by me. You can find my profile on Linkedin (https://www.linkedin.com/in/marcelocastelobranco/).
 
+In future mentorships, I will migrate this project to distributed software using a microservices approach with migration strategies from monolithic applications to distributed applications using microservices.
+
+I decided to start the project with a monolithic application because it's crazy to create microservices without knowing how to build resilient applications, with observability, with asynchronous processing and knowledge in event-driven applications. So nothing better than applying this knowledge in a monolithic application, after all, if we cannot apply these concepts in a single monolithic application, we will never be able to make several independent applications that integrate with each other and have things like eventual consistency as microservices require.
+
 This project has some applied concepts like Domain-Driven Design, Event-Driven, CQRS, Distributed Cache, Observability, Devops and more.
 
 :information_source: Apparently this project has over-engineering, but aspects such as the business context, size and qualification of the team, volume of accesses, availability, elasticity, etc. are addressed during mentoring and contextualized there.
@@ -177,6 +181,9 @@ To up the compose file in a docker installation inside a Windows OS using WSL2 y
 cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
 .\setup-wsl.ps1
 ```
+
+## :rocket: Run
+
 
 
 ## :people_holding_hands: Authors
