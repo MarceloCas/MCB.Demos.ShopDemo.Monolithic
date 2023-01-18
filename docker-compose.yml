@@ -50,6 +50,22 @@ services:
     networks:
       - mcb-demos-shopdemo-monolithic
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    environment:
+      -  GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    links:
+      - prometheus
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'rabbitmq'
