@@ -171,19 +171,107 @@ docker compose up -d
 
 To up the compose file in a docker installation inside a Windows OS using WSL2 you can use a [setup-wsl.ps1](setup-wsl.ps1) powershell script file using the Powershell terminal.
 
-:warning: This script will shutdown your WSL2
+:warning: This script will shutdown your WSL2 :warning:
 
-:warning: This script will up docker compose file in default WSL2 distro
+:warning: This script will up docker compose file in default WSL2 distro :warning:
 
-:warning: This script area created to run in a Ubuntu image
+:warning: This script area created to run in a Ubuntu image :warning:
 
 ```powershell
 cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
 .\setup-wsl.ps1
 ```
 
+### Apply migrations on database
+
+:warning: You need to have an instance of PostgreSQL running with credentials that have permission to run DDL commands.
+If you created the project's dependencies using the docker compose provided in the project, you will already have that user and you can use the following command to apply the migration :warning:
+
+In a terminal, from root repository path, run:
+
+Linux:
+```bash
+dotnet tool install --global dotnet-ef
+cd src/MCB.Demos.ShopDemo.Monolithic.Infra.Data
+dotnet ef database update -- "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
+```
+
+Windows powershell terminal:
+```powershell
+dotnet tool install --global dotnet-ef
+cd .\src\MCB.Demos.ShopDemo.Monolithic.Infra.Data\
+dotnet ef database update -- "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
+```
+
+### Define settings on AppSettings.json
+
+The [AppSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.json) file is under in MCB.Demos.ShopDemo.Monolithic.Services.WebApi project.
+
+For security reasons, credentials should never be exposed in the repository. That's why project settings are defined locally through [user secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows).
+Regardless of whether you want to use user secrets or directly change the [AppSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.json) file, the following is an example configuration that will work if you created the environment using the project's docker-compose.yml
+
+```json
+{
+  "Redis": {
+    "ConnectionString": "localhost:6379,allowAdmin=true,abortConnect=false,connectTimeout=500,responseTimeout=500,syncTimeout=500,keepAlive=10",
+    "TTLSeconds": {
+      "CustomerDataModel": 600
+    }
+  },
+  "PostgreSql": {
+    "ConnectionString": "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
+  },
+  "RabbitMq": {
+    "Connection": {
+      "ClientProvidedName": "MCB.Demos.ShopDemo.Monolithic.Services.WebApi",
+      "HostName": "localhost",
+      "Port": 5672,
+      "Username": "guest",
+      "Password": "guest",
+      "VirtualHost": "/",
+      "DispatchConsumersAsync": true,
+      "AutoConnect": true,
+      "AutomaticRecoveryEnabled": true,
+      "NetworkRecoveryIntervalSeconds": 5,
+      "TopologyRecoveryEnabled": true,
+      "RequestedHeartbeatSeconds": 60
+    },
+    "EventsExchange": {
+      "Name": "mcb.demos.shopdemo.monolithic.e.events",
+      "Durable": false,
+      "AutoDelete": false,
+      "Arguments": []
+    }
+  }
+}
+```
+
 ## :rocket: Run
 
+:warning: You have all prerequisites and dependencies installed and running :warning:
+
+In a terminal, from root repository path, run:
+
+Linux:
+```bash
+cd src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi
+dotnet run
+```
+
+
+Windows powershell terminal:
+```powershell
+cd .\src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi\
+dotnet run
+```
+
+the output is simillar to:
+```text
+Build started...
+Build succeeded.
+Applying migration '20230111034438_InitialCreation'.
+Done.
+```
 
 
 ## :people_holding_hands: Authors
