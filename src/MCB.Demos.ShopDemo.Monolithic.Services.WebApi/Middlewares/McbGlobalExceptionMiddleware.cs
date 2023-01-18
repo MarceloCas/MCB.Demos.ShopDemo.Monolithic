@@ -1,6 +1,4 @@
-﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
-using MCB.Core.Infra.CrossCutting.DependencyInjection;
-using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 

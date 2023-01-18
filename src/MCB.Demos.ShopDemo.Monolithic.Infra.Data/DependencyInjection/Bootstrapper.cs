@@ -13,7 +13,6 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 using StackExchange.Redis;
-using System.Reflection.Metadata.Ecma335;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.DependencyInjection;
 

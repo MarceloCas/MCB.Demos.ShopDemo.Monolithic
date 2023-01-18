@@ -1,5 +1,4 @@
 ﻿using MCB.Core.Infra.CrossCutting.Abstractions.Serialization;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Strategy;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models;

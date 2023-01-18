@@ -2,14 +2,10 @@
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
-using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;

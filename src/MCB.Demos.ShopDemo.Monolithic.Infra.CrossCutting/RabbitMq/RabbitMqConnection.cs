@@ -3,8 +3,6 @@ using MCB.Core.Infra.CrossCutting.RabbitMq.Connection;
 using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using RabbitMQ.Client;
-using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq;
 public class RabbitMqConnection

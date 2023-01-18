@@ -1,6 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-
-namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics;
+﻿namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics;
 
 public class Constants
 {

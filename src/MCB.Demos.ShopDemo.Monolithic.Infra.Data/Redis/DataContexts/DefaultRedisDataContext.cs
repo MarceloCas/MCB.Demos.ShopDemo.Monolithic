@@ -2,9 +2,7 @@
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts.Models;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
-using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
-using System.Threading;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Redis.DataContexts;
 

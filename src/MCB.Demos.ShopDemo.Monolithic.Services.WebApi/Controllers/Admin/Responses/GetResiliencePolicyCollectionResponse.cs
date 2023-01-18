@@ -1,5 +1,4 @@
-﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
+﻿using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Responses;
 
