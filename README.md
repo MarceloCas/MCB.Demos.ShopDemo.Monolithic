@@ -131,7 +131,7 @@ Design patterns are essential for good maintainable code. This project uses some
 ## :chains: Dependencies
 
 If you don't have a docker installed and running, you will need to have the following systems installed and running to execute this project:
-- Postgres
+- PostgreSQL
 - Redis
 - Prometheus
 - RabbitMQ
@@ -153,7 +153,7 @@ This compose file will create:
 - [Mongo Express](http://localhost:8081/) installation to acess MongoDB using a internet browser
 - Redis single instance
 - [Redis Insight](http://localhost:8001/) installation to access Redis using a internet browser
-- [Portainer](http://localhost:9000/) to view and manage all compose encironment using a internet browser GUI
+- [Portainer](http://localhost:9000/) to view and manage all compose environment using a internet browser GUI
 
 :information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
 
