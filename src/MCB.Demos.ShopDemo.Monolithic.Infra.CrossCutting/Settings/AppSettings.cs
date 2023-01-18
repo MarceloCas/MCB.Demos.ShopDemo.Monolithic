@@ -1,4 +1,5 @@
-﻿using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.PostgreSqlConfig;
+﻿using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.PostgreSqlConfig;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings.Models.RedisConfig;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
@@ -10,6 +11,7 @@ public class AppSettings
     public Redis Redis { get; set; }
     public PostgreSql PostgreSql { get; set; }
     public Models.RabbitMqConfig.RabbitMq RabbitMq { get; set; }
+    public OpenTelemetry OpenTelemetry { get; set; }
 
     public AppSettings()
     {
@@ -18,5 +20,6 @@ public class AppSettings
         Redis = new Redis();
         PostgreSql = new PostgreSql();
         RabbitMq = new Models.RabbitMqConfig.RabbitMq();
+        OpenTelemetry = new OpenTelemetry();
     }
 }

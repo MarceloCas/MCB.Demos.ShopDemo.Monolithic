@@ -27,6 +27,7 @@ using OpenTelemetry.Trace;
 using System.Text.Json.Serialization;
 using OpenTelemetry;
 using Npgsql;
+using OpenTelemetry.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +46,6 @@ var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
     .WithTracing(builder => builder
         .AddHttpClientInstrumentation(options => { })
         .AddAspNetCoreInstrumentation(options => { })
-        .AddOtlpExporter(options => { options.Protocol = OtlpExportProtocol.Grpc; })
         .AddSource(appSettings.ApplicationName)
         .SetResourceBuilder(
             ResourceBuilder
@@ -55,9 +55,14 @@ var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
         .AddEntityFrameworkCoreInstrumentation(options => { })
         .AddRedisInstrumentation()
         .AddNpgsql(options => { })
+        .AddOtlpExporter(options => options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl))
     )
     .WithMetrics(builder => builder
         .AddMeter(appSettings.ApplicationName)
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddOtlpExporter(options => options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl))
     )
     .StartWithHost();
 
