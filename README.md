@@ -39,14 +39,16 @@ This project has some applied concepts like Domain-Driven Design, Event-Driven, 
 * [Technologies](#technologies)
 * [Architecture](#architecture)
 * [Design Patterns](#design-patterns)
+* [Dependencies](#dependencies)
+* [Setup](#setup)
 * [Authors](#authors)
 
 ## :warning: Prerequisite
 To setup and run this project you will need:
 - .NET 7 SDK installed
 - Basic .NET and C# skills
-- Docker installed and running
-- Docker compose knowledge
+- Docker installed and running if you dont have all dependencies installed
+- Docker compose knowledge if you dont have all dependencies installed
 
 ## :star: Key features
 This project has amazing features, but the key features that we don't find in most projects are:
@@ -119,6 +121,34 @@ Design patterns are essential for good maintainable code. This project uses some
 - Circuit Breaker pattern
 - Unit of Work pattern
 - Observer pattern
+
+## :chains: Dependencies
+
+If you don't have a docker installed and running, you will need to have the following systems installed and running to execute this project:
+- Postgres
+- Redis
+- Prometheus
+- RabbitMQ
+- Jaeger
+- Grafana
+
+
+## :gear: Setup
+
+If you dont have the dependencies do run this project, you can setup then using docker. This project have this [docker-compose.yml](docker-compose.yml) file to setup all dependencies.
+
+This compose file will create:
+- Docker network called mcb-demos-shopdemo-monolithic using brigde drive
+- Jaeger service
+- RabbitMQ service with management interface
+- PostgreSQL database instance
+- PgAdmin installation to access PostgreSQL dabase using a internet browser
+- MongoDB database single instance
+- Mongo Express installation to acess MongoDB using a internet browser
+- Redis single instance
+- Redis Insight installation to access Redis using a internet browser
+- Portainer to view and manage all compose encironment using a internet browser GUI
+
 
 
 
