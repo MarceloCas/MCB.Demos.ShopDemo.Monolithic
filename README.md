@@ -155,9 +155,9 @@ This compose file will create:
 
 To up the compose file directly to the host that has docker running, go in a terminal to the root directory of that repository that contains the docker-compose.yml file and run the command:
 
-```
-> cd /mcb/github/marcelocas/demos.shopdemo.monolithic/
-> docker compose up -d
+```bash
+cd /mcb/github/marcelocas/demos.shopdemo.monolithic/
+docker compose up -d
 ```
 
 
@@ -171,12 +171,10 @@ To up the compose file in a docker installation inside a Windows OS using WSL2 y
 
 :warning: This script area created to run in a Ubuntu image
 
+```powershell
+cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
+.\setup-wsl.ps1
 ```
-> cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
-> .\setup-wsl.ps1
-```
-
-This script will shutdown your WSL2, start default WSL2 Distro, start a docker service and up the [docker-compose.yml](docker-compose.yml).
 
 
 ## :people_holding_hands: Authors
