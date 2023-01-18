@@ -149,7 +149,34 @@ This compose file will create:
 - Redis Insight installation to access Redis using a internet browser
 - Portainer to view and manage all compose encironment using a internet browser GUI
 
+:information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
 
+### Up docker compose file directly to the host
+
+To up the compose file directly to the host that has docker running, go in a terminal to the root directory of that repository that contains the docker-compose.yml file and run the command:
+
+```
+> cd /mcb/github/marcelocas/demos.shopdemo.monolithic/
+> docker compose up -d
+```
+
+
+### Up docker compose file using WSL2
+
+To up the compose file in a docker installation inside a Windows OS using WSL2 you can use a [setup-wsl.ps1](setup-wsl.ps1) powershell script file using the Powershell terminal.
+
+:warning: This script will shutdown your WSL2
+
+:warning: This script will up docker compose file in default WSL2 distro
+
+:warning: This script area created to run in a Ubuntu image
+
+```
+> cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
+> .\setup-wsl.ps1
+```
+
+This script will shutdown your WSL2, start default WSL2 Distro, start a docker service and up the [docker-compose.yml](docker-compose.yml).
 
 
 ## :people_holding_hands: Authors
