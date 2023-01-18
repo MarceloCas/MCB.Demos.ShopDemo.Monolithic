@@ -139,15 +139,15 @@ If you dont have the dependencies do run this project, you can setup then using 
 
 This compose file will create:
 - Docker network called mcb-demos-shopdemo-monolithic using brigde drive
-- Jaeger service
-- RabbitMQ service with management interface
+- [Jaeger service](http://localhost:16686/search)
+- [RabbitMQ](http://localhost:15672/) service with management interface
 - PostgreSQL database instance
-- PgAdmin installation to access PostgreSQL dabase using a internet browser
+- [PgAdmin](http://localhost:8080/browser/) installation to access PostgreSQL dabase using a internet browser
 - MongoDB database single instance
-- Mongo Express installation to acess MongoDB using a internet browser
+- [Mongo Express](http://localhost:8081/) installation to acess MongoDB using a internet browser
 - Redis single instance
-- Redis Insight installation to access Redis using a internet browser
-- Portainer to view and manage all compose encironment using a internet browser GUI
+- [Redis Insight](http://localhost:8001/) installation to access Redis using a internet browser
+- [Portainer](http://localhost:9000/) to view and manage all compose encironment using a internet browser GUI
 
 :information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
 
