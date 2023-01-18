@@ -17,6 +17,7 @@ This project has some applied concepts like Domain-Driven Design, Event-Driven, 
 
 ## :white_check_mark: Labels
 
+[![ci](https://github.com/MarceloCas/MCB.Demos.ShopDemo.Monolithic/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MarceloCas/MCB.Demos.ShopDemo.Monolithic/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Demos.ShopDemo.Monolithic&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Demos.ShopDemo.Monolithic)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Demos.ShopDemo.Monolithic&metric=coverage)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Demos.ShopDemo.Monolithic)
 
