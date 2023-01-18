@@ -42,6 +42,7 @@ This project has some applied concepts like Domain-Driven Design, Event-Driven, 
 * [Design Patterns](#design-patterns)
 * [Dependencies](#dependencies)
 * [Setup](#setup)
+* [Run](#run)
 * [Authors](#authors)
 
 ## :warning: Prerequisite
