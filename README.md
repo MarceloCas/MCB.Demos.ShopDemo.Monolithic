@@ -251,6 +251,9 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
       "AutoDelete": false,
       "Arguments": []
     }
+  },
+  "OpenTelemetry": {
+    "GrpcCollectorReceiverUrl": "http://localhost:4317"
   }
 }
 ```
