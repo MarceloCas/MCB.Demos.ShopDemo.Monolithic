@@ -203,6 +203,15 @@ cd .\src\MCB.Demos.ShopDemo.Monolithic.Infra.Data\
 dotnet ef database update -- "Host=localhost;Port=5432;Username=admin;Password=123456;Database=mcb_demos_shopdemo_monolithic"
 ```
 
+the output is simillar to:
+```text
+Build started...
+Build succeeded.
+Applying migration '20230111034438_InitialCreation'.
+Done.
+```
+
+
 ### Define settings on AppSettings.json
 
 The [AppSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.json) file is under in MCB.Demos.ShopDemo.Monolithic.Services.WebApi project.
@@ -248,6 +257,8 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
 
 ## :rocket: Run
 
+:warning: All setup instructions must have been followed, especially the application of migrations and definition of configurations in the AppSettings.json file :warning:
+
 :warning: You have all prerequisites and dependencies installed and running :warning:
 
 In a terminal, from root repository path, run:
@@ -267,12 +278,87 @@ dotnet run
 
 the output is simillar to:
 ```text
-Build started...
-Build succeeded.
-Applying migration '20230111034438_InitialCreation'.
-Done.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: YOUR_ROOT_DIRECTORY_PATH\src\MCB.Demos.ShopDemo.Monolithic.Services.WebApi
 ```
 
+:warning: To change default application port for every execution you edit the [launchSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/Properties/launchSettings.json) file, but you will need change in integration tests too. :warning:
+
+### Check if application is running correctly
+
+We will use the Health Checks URL (https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to validate that the application is running correctly.
+
+#### Validate Startup
+
+Execute a HTTP GET operation in a `http://localhost:5000/health/startup` url. You can navigate to this URL in your internet browser.
+The `StatusDescription` property value must be `Healthy`. The result is simmilar to:
+```json
+{
+   "Date":"2023-01-18T01:51:42.4126434Z",
+   "Status":1,
+   "StatusDescription":"Healthy",
+   "ServiceReportItemCollection":[]
+}
+```
+
+#### Validate Readiness
+
+Execute a HTTP GET operation in a `http://localhost:5000/health/readiness` url. You can navigate to this URL in your internet browser.
+The `StatusDescription` property value must be `Healthy`. The result is simmilar to:
+```json
+{
+   "Date":"2023-01-18T01:56:13.7142427Z",
+   "Status":1,
+   "StatusDescription":"Healthy",
+   "ServiceReportItemCollection":[
+      
+   ]
+}
+```
+
+#### Validate Liveness
+
+Execute a HTTP GET operation in a `http://localhost:5000/health/liveness` url. You can navigate to this URL in your internet browser.
+The `StatusDescription` property value must be `Healthy` for PostgreSQL, Redis and RabbitMq services. The result is simmilar to:
+```json
+{
+   "Date":"2023-01-18T01:57:01.1350467Z",
+   "Status":1,
+   "StatusDescription":"Healthy",
+   "ServiceReportItemCollection":[
+      {
+         "EntryName":"/health/liveness",
+         "Status":1,
+         "StatusDescription":"Healthy",
+         "ServiceCollection":[
+            {
+               "Name":"PostgreSQL",
+               "Status":1,
+               "StatusDescription":"Healthy"
+            },
+            {
+               "Name":"Redis",
+               "Status":1,
+               "StatusDescription":"Healthy"
+            },
+            {
+               "Name":"RabbitMq",
+               "Status":1,
+               "StatusDescription":"Healthy"
+            }
+         ]
+      }
+   ]
+}
+```
+
+After confirming that the application has started correctly, we can access the [swagger](http://localhost:5000/swagger/index.html) to use the available operations.
 
 ## :people_holding_hands: Authors
 
