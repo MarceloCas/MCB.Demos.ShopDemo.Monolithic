@@ -71,7 +71,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
-        .\.sonar\scanner\dotnet-sonarscanner begin /k:"MarceloCas_MCB.Demos.ShopDemo.Monolithic" /o:"marcelocas" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="tst/**" /d:sonar.exclusions="tst/**"
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"MarceloCas_MCB.Demos.ShopDemo.Monolithic" /o:"marcelocas" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="tst/**,**/Migrations/**" /d:sonar.exclusions="tst/**,**/Migrations/**"
         dotnet build --no-restore
         dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover ./tst/Demos.ShopDemo.Monolithic.Tests.UnitTests/Demos.ShopDemo.Monolithic.Tests.UnitTests.csproj
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
