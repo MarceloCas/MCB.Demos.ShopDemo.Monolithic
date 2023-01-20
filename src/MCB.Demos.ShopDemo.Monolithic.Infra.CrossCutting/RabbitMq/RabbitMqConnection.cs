@@ -166,10 +166,6 @@ public class RabbitMqConnection
     }
     public override void PublishExchange(RabbitMqExchangeConfig exchangeConfig, string routingKey, IBasicProperties properties, ReadOnlyMemory<byte> message)
     {
-        var messageType = string.Empty;
-        if (properties.Headers.TryGetValue(MESSAGE_TYPE_PROPERTY_NAME, out object? messageTypeObject))
-            messageType = messageTypeObject.ToString()!;
-
         var correlationId = Guid.Empty;
         if (properties.Headers.TryGetValue(CORRELATION_ID_PROPERTY_NAME, out object? correlationIdObject))
             correlationId = Guid.Parse(correlationIdObject.ToString()!);

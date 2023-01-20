@@ -1,6 +1,6 @@
 ﻿namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics;
 
-public class Constants
+public static class Constants
 {
     public const string REQUESTS_COUNTER_NAME = "Requests";
     public const string REQUESTS_HISTOGRAM_NAME = "Requests";

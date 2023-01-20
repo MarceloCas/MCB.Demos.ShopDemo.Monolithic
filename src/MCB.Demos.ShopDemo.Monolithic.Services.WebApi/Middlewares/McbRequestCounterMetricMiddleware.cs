@@ -23,23 +23,15 @@ public static class McbRequestCounterMetricMiddleware
     {
         app.Use(async (context, next) =>
         {
-            try
-            {
-                _metricsManager.IncrementCounter(
-                    name: _requestCounterName, 
-                    delta: 1,
-                    tags: new[] { 
-                        KeyValuePair.Create<string, object?>("path", context.Request.Path)
-                    }
-                );
+            _metricsManager.IncrementCounter(
+                name: _requestCounterName,
+                delta: 1,
+                tags: new[] {
+                    KeyValuePair.Create<string, object?>("path", context.Request.Path)
+                }
+            );
 
-                await next.Invoke();
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
+            await next.Invoke();
         });
     }
 }
