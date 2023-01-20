@@ -14,7 +14,8 @@ exporters:
 
   # log to the console
   logging:
-
+    loglevel: debug
+    
   # Export to jaeger
   jaeger:
     endpoint: jaeger:14250

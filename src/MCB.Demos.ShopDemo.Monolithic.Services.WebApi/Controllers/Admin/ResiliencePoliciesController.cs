@@ -21,10 +21,11 @@ public class ResiliencePoliciesController
 
     // Constructors
     public ResiliencePoliciesController(
+        ILogger<ResiliencePoliciesController> logger,
         INotificationSubscriber notificationSubscriber, 
         ITraceManager traceManager, 
         IAdapter adapter
-    ) : base(notificationSubscriber, traceManager, adapter)
+    ) : base(logger, notificationSubscriber, traceManager, adapter)
     {
 
     }

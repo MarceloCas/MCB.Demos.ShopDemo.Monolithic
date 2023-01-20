@@ -26,6 +26,9 @@ using System.Text.Json.Serialization;
 using OpenTelemetry;
 using Npgsql;
 using OpenTelemetry.Metrics;
+using System.Reflection.PortableExecutable;
+using OpenTelemetry.Logs;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +42,7 @@ builder.Services.AddSingleton(appSettings);
 #endregion
 
 #region Configure Service
-var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
+builder.Services.AddOpenTelemetry()
     .ConfigureResource(builder => { })
     .WithTracing(builder => builder
         .AddHttpClientInstrumentation(options => { })
@@ -61,8 +64,29 @@ var openTelemetryBuilder = builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddRuntimeInstrumentation()
         .AddOtlpExporter(options => options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl))
-    )
-    .StartWithHost();
+)
+.StartWithHost();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService(
+            serviceName: appSettings.ApplicationName,
+            serviceVersion: appSettings.ApplicationVersion,
+            serviceInstanceId: Environment.MachineName
+        )
+    );
+
+    options
+        .AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+        })
+        .AddConsoleExporter()
+        .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
+});
+builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
 
 builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(

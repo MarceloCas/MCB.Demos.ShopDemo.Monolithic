@@ -17,16 +17,19 @@ public class CustomControllerBase
     private readonly INotificationSubscriber _notificationSubscriber;
 
     // Properties
+    protected ILogger Logger { get; }
     protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
 
     // Constructors
     protected CustomControllerBase(
+        ILogger logger,
         INotificationSubscriber notificationSubscriber,
         ITraceManager traceManager,
         IAdapter adapter
     )
     {
+        Logger = logger;
         _notificationSubscriber = notificationSubscriber;
         TraceManager = traceManager;
         Adapter = adapter;

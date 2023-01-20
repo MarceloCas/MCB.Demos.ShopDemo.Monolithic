@@ -29,13 +29,14 @@ public class CustomersController
 
     // Constructors
     public CustomersController(
+        ILogger<CustomersController> logger,
         INotificationSubscriber notificationSubscriber,
         ITraceManager traceManager,
         IAdapter adapter,
         IImportCustomerUseCase importCustomerUseCase,
         IImportCustomerBatchUseCase importCustomerBatchUseCase,
         IGetCustomerByEmailQuery getCustomerByEmailQuery
-    ) : base(notificationSubscriber, traceManager, adapter)
+    ) : base(logger, notificationSubscriber, traceManager, adapter)
     {
         _importCustomerUseCase = importCustomerUseCase;
         _importCustomerBatchUseCase = importCustomerBatchUseCase;
@@ -103,6 +104,8 @@ public class CustomersController
         CancellationToken cancellationToken
     )
     {
+        Logger.LogInformation(new string('=', 100));
+
         return TraceManager.StartActivityAsync(
             name: Request.Path.Value ?? nameof(ImportCustomerAsync),
             kind: System.Diagnostics.ActivityKind.Server,
