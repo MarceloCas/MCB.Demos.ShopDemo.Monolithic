@@ -25,6 +25,7 @@ public class DefaultFixture
 
     // Public Static Methods
     public ImportCustomerPayload GenerateNewImportCustomerPayload(
+        Guid? correlationId = null,
         Guid? tenantId = null,
         string? executionUser = null,
         string? sourcePlatform = null,
@@ -36,13 +37,14 @@ public class DefaultFixture
     {
         return new ImportCustomerPayload
         {
+            CorrelationId = tenantId ?? Guid.NewGuid(),
             TenantId = tenantId ?? TenantId,
             ExecutionUser = executionUser ?? ExecutionUser,
             SourcePlatform = sourcePlatform ?? SourcePlatform,
             FirstName = firstName ?? Guid.NewGuid().ToString(),
             LastName = lastName ?? Guid.NewGuid().ToString(),
             BirthDate = birthDate ?? DateTime.UtcNow.AddYears(-21),
-            Email = email ?? $"{Guid.NewGuid()}@mcb.com"
+            Email = email ?? $"{Guid.NewGuid()}@mcb.com",
         };
     }
 }

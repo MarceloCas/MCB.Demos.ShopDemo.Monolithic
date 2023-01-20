@@ -44,11 +44,9 @@ services:
     depends_on:
       - jaeger
       - prometheus
-      - elasticsearch
     links:
       - jaeger
       - prometheus
-      - elasticsearch
     networks:
       - mcb-demos-shopdemo-monolithic
 
