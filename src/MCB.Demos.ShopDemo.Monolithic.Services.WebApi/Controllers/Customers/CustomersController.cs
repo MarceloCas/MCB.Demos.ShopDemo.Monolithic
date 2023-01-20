@@ -104,8 +104,6 @@ public class CustomersController
         CancellationToken cancellationToken
     )
     {
-        Logger.LogInformation(new string('=', 100));
-
         return TraceManager.StartActivityAsync(
             name: Request.Path.Value ?? nameof(ImportCustomerAsync),
             kind: System.Diagnostics.ActivityKind.Server,
