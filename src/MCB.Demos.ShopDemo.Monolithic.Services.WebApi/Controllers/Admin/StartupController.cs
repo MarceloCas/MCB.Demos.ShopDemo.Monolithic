@@ -31,6 +31,7 @@ public class StartupController
     // Public Methods
     [HttpPost("try-startup-application")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
     public async Task<IActionResult> TryStartupApplicationAsync(CancellationToken cancellationToken)
     {
         var tryStartupApplicationResult = await _startupService.TryStartupApplicationAsync(cancellationToken);
