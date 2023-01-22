@@ -23,7 +23,6 @@ using OpenTelemetry.Logs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 

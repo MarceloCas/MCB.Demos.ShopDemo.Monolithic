@@ -6,7 +6,6 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;
