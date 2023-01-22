@@ -13,7 +13,7 @@ public class AppSettings
     public PostgreSql PostgreSql { get; set; }
     public Models.RabbitMqConfig.RabbitMq RabbitMq { get; set; }
     public OpenTelemetry OpenTelemetry { get; set; }
-    public Models.LoggingConfig.Logging Logging { get; set; }
+    public Logging Logging { get; set; }
 
     public AppSettings()
     {

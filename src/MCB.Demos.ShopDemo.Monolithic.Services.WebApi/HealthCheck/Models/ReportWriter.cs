@@ -23,6 +23,7 @@ public static class ReportWriter
 
         foreach (var entry in healthReport.Entries)
         {
+            
             if (entry.Value.Data.Count == 0)
                 continue;
 
@@ -35,8 +36,8 @@ public static class ReportWriter
                     serviceCollection.Add(new Service(dataKey, 0));
             }
             serviceReportItemCollection.Add(
-            new ServiceReportItem(
-            entryName: entry.Key,
+                new ServiceReportItem(
+                    entryName: entry.Key,
                     serviceCollection: serviceCollection
                 )
             );

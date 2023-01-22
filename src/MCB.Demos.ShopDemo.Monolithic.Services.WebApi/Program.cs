@@ -1,18 +1,11 @@
 using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
-using MCB.Core.Infra.CrossCutting.RabbitMq.Connection.Interfaces;
-using MCB.Core.Infra.CrossCutting.RabbitMq.Models;
-using MCB.Core.Infra.CrossCutting.RabbitMq.Models.Enums;
-using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Adapters;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.HealthCheck.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
@@ -26,9 +19,11 @@ using System.Text.Json.Serialization;
 using OpenTelemetry;
 using Npgsql;
 using OpenTelemetry.Metrics;
-using System.Reflection.PortableExecutable;
 using OpenTelemetry.Logs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +37,22 @@ builder.Services.AddSingleton(appSettings);
 #endregion
 
 #region Configure Service
+
+// McbDependencyInjection 
+builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
+{
+    dependencyInjectionContainer.RegisterSingleton<IStartupService, StartupService>();
+
+    MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
+        applicationName: appSettings.ApplicationName,
+        applicationVersion: appSettings.ApplicationVersion,
+        dependencyInjectionContainer,
+        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
+        appSettings!
+    );
+});
+
+// OpenTelemetry Tracing and Metrics
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(builder => { })
     .WithTracing(builder => builder
@@ -67,6 +78,7 @@ builder.Services.AddOpenTelemetry()
 )
 .StartWithHost();
 
+// OpenTelemetry Logging
 builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(options =>
 {
@@ -88,16 +100,7 @@ builder.Logging.AddOpenTelemetry(options =>
 });
 builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
 
-builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
-    MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
-        applicationName: appSettings.ApplicationName,
-        applicationVersion: appSettings.ApplicationVersion,
-        dependencyInjectionContainer,
-        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
-        appSettings!
-    )
-);
-
+// Entity Framework
 builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
     options => options.UseNpgsql(
         appSettings!.PostgreSql.ConnectionString
@@ -105,20 +108,21 @@ builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
 );
 builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection =>
 {
-    var config = serviceCollection.GetService<IConfiguration>()!;
+    var appSettings = serviceCollection.GetService<AppSettings>()!;
 
     return new DefaultEntityFrameworkDataContext(
         serviceCollection.GetService<ITraceManager>()!,
-        config["PostgreSql:ConnectionString"]!,
+        appSettings.PostgreSql.ConnectionString,
         serviceCollection.GetService<IPostgreSqlResiliencePolicy>()!
     );
 });
 
+// ASP.NET
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 builder.Services.AddApiVersioning(options =>
@@ -148,14 +152,18 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+// HealthCheck
 builder.Services.AddHealthChecks()
     .AddCheck<StartupCheck>("/health/startup", tags: new[] { "startup" })
     .AddCheck<ReadinessCheck>("/health/readiness", tags: new[] { "readiness" })
     .AddCheck<LivenessCheck>("/health/liveness", tags: new[] { "liveness" });
 #endregion
 
-#region Configure Pipeline
 var app = builder.Build();
+var logger = app.Services.GetService<ILogger<Program>>()!;
+
+#region Configure Pipeline
 
 app.UseMcbDependencyInjection();
 app.UseMcbGlobalExceptionMiddleware();
@@ -169,6 +177,8 @@ app.UseSwaggerUI(options =>
 
 app.UseAuthorization();
 app.MapControllers();
+
+// HealthCheck
 app.MapHealthChecks(
     "/health/startup",
     options: new HealthCheckOptions
@@ -199,102 +209,18 @@ app.MapHealthChecks(
 #endregion
 
 #region Startup
-// Startup RabbitMQ
 var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionContainer>()!;
+var startupService = dependencyInjectionContainer.Resolve<IStartupService>()!;
+var tryStartupApplicationResult = await startupService.TryStartupApplicationAsync(cancellationToken: default);
 
-var rabbitMqConnection = dependencyInjectionContainer.Resolve<IRabbitMqConnection>()!;
-rabbitMqConnection.OpenConnection();
-rabbitMqConnection.ExchangeDeclare(
-    new RabbitMqExchangeConfig(
-        ExchangeName: appSettings.RabbitMq.EventsExchange.Name,
-        ExchangeType: RabbitMqExchangeType.Header,
-        Durable: appSettings.RabbitMq.EventsExchange.Durable,
-        AutoDelete: appSettings.RabbitMq.EventsExchange.AutoDelete,
-        Arguments: null
-    )
-);
-
-// Configure resilience policies
-var postgreSqlResiliencePolicy = dependencyInjectionContainer.Resolve<IPostgreSqlResiliencePolicy>()!;
-postgreSqlResiliencePolicy.Configure(() => new ResiliencePolicyConfig
+if(!tryStartupApplicationResult.Success)
 {
-    // Identification
-    Name = appSettings.PostgreSql.ResiliencePolicy.Name,
-    // Retry
-    RetryMaxAttemptCount = appSettings.PostgreSql.ResiliencePolicy.RetryMaxAttemptCount,
-    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.PostgreSql.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
-    OnRetryAditionalHandler = null,
-    // Circuit Breaker
-    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.PostgreSql.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
-    OnCircuitBreakerHalfOpenAditionalHandler = null,
-    OnCircuitBreakerOpenAditionalHandler = null,
-    OnCircuitBreakerCloseAditionalHandler = null,
-    // Exceptions
-    ExceptionHandleConfigArray = new[] {
-        new Func<Exception, bool>(ex => ex.GetType() == typeof(Npgsql.NpgsqlException)),
-        new Func<Exception, bool>(ex => ex.GetType() == typeof(Npgsql.PostgresException)),
-    }
-});
+    logger.LogError("Fail on startup");
 
-var redisResiliencePolicy = dependencyInjectionContainer.Resolve<IRedisResiliencePolicy>()!;
-redisResiliencePolicy.Configure(() => new ResiliencePolicyConfig
-{
-    // Identification
-    Name = appSettings.Redis.ResiliencePolicy.Name,
-    // Retry
-    RetryMaxAttemptCount = appSettings.Redis.ResiliencePolicy.RetryMaxAttemptCount,
-    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.Redis.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
-    OnRetryAditionalHandler = null,
-    // Circuit Breaker
-    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.Redis.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
-    OnCircuitBreakerHalfOpenAditionalHandler = null,
-    OnCircuitBreakerOpenAditionalHandler = null,
-    OnCircuitBreakerCloseAditionalHandler = null,
-    // Exceptions
-    ExceptionHandleConfigArray = new[] {
-        new Func<Exception, bool>(ex => ex.GetType() == typeof(StackExchange.Redis.RedisException)),
-    }
-});
-
-var rabbitMqResiliencePolicy = dependencyInjectionContainer.Resolve<IRabbitMqResiliencePolicy>()!;
-rabbitMqResiliencePolicy.Configure(() => new ResiliencePolicyConfig
-{
-    // Identification
-    Name = appSettings.RabbitMq.ResiliencePolicy.Name,
-    // Retry
-    RetryMaxAttemptCount = appSettings.RabbitMq.ResiliencePolicy.RetryMaxAttemptCount,
-    RetryAttemptWaitingTimeFunction = (attempt) => TimeSpan.FromMilliseconds(appSettings.RabbitMq.ResiliencePolicy.RetryAttemptWaitingTimeMilliseconds * attempt),
-    OnRetryAditionalHandler = null,
-    // Circuit Breaker
-    CircuitBreakerWaitingTimeFunction = () => TimeSpan.FromSeconds(appSettings.RabbitMq.ResiliencePolicy.CircuitBreakerWaitingTimeSeconds),
-    OnCircuitBreakerHalfOpenAditionalHandler = null,
-    OnCircuitBreakerOpenAditionalHandler = null,
-    OnCircuitBreakerCloseAditionalHandler = null,
-    // Exceptions
-    ExceptionHandleConfigArray = new[] {
-        new Func<Exception, bool>(ex => ex.GetType() == typeof(RabbitMQ.Client.Exceptions.ConnectFailureException)),
-    }
-});
-
-ResiliencePoliciesController.SetResiliencePolicyCollection(
-    dependencyInjectionContainer.GetRegistrationCollection()
-    .Where(q => typeof(IResiliencePolicy).IsAssignableFrom(q.ServiceType))
-    .Select(q => (IResiliencePolicy)dependencyInjectionContainer.Resolve(q.ServiceType!)!)!
-);
-
-// Configure Metrics
-var metricsManager = dependencyInjectionContainer.Resolve<IMetricsManager>()!;
-
-metricsManager.CreateCounter<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_COUNTER_NAME);
-metricsManager.CreateCounter<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
-
-metricsManager.CreateHistogram<int>(name: MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_HISTOGRAM_NAME);
-
-McbGlobalExceptionMiddleware.SetMetricsManager(metricsManager, MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
-McbRequestCounterMetricMiddleware.SetMetricsManager(metricsManager, MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Metrics.Constants.REQUESTS_COUNTER_NAME);
-
-StartupCheck.CompleteStartup();
-
+    if(tryStartupApplicationResult.Messages != null)
+        foreach (var message in tryStartupApplicationResult.Messages)
+            logger.LogError(message!);
+}
 #endregion
 
 app.Run();

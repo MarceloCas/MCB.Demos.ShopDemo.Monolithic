@@ -6,6 +6,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;
@@ -71,6 +72,7 @@ public class ResiliencePoliciesController
 
         return Ok();
     }
+
     [HttpPost("close-circuit-breaker")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
