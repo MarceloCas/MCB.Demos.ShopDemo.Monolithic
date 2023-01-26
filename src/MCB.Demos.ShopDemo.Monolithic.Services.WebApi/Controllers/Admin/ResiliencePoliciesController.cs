@@ -2,6 +2,7 @@
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Resilience;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Payloads;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin.Responses;
@@ -24,8 +25,9 @@ public class ResiliencePoliciesController
         ILogger<ResiliencePoliciesController> logger,
         INotificationSubscriber notificationSubscriber, 
         ITraceManager traceManager, 
-        IAdapter adapter
-    ) : base(logger, notificationSubscriber, traceManager, adapter)
+        IAdapter adapter,
+        IMcbFeatureFlagManager featureFlagManager
+    ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
 
     }

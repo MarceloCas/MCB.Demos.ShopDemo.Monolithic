@@ -14,6 +14,7 @@ public class AppSettings
     public Models.RabbitMqConfig.RabbitMq RabbitMq { get; set; }
     public OpenTelemetry OpenTelemetry { get; set; }
     public Logging Logging { get; set; }
+    public Consul Consul { get; set; }
 
     public AppSettings()
     {
@@ -24,5 +25,6 @@ public class AppSettings
         RabbitMq = new Models.RabbitMqConfig.RabbitMq();
         OpenTelemetry = new OpenTelemetry();
         Logging = new Logging();
+        Consul = new Consul();
     }
 }

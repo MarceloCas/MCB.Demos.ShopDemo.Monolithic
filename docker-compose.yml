@@ -165,6 +165,17 @@ services:
     networks:
       - mcb-demos-shopdemo-monolithic
 
+  consul:
+    image: consul
+    container_name: consul
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - '8500:8500'
+    volumes: 
+      - /mcb/docker/volumes/consul/data:/consul/data
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer

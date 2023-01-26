@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Application\MCB.Demos.ShopDemo.Monolithic.Application.csproj" />
+		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.csproj" />
 		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
 		<ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection\MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.csproj" />
 	</ItemGroup>

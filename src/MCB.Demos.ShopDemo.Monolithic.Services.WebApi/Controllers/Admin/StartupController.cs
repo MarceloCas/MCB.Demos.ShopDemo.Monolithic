@@ -1,6 +1,7 @@
 ﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +23,9 @@ public class StartupController
         INotificationSubscriber notificationSubscriber,
         ITraceManager traceManager,
         IAdapter adapter,
-        IStartupService startupService
-    ) : base(logger, notificationSubscriber, traceManager, adapter)
+        IStartupService startupService,
+        IMcbFeatureFlagManager featureFlagManager
+    ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
         _startupService = startupService;
     }

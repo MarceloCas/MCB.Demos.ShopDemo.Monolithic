@@ -7,6 +7,8 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Models;
@@ -22,6 +24,8 @@ namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers;
 public class CustomersController
     : CustomControllerBase
 {
+    
+
     // Field
     private readonly IImportCustomerUseCase _importCustomerUseCase;
     private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
@@ -33,10 +37,11 @@ public class CustomersController
         INotificationSubscriber notificationSubscriber,
         ITraceManager traceManager,
         IAdapter adapter,
+        IMcbFeatureFlagManager featureFlagManager,
         IImportCustomerUseCase importCustomerUseCase,
         IImportCustomerBatchUseCase importCustomerBatchUseCase,
         IGetCustomerByEmailQuery getCustomerByEmailQuery
-    ) : base(logger, notificationSubscriber, traceManager, adapter)
+    ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
         _importCustomerUseCase = importCustomerUseCase;
         _importCustomerBatchUseCase = importCustomerBatchUseCase;
@@ -71,8 +76,12 @@ public class CustomersController
                 GetCustomerByEmailQuery: _getCustomerByEmailQuery,
                 Adapter
             ),
-            handler: (input, activity, cancellationToken) => 
-                RunQueryAsync(
+            handler: async (input, activity, cancellationToken) => 
+            {
+                if (!await CheckFeatureFlagAsync(input.TenantId, executionUser: null, FeatureFlags.GET_CUSTOMER_FEATURE_FLAG_KEY, cancellationToken))
+                    return CreateNotAllowedResult(FeatureFlags.GET_CUSTOMER_FEATURE_FLAG_KEY)!;
+
+                return await RunQueryAsync(
                     input,
                     handler: async (input, cancellationToken) =>
                     {
@@ -90,8 +99,8 @@ public class CustomersController
                     },
                     responseBaseFactory: () => new GetCustomerReponse(),
                     cancellationToken
-                )!
-            ,
+                )!;
+            },
             cancellationToken
         )!;
     }
@@ -112,9 +121,12 @@ public class CustomersController
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
             input: (Payload: payload, ImportCustomerUseCase: _importCustomerUseCase, Adapter),
-            handler: (input, activity, cancellationToken) =>
+            handler: async (input, activity, cancellationToken) =>
             {
-                return RunUseCaseAsync(
+                if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
+                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+
+                return await RunUseCaseAsync(
                     useCase: input!.ImportCustomerUseCase,
                     useCaseInput: input.Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(input.Payload)!,
                     responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
@@ -143,9 +155,12 @@ public class CustomersController
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
             input: (Payload: payload, ImportCustomerBatchUseCase: _importCustomerBatchUseCase, Adapter),
-            handler: (input, activity, cancellationToken) =>
+            handler: async (input, activity, cancellationToken) =>
             {
-                return RunUseCaseAsync(
+                if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
+                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+
+                return await RunUseCaseAsync(
                     useCase: input.ImportCustomerBatchUseCase!,
                     useCaseInput: input.Adapter.Adapt<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>(input.Payload)!,
                     responseBaseFactory: (useCaseInput) => new ImportCustomerBatchResponse(),

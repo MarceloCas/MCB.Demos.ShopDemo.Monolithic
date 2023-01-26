@@ -59,6 +59,7 @@ To setup and run this project you will need:
 ## :star: Key features
 This project has amazing features, but the key features that we don't find in most projects are:
 - Multitenant
+- Feature Flags
 - Devops (CI/CD with build, integration tests and docker image publish)
 - Observability with trace, metrics and dashboards
 - Dependency injection
@@ -95,6 +96,7 @@ This project uses amazing technologies and frameworks like:
 - Jaeger as trace viewer software
 - Prometheus as metrics storage
 - Grafana as dashbaord software
+- HashiCorp Consul KV
 - Github Actions as CI/CD platform
 
 ## :classical_building: Architecture
@@ -137,6 +139,7 @@ If you don't have a docker installed and running, you will need to have the foll
 - RabbitMQ
 - Jaeger
 - Grafana
+- HashiCorp
 
 
 ## :gear: Setup
@@ -153,6 +156,7 @@ This compose file will create:
 - [Mongo Express](http://localhost:8081/) installation to acess MongoDB using a internet browser
 - Redis single instance
 - [Redis Insight](http://localhost:8001/) installation to access Redis using a internet browser
+- [HashiCorp Consult KV](http://localhost:8500/) installation to access HashiCorp KV
 - [Portainer](http://localhost:9000/) to view and manage all compose environment using a internet browser GUI
 
 :information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
@@ -254,6 +258,9 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
   },
   "OpenTelemetry": {
     "GrpcCollectorReceiverUrl": "http://localhost:4317"
+  },
+  "Consul": {
+    "Address": "http://localhost:8500/v1/kv"
   }
 }
 ```

@@ -11,6 +11,7 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using Npgsql;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
 
@@ -26,6 +27,7 @@ public class StartupService
     private readonly IRabbitMqResiliencePolicy _rabbitMqResiliencePolicy;
     private readonly IMetricsManager _metricsManager;
     private readonly IRabbitMqConnection _rabbitMqConnection;
+    private readonly IMcbFeatureFlagManager _mcbFeatureFlagManager;
 
     // Properties
     public bool HasStarted { get; private set; }
@@ -37,7 +39,8 @@ public class StartupService
         IRedisResiliencePolicy redisResiliencePolicy,
         IRabbitMqResiliencePolicy rabbitMqResiliencePolicy,
         IMetricsManager metricsManager,
-        IRabbitMqConnection rabbitMqConnection
+        IRabbitMqConnection rabbitMqConnection,
+        IMcbFeatureFlagManager mcbFeatureFlagManager
     )
     {
         _appSettings = appSettings;
@@ -46,10 +49,11 @@ public class StartupService
         _rabbitMqResiliencePolicy = rabbitMqResiliencePolicy;
         _metricsManager = metricsManager;
         _rabbitMqConnection = rabbitMqConnection;
+        _mcbFeatureFlagManager = mcbFeatureFlagManager;
     }
 
     // Public Methods
-    public Task<(bool Success, string[]? Messages)> TryStartupApplicationAsync(CancellationToken cancellationToken)
+    public async Task<(bool Success, string[]? Messages)> TryStartupApplicationAsync(CancellationToken cancellationToken)
     {
         var result = default((bool Success, string[]? Messages));
 
@@ -159,10 +163,13 @@ public class StartupService
                 _isStarted = true;
             else
                 result.Messages = messageCollection.ToArray();
+
+            // Startup Feature Flags
+            await _mcbFeatureFlagManager.InitAsync(cancellationToken: default);
         }
 
         result.Success = HasStarted = _isConfigured && _isStarted;
 
-        return Task.FromResult(result);
+        return result;
     }
 }

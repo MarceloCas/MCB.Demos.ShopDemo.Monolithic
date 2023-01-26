@@ -61,6 +61,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stop-wsl.ps1 = stop-wsl.ps1
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag", "src\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.csproj", "{0F611C40-56D3-4424-894B-D454D3C80ED5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EB1C09A-20F0-4834-B14B-4B3293037042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F611C40-56D3-4424-894B-D454D3C80ED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F611C40-56D3-4424-894B-D454D3C80ED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F611C40-56D3-4424-894B-D454D3C80ED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F611C40-56D3-4424-894B-D454D3C80ED5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +142,7 @@ Global
 		{5431CB84-00B8-4CA4-9682-35EFA46A2657} = {F8988DF3-6B4C-4ECA-86F9-06D3129DE317}
 		{C5720FF4-CACE-4CE9-8F59-3315A1F7F8E1} = {B4F5D30D-D3A8-4FAD-8191-5AAAE99E89C4}
 		{4EB1C09A-20F0-4834-B14B-4B3293037042} = {C5720FF4-CACE-4CE9-8F59-3315A1F7F8E1}
+		{0F611C40-56D3-4424-894B-D454D3C80ED5} = {DBF9C18F-1F44-4F36-8E15-3C74914F9402}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0F7B3DF-7E49-4EA5-B77C-6C45D393FCE5}

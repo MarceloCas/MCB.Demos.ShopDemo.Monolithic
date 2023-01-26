@@ -4,6 +4,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Mode
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base.Input;
+using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Enums;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,9 @@ namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
 public class CustomControllerBase
     : ControllerBase
 {
+    // Constants
+    public const string METHOD_NOT_AVALIABLE_MESSAGE = "Method not avaliable. You can't have the feature flag {0}";
+
     // Fields
     private readonly INotificationSubscriber _notificationSubscriber;
 
@@ -20,19 +24,22 @@ public class CustomControllerBase
     protected ILogger Logger { get; }
     protected ITraceManager TraceManager { get; }
     protected IAdapter Adapter { get; }
+    protected IMcbFeatureFlagManager FeatureFlagManager { get; }
 
     // Constructors
     protected CustomControllerBase(
         ILogger logger,
         INotificationSubscriber notificationSubscriber,
         ITraceManager traceManager,
-        IAdapter adapter
+        IAdapter adapter,
+        IMcbFeatureFlagManager featureFlagManager
     )
     {
         Logger = logger;
         _notificationSubscriber = notificationSubscriber;
         TraceManager = traceManager;
         Adapter = adapter;
+        FeatureFlagManager = featureFlagManager;
     }
 
     // Private Methods
@@ -79,6 +86,14 @@ public class CustomControllerBase
     }
 
     // Protected Methods
+    protected Task<bool> CheckFeatureFlagAsync(Guid tenantId, string? executionUser, string featureFlagKey, CancellationToken cancellationToken)
+    {
+        return FeatureFlagManager.GetFlagAsync(tenantId, executionUser, featureFlagKey, cancellationToken);
+    }
+    protected IActionResult CreateNotAllowedResult(string featureFlagKey)
+    {
+        return StatusCode(StatusCodes.Status503ServiceUnavailable, string.Format(METHOD_NOT_AVALIABLE_MESSAGE, featureFlagKey));
+    }
     protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput>(
         IUseCase<TUseCaseInput> useCase,
         TUseCaseInput useCaseInput,
