@@ -2,4 +2,5 @@
 public class Consul
 {
     public string Address { get; set; } = null!;
+    public int RefreshIntervalInSeconds { get; set; }
 }

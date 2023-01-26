@@ -302,7 +302,8 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
     "GrpcCollectorReceiverUrl": "http://localhost:4317"
   },
   "Consul": {
-    "Address": "http://localhost:8500/v1/kv"
+    "Address": "http://localhost:8500/v1/kv",
+    "RefreshIntervalInSeconds": 0
   }
 }
 ```
