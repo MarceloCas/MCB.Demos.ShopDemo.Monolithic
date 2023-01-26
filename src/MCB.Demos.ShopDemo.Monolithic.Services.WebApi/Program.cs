@@ -218,7 +218,7 @@ if(!tryStartupApplicationResult.Success)
 
     if(tryStartupApplicationResult.Messages != null)
         foreach (var message in tryStartupApplicationResult.Messages)
-            logger.LogError(message: "Startup error message: {0}", args: message!);
+            logger.LogError(message: "Startup error message: {message}", args: message!);
 }
 #endregion
 
