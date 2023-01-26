@@ -95,6 +95,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    user: root
     container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: "mcb@mcb.com"
@@ -106,6 +107,8 @@ services:
       - postgres
     depends_on:
       - postgres
+    volumes:
+      - /mcb/docker/volumes/pgadmin/data:/var/lib/pgadmin
     networks:
       - mcb-demos-shopdemo-monolithic
 
@@ -168,7 +171,7 @@ services:
   consul:
     image: consul
     container_name: consul
-    command: agent -dev -client=0.0.0.0
+    command: agent -server -client=0.0.0.0 -data-dir=/consul/data -bootstrap -ui
     ports:
       - '8500:8500'
     volumes: 
