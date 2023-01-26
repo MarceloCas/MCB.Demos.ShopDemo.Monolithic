@@ -8,6 +8,9 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag;
 public class ConsulKvMcbFlagManager
     : IMcbFeatureFlagManager
 {
+    // Constants
+    public const string FAIL_ON_REFRESH_FEATURE_FLAGS_MESSAGE = "Fail on refresh feature flags";
+
     // Fields
     private readonly ILogger<ConsulKvMcbFlagManager> _logger;
     private readonly IKVEndpoint _kvEndpoint;
@@ -37,65 +40,75 @@ public class ConsulKvMcbFlagManager
     }
     // Private Methods
     private static string GetKey(Guid tenantId, string? executionUser, string key) => $"feature-flags/tenants/{tenantId}{(string.IsNullOrEmpty(executionUser) ? string.Empty : ($"/{executionUser}"))}/{key}";
-
-    // Public Methods
-    public Task InitAsync(CancellationToken cancellationToken)
+    private async Task<QueryResult<KVPair[]>?> GetFeatureFlagcollectionAsync(CancellationToken cancellationToken)
     {
-        _ = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    var queryResult = default(QueryResult<KVPair[]>);
+        var queryResult = default(QueryResult<KVPair[]>);
 
-                    try
-                    {
-                        queryResult = await _kvEndpoint.List(prefix: "feature-flags/", cancellationToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(exception: ex, message: null);
-                    }
+        try
+        {
+            queryResult = await _kvEndpoint.List(prefix: "feature-flags/", cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(exception: ex, message: FAIL_ON_REFRESH_FEATURE_FLAGS_MESSAGE);
+        }
 
-                    if (queryResult is null)
-                        continue;
-
-                    foreach (var kvPair in queryResult.Response)
-                    {
-                        var stringValue = Encoding.UTF8.GetString(kvPair.Value);
-                        if (stringValue is null)
-                            return false;
-
-                        _ = bool.TryParse(stringValue, out var value);
-
-                        if(!_featureFlagsDictionary.ContainsKey(kvPair.Key))
-                            _featureFlagsDictionary.Add(kvPair.Key, value);
-                        else
-                            _featureFlagsDictionary[kvPair.Key] = value;
-                    }
-
-                    await Task.Delay(TimeSpan.FromSeconds(_refreshIntervalInSeconds));
-                }
-            }, 
-            cancellationToken
-        );
-
-        return Task.CompletedTask;
+        return queryResult;
     }
-
-    public bool GetFlag(string key)
+    private static bool GetKvPairValue(KVPair? kvPair)
     {
-        if(_featureFlagsDictionary.TryGetValue(key, out bool value)) 
-            return value;
-
-        var kvPair = _kvEndpoint.Get(key, ct: default).GetAwaiter().GetResult().Response;
-        if(kvPair is null) 
+        if (kvPair is null)
             return false;
 
         var stringValue = Encoding.UTF8.GetString(kvPair.Value);
         if (stringValue is null)
             return false;
 
-        _ = bool.TryParse(stringValue, out value);
+        _ = bool.TryParse(stringValue, out var value);
+
+        return value;
+    }
+    private async Task RefreshFeatureFlags(CancellationToken cancellationToken)
+    {
+        var queryResult = await GetFeatureFlagcollectionAsync(cancellationToken);
+
+        if (queryResult is null)
+            return;
+
+        foreach (var kvPair in queryResult.Response)
+        {
+            var value = GetKvPairValue(kvPair);
+
+            if (!_featureFlagsDictionary.ContainsKey(kvPair.Key))
+                _featureFlagsDictionary.Add(kvPair.Key, value);
+            else
+                _featureFlagsDictionary[kvPair.Key] = value;
+        }
+    }
+    private void StartRefreshFeatureFlagsTask(CancellationToken cancellationToken)
+    {
+        _ = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await RefreshFeatureFlags(cancellationToken);
+                    await Task.Delay(TimeSpan.FromSeconds(_refreshIntervalInSeconds), cancellationToken);
+                }
+            },
+            cancellationToken
+        );
+    }
+
+    // Public Methods
+    public async Task InitAsync(CancellationToken cancellationToken)
+    {
+        await RefreshFeatureFlags(cancellationToken);
+        StartRefreshFeatureFlagsTask(cancellationToken);
+    }
+
+    public bool GetFlag(string key)
+    {
+        _ = _featureFlagsDictionary.TryGetValue(key, out bool value);
 
         return value;
     }
@@ -104,22 +117,9 @@ public class ConsulKvMcbFlagManager
         return GetFlag(GetKey(tenantId, executionUser, key));
     }
 
-    public async Task<bool> GetFlagAsync(string key, CancellationToken cancellationToken)
+    public Task<bool> GetFlagAsync(string key, CancellationToken cancellationToken)
     {
-        if (_featureFlagsDictionary.TryGetValue(key, out bool value))
-            return value;
-
-        var kvPair = (await _kvEndpoint.Get(key, cancellationToken)).Response;
-        if (kvPair is null)
-            return false;
-
-        var stringValue = Encoding.UTF8.GetString(kvPair.Value);
-        if (stringValue is null)
-            return false;
-
-        _ = bool.TryParse(stringValue, out value);
-
-        return value;
+        return Task.FromResult(GetFlag(key));
     }
     public Task<bool> GetFlagAsync(Guid tenantId, string? executionUser, string key, CancellationToken cancellationToken)
     {
