@@ -15,7 +15,7 @@ public class StartupController
     : CustomControllerBase
 {
     // Fields
-    private IStartupService _startupService;
+    private readonly IStartupService _startupService;
 
     // Constructors
     public StartupController(

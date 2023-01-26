@@ -8,7 +8,6 @@ public class ConsulKvMcbFlagManager
     : IMcbFeatureFlagManager
 {
     // Fields
-    private readonly ConsulClient _consultClient;
     private readonly IKVEndpoint _kvEndpoint;
 
     // Constructors
@@ -16,16 +15,16 @@ public class ConsulKvMcbFlagManager
         AppSettings appSettings
     )
     {
-        _consultClient = new ConsulClient(
+        var consultClient = new ConsulClient(
             config: new ConsulClientConfiguration
             {
                 Address = new Uri(appSettings.Consul.Address)
             }
         );
-        _kvEndpoint = _consultClient.KV;
+        _kvEndpoint = consultClient.KV;
     }
     // Private Methods
-    private string GetKey(Guid tenantId, string? executionUser, string key) => $"feature-flags/tenants/{tenantId}{(string.IsNullOrEmpty(executionUser) ? string.Empty : ($"/{executionUser}"))}/{key}";
+    private static string GetKey(Guid tenantId, string? executionUser, string key) => $"feature-flags/tenants/{tenantId}{(string.IsNullOrEmpty(executionUser) ? string.Empty : ($"/{executionUser}"))}/{key}";
 
     // Public Methods
     public Task InitAsync(CancellationToken cancellationToken)

@@ -11,7 +11,7 @@ public class ReadinessCheck
     public const string NOT_READY = nameof(NOT_READY);
 
     // Fields
-    private IStartupService _startupService;
+    private readonly IStartupService _startupService;
 
     // Constructors
     public ReadinessCheck(IStartupService startupService)

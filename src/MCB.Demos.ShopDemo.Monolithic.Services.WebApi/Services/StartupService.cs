@@ -18,8 +18,8 @@ namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
 public class StartupService
     : IStartupService
 {
-    private static bool _isConfigured;
-    private static bool _isStarted;
+    private bool _isConfigured;
+    private bool _isStarted;
 
     private readonly AppSettings _appSettings;
     private readonly IPostgreSqlResiliencePolicy _postgreSqlResiliencePolicy;
