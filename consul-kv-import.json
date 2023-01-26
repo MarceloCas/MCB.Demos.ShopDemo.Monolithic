@@ -1,0 +1,14 @@
+[
+  {
+    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer-batch",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/get-customer",
+    "Value": "dHJ1ZQ=="
+  }
+]

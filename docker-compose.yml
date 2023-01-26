@@ -179,6 +179,17 @@ services:
     networks:
       - mcb-demos-shopdemo-monolithic
 
+  consul-import:
+    image: consul
+    container_name: consul-import
+    command: consul kv import -http-addr=consul:8500 @/consul/config/consul-kv-import.json
+    volumes:
+      - ./:/consul/config
+    depends_on:
+      - consul
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
