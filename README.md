@@ -161,7 +161,7 @@ This compose file will create:
 
 :information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
 
-### Up docker compose file directly to the host
+### :arrow_right:  Up docker compose file directly to the host
 
 To up the compose file directly to the host that has docker running, go in a terminal to the root directory of that repository that contains the docker-compose.yml file and run the command:
 
@@ -171,7 +171,7 @@ docker compose up -d
 ```
 
 
-### Up docker compose file using WSL2
+### :arrow_right: Up docker compose file using WSL2
 
 To up the compose file in a docker installation inside a Windows OS using WSL2 you can use a [setup-wsl.ps1](setup-wsl.ps1) powershell script file using the Powershell terminal.
 
@@ -186,7 +186,7 @@ cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
 .\setup-wsl.ps1
 ```
 
-### Portainer ###
+### :arrow_right: Portainer ###
 
 After up docker compose file you must have initialize [Portainer](http://localhost:9000/) service. If you take time to access the portainer, you will have to restart the portainer docker service and try to access again using a command in terminal from repository root path like:
 
@@ -200,7 +200,7 @@ Windows with docker installed in WSL:
 wsl -e docker compose restart portainer
 ```
 
-### Feature Flags ###
+### :arrow_right: Feature Flags ###
 
 :information_source: All resource flags are imported as active for the tenant **{00000000-0000-0000-0000-000000000000}** :information_source:
 
@@ -228,7 +228,7 @@ Example:
 
 :warning: if the feature flags are not imported (you can see in [HashiCorp Consult KV](http://localhost:8500/)), you can access [Portainer](http://localhost:9000/) and view logs and try start consul-import service again :warning:
 
-### Apply migrations on database
+### :arrow_right: Apply migrations on database
 
 :warning: You need to have an instance of PostgreSQL running with credentials that have permission to run DDL commands.
 If you created the project's dependencies using the docker compose provided in the project, you will already have that user and you can use the following command to apply the migration :warning:
@@ -258,7 +258,7 @@ Done.
 ```
 
 
-### Define settings on AppSettings.json
+### :arrow_right: Define settings on AppSettings.json
 
 The [AppSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.json) file is under in MCB.Demos.ShopDemo.Monolithic.Services.WebApi project.
 
@@ -343,7 +343,7 @@ info: Microsoft.Hosting.Lifetime[0]
 
 :warning: To change default application port for every execution you edit the [launchSettings.json](src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/Properties/launchSettings.json) file, but you will need change in integration tests too. :warning:
 
-### Check if application is running correctly
+### :arrow_right: Check if application is running correctly
 
 We will use the Health Checks URL (https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to validate that the application is running correctly.
 
