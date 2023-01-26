@@ -186,6 +186,48 @@ cd C:\mcb\github\marcelocas\Demos.ShopDemo.Monolithic
 .\setup-wsl.ps1
 ```
 
+### Portainer ###
+
+After up docker compose file you must have initialize [Portainer](http://localhost:9000/) service. If you take time to access the portainer, you will have to restart the portainer docker service and try to access again using a command in terminal from repository root path like:
+
+Linux or Windows Docker Desktop:
+```bash
+docker compose restart portainer
+```
+
+Windows with docker installed in WSL:
+```powershell
+wsl -e docker compose restart portainer
+```
+
+### Feature Flags ###
+
+:information_source: All resource flags are imported as active for the tenant **{00000000-0000-0000-0000-000000000000}** :information_source:
+
+The feature flags are in [consul-kv-import.json](consul-kv-import.json) file. This file have all feature flag keys with value "true" encoded as based 64 string:
+
+|text|base64
+|---|---
+|true|dHJ1ZQ==|  
+|false|ZmFsc2U=|  
+
+Example:
+
+```json
+[
+  {
+    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer-batch",
+    "Value": "dHJ1ZQ=="
+  }
+]
+```
+
+:warning: if the feature flags are not imported (you can see in [HashiCorp Consult KV](http://localhost:8500/)), you can access [Portainer](http://localhost:9000/) and view logs and try start consul-import service again :warning:
+
 ### Apply migrations on database
 
 :warning: You need to have an instance of PostgreSQL running with credentials that have permission to run DDL commands.
