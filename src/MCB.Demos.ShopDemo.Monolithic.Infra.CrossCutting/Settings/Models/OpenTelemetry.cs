@@ -2,4 +2,5 @@
 public class OpenTelemetry
 {
     public string GrpcCollectorReceiverUrl { get; set; } = null!;
+    public bool EnableConsoleExporter { get; set; }
 }

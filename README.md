@@ -202,7 +202,7 @@ wsl -e docker compose restart portainer
 
 ### :arrow_right: Feature Flags ###
 
-:information_source: All resource flags are imported as active for the tenant **{00000000-0000-0000-0000-000000000000}** :information_source:
+:information_source: All resource flags are imported as active for the tenant **{0275a76e-0b7d-4187-b10e-5ef540e266e9}** :information_source:
 
 The feature flags are in [consul-kv-import.json](consul-kv-import.json) file. This file have all feature flag keys with value "true" encoded as based 64 string:
 
@@ -216,11 +216,11 @@ Example:
 ```json
 [
   {
-    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer",
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-customer",
     "Value": "dHJ1ZQ=="
   },
   {
-    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer-batch",
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-customer-batch",
     "Value": "dHJ1ZQ=="
   }
 ]
@@ -299,7 +299,8 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
     }
   },
   "OpenTelemetry": {
-    "GrpcCollectorReceiverUrl": "http://localhost:4317"
+    "GrpcCollectorReceiverUrl": "http://localhost:4317",
+    "EnableConsoleExporter": true
   },
   "Consul": {
     "Address": "http://localhost:8500/v1/kv",
