@@ -1,14 +1,14 @@
 [
   {
-    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer",
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-customer",
     "Value": "dHJ1ZQ=="
   },
   {
-    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/import-customer-batch",
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-customer-batch",
     "Value": "dHJ1ZQ=="
   },
   {
-    "Key": "feature-flags/tenants/00000000-0000-0000-0000-000000000000/get-customer",
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/get-customer",
     "Value": "dHJ1ZQ=="
   }
 ]
