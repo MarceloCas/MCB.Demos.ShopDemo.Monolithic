@@ -193,7 +193,7 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
 
-//app.UseAuthorization();
+app.UseAuthorization();
 app.MapControllers();
 
 // HealthCheck
