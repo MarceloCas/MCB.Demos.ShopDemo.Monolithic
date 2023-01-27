@@ -12,6 +12,8 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using Npgsql;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
+using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.DependencyInjection;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
 
@@ -22,10 +24,12 @@ public class StartupService
     private bool _isStarted;
 
     private readonly AppSettings _appSettings;
+    private readonly IDependencyInjectionContainer _dependencyInjection;
     private readonly IPostgreSqlResiliencePolicy _postgreSqlResiliencePolicy;
     private readonly IRedisResiliencePolicy _redisResiliencePolicy;
     private readonly IRabbitMqResiliencePolicy _rabbitMqResiliencePolicy;
     private readonly IMetricsManager _metricsManager;
+    private readonly ITraceManager _traceManager;
     private readonly IRabbitMqConnection _rabbitMqConnection;
     private readonly IMcbFeatureFlagManager _mcbFeatureFlagManager;
 
@@ -35,19 +39,23 @@ public class StartupService
     // Constructors
     public StartupService(
         AppSettings appSettings,
+        IDependencyInjectionContainer dependencyInjection,
         IPostgreSqlResiliencePolicy postgreSqlResiliencePolicy,
         IRedisResiliencePolicy redisResiliencePolicy,
         IRabbitMqResiliencePolicy rabbitMqResiliencePolicy,
         IMetricsManager metricsManager,
+        ITraceManager traceManager,
         IRabbitMqConnection rabbitMqConnection,
         IMcbFeatureFlagManager mcbFeatureFlagManager
     )
     {
         _appSettings = appSettings;
+        _dependencyInjection = dependencyInjection;
         _postgreSqlResiliencePolicy = postgreSqlResiliencePolicy;
         _redisResiliencePolicy = redisResiliencePolicy;
         _rabbitMqResiliencePolicy = rabbitMqResiliencePolicy;
         _metricsManager = metricsManager;
+        _traceManager = traceManager;
         _rabbitMqConnection = rabbitMqConnection;
         _mcbFeatureFlagManager = mcbFeatureFlagManager;
     }
@@ -132,8 +140,10 @@ public class StartupService
 
             _metricsManager.CreateHistogram<int>(name: Metrics.Constants.REQUESTS_HISTOGRAM_NAME);
 
-            McbGlobalExceptionMiddleware.SetMetricsManager(_metricsManager, Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
-            McbRequestCounterMetricMiddleware.SetMetricsManager(_metricsManager, Metrics.Constants.REQUESTS_COUNTER_NAME);
+            McbGlobalExceptionMiddleware.Init(_traceManager, _metricsManager, Metrics.Constants.EXCEPTIONS_COUNTER_NAME);
+            McbRequestCounterMetricMiddleware.Init(_traceManager, _metricsManager, Metrics.Constants.REQUESTS_COUNTER_NAME);
+
+            McbDependencyInjectionMiddleware.Init(_dependencyInjection as DependencyInjectionContainer, _traceManager);
 
             _isConfigured = true;
         }

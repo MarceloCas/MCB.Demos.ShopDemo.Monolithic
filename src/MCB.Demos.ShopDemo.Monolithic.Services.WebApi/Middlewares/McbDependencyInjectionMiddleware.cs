@@ -1,10 +1,24 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 
 public static class McbDependencyInjectionMiddleware
 {
+    // Fields
+    private static DependencyInjectionContainer? _dependencyInjection;
+    private static ITraceManager _traceManager = null!;
+
+    public static void Init(
+        DependencyInjectionContainer? dependencyInjection,
+        ITraceManager traceManager    
+    )
+    {
+        _dependencyInjection = dependencyInjection;
+        _traceManager = traceManager;
+    }
+
     /// <summary>
     /// Add before MapControllers and MapGrpcService
     /// </summary>
@@ -12,18 +26,27 @@ public static class McbDependencyInjectionMiddleware
     /// <exception cref="InvalidOperationException"></exception>
     public static void UseMcbDependencyInjection(this IApplicationBuilder app)
     {
-        app.Use(async (context, next) =>
+        app.Use((context, next) =>
         {
-            var dependencyInjectionContainerAbstraction = app.ApplicationServices.GetService<IDependencyInjectionContainer>();
+            return _traceManager.StartActivityAsync(
+                name: nameof(McbDependencyInjectionMiddleware),
+                kind: System.Diagnostics.ActivityKind.Internal,
+                correlationId: Guid.Empty,
+                tenantId: Guid.Empty,
+                executionUser: string.Empty,
+                sourcePlatform: string.Empty,
+                input: (Context: context, Next: next),
+                handler: (input, activity, cancellationToken) =>
+                {
+                    if(_dependencyInjection is null)
+                        throw new InvalidOperationException($"{nameof(DependencyInjectionContainer)} cannot be null");
 
-            if (dependencyInjectionContainerAbstraction is null)
-                throw new InvalidOperationException($"Cannot resolve {typeof(IDependencyInjectionContainer).Name}");
+                    _dependencyInjection.Build(context.RequestServices);
 
-            var dependencyInjectionContainer = (DependencyInjectionContainer)dependencyInjectionContainerAbstraction;
-
-            dependencyInjectionContainer.Build(context.RequestServices);
-
-            await next.Invoke();
+                    return input.Next.Invoke();
+                },
+                cancellationToken: default
+            );
         });
     }
 }

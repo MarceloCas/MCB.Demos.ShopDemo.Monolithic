@@ -52,6 +52,14 @@ builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
 });
 
 // OpenTelemetry Tracing and Metrics
+var batchExportProcessorOptions = new BatchExportProcessorOptions<System.Diagnostics.Activity>
+{
+    MaxQueueSize = 2048,
+    ExporterTimeoutMilliseconds = 30_000,
+    MaxExportBatchSize = 512,
+    ScheduledDelayMilliseconds = 5000
+};
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(builder => { })
     .WithTracing(builder => builder
@@ -64,17 +72,25 @@ builder.Services.AddOpenTelemetry()
                 .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
         )
         .AddEntityFrameworkCoreInstrumentation(options => { })
-        .AddRedisInstrumentation()
+        .AddRedisInstrumentation(configure: options => { })
         .AddNpgsql(options => { })
-        .AddOtlpExporter(options => options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl))
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+            options.BatchExportProcessorOptions = batchExportProcessorOptions;
+        })
     )
     .WithMetrics(builder => builder
         .AddMeter(appSettings.ApplicationName)
         .AddHttpClientInstrumentation()
         .AddAspNetCoreInstrumentation()
         .AddRuntimeInstrumentation()
-        .AddOtlpExporter(options => options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl))
-)
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+            options.BatchExportProcessorOptions = batchExportProcessorOptions;
+        })
+    )
 .StartWithHost();
 
 // OpenTelemetry Logging
@@ -90,12 +106,16 @@ builder.Logging.AddOpenTelemetry(options =>
     );
 
     options
-        .AddOtlpExporter(otlpOptions =>
+        .AddOtlpExporter(options =>
         {
-            otlpOptions.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+            options.BatchExportProcessorOptions = batchExportProcessorOptions;
         })
-        .AddConsoleExporter()
         .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
+
+    if(appSettings.OpenTelemetry.EnableConsoleExporter)
+        options.AddConsoleExporter();
+
 });
 builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
 
@@ -163,10 +183,9 @@ var app = builder.Build();
 var logger = app.Services.GetService<ILogger<Program>>()!;
 
 #region Configure Pipeline
-
-app.UseMcbDependencyInjection();
 app.UseMcbGlobalExceptionMiddleware();
 app.UseMcbRequestCounterMetricMiddleware();
+app.UseMcbDependencyInjection();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
@@ -174,7 +193,7 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
 
-app.UseAuthorization();
+//app.UseAuthorization();
 app.MapControllers();
 
 // HealthCheck
