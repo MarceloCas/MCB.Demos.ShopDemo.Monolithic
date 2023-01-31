@@ -1,5 +1,4 @@
 ﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
-using MCB.Core.Infra.CrossCutting.Observability.OpenTelemetry;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Middlewares;
 

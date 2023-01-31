@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
-    [DbContext(typeof(DefaultEntityFrameworkDataContext))]
+    [DbContext(typeof(PostgreSqlEntityFrameworkDataContext))]
     partial class DefaultEntityFrameworkDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

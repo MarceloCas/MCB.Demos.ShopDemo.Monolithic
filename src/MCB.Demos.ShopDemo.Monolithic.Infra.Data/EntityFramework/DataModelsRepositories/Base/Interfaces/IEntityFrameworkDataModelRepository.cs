@@ -22,4 +22,6 @@ public interface IEntityFrameworkDataModelRepository<TDataModel>
 
     IEnumerable<TDataModel> GetAll(Guid tenantId);
     Task<IEnumerable<TDataModel>> GetAllAsync(Guid tenantId, CancellationToken cancellationToken);
+
+    Task WriteBulkAsync(IEnumerable<TDataModel> dataModelCollection, CancellationToken cancellationToken);
 }

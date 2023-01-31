@@ -23,6 +23,8 @@ using OpenTelemetry.Logs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
+using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,14 +115,14 @@ builder.Logging.AddOpenTelemetry(options =>
         })
         .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
 
-    if(appSettings.OpenTelemetry.EnableConsoleExporter)
+    if (appSettings.OpenTelemetry.EnableConsoleExporter)
         options.AddConsoleExporter();
 
 });
 builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
 
 // Entity Framework
-builder.Services.AddDbContextPool<DefaultEntityFrameworkDataContext>(
+builder.Services.AddDbContextPool<PostgreSqlEntityFrameworkDataContext>(
     options => options.UseNpgsql(
         appSettings!.PostgreSql.ConnectionString
     )
@@ -129,9 +131,10 @@ builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection =>
 {
     var appSettings = serviceCollection.GetService<AppSettings>()!;
 
-    return new DefaultEntityFrameworkDataContext(
+    return new PostgreSqlEntityFrameworkDataContext(
         serviceCollection.GetService<ITraceManager>()!,
         appSettings.PostgreSql.ConnectionString,
+        serviceCollection.GetService<IDependencyInjectionContainer>()!,
         serviceCollection.GetService<IPostgreSqlResiliencePolicy>()!
     );
 });
@@ -231,11 +234,11 @@ var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionC
 var startupService = dependencyInjectionContainer.Resolve<IStartupService>()!;
 var tryStartupApplicationResult = await startupService.TryStartupApplicationAsync(cancellationToken: default);
 
-if(!tryStartupApplicationResult.Success)
+if (!tryStartupApplicationResult.Success)
 {
     logger.LogError("Fail on startup");
 
-    if(tryStartupApplicationResult.Messages != null)
+    if (tryStartupApplicationResult.Messages != null)
         foreach (var message in tryStartupApplicationResult.Messages)
             logger.LogError(message: "Startup error message: {message}", args: message!);
 }

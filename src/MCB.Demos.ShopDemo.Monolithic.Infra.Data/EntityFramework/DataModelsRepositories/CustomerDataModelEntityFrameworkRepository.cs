@@ -14,17 +14,14 @@ public class CustomerDataModelEntityFrameworkRepository
     // Constants
     public const string GET_BY_EMAIL_TRACE_NAME = $"{nameof(CustomerDataModelEntityFrameworkRepository)}.{nameof(GetByEmailAsync)}.{nameof(GetAsync)}";
 
-    // Fields
-    private readonly IPostgreSqlResiliencePolicy _postgreSqlResiliencePolicy;
-
     // Constructors
     public CustomerDataModelEntityFrameworkRepository(
         IEntityFrameworkDataContext entityFrameworkDataContext,
         ITraceManager traceManager,
         IPostgreSqlResiliencePolicy postgreSqlResiliencePolicy
-    ) : base(entityFrameworkDataContext, traceManager)
+    ) : base(entityFrameworkDataContext, traceManager, postgreSqlResiliencePolicy)
     {
-        _postgreSqlResiliencePolicy = postgreSqlResiliencePolicy;
+
     }
 
     // Public Methods
@@ -40,7 +37,7 @@ public class CustomerDataModelEntityFrameworkRepository
             input: (TenantId: tenantId, Email: email),
             handler: async (input, activity, cancellationToken) =>
             {
-                var result = await _postgreSqlResiliencePolicy.ExecuteAsync(
+                var result = await PostgreSqlResiliencePolicy.ExecuteAsync(
                     handler: (input, cancellationToken) => GetFirstOrDefaultAsync(q => q.TenantId == input.TenantId && q.Email == input.Email, cancellationToken),
                     input: input,
                     cancellationToken
@@ -50,6 +47,5 @@ public class CustomerDataModelEntityFrameworkRepository
             },
             cancellationToken
         );
-        
     }
 }

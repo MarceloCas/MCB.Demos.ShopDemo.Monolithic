@@ -3,6 +3,8 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels.Base;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Data.Common;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.Base;
 public abstract class EntityFrameworkDataContextBase
@@ -43,6 +45,10 @@ public abstract class EntityFrameworkDataContextBase
     protected abstract void OnModelCreatingInternal(ModelBuilder modelBuilder);
 
     // Public Methods
+    public DbConnection GetDbConnection()
+    {
+        return Database.GetDbConnection();
+    }
     public virtual DbSet<TDataModel> GetDbSet<TDataModel>() where TDataModel : DataModelBase
     {
         return Set<TDataModel>();
@@ -84,4 +90,14 @@ public abstract class EntityFrameworkDataContextBase
     {
         return Task.CompletedTask;
     }
+
+    public IEntityType? GetEntityType(Type type)
+    {
+        return Model.FindEntityType(type);
+    }
+    public IEntityType? GetEntityType<T>()
+    {
+        return Model.FindEntityType(typeof(T));
+    }
+
 }

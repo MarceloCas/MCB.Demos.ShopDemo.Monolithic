@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.Migrations
 {
-    [DbContext(typeof(DefaultEntityFrameworkDataContext))]
+    [DbContext(typeof(PostgreSqlEntityFrameworkDataContext))]
     [Migration("20230111034438_InitialCreation")]
     partial class InitialCreation
     {
