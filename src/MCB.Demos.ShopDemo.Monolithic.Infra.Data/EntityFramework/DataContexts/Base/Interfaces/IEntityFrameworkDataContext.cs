@@ -16,4 +16,6 @@ public interface IEntityFrameworkDataContext
 
     IEntityType? GetEntityType(Type type);
     IEntityType? GetEntityType<T>();
+
+    void SetIsBulkInsertOperation(bool isBulkInsertOperation);
 }

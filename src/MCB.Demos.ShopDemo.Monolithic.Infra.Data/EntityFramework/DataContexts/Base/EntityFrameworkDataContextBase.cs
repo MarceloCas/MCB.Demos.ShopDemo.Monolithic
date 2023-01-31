@@ -17,6 +17,7 @@ public abstract class EntityFrameworkDataContextBase
     // Properties
     protected ITraceManager TraceManager { get; }
     protected string ConnectionString { get; }
+    protected bool IsBulkInsertOperation { get; private set; }
 
     // Constructors
     protected EntityFrameworkDataContextBase(
@@ -100,4 +101,8 @@ public abstract class EntityFrameworkDataContextBase
         return Model.FindEntityType(typeof(T));
     }
 
+    public void SetIsBulkInsertOperation(bool isBulkInsertOperation)
+    {
+        IsBulkInsertOperation = isBulkInsertOperation;
+    }
 }

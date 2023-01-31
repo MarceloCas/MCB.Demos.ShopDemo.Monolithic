@@ -61,6 +61,7 @@ public class ImportCustomerUseCase
                     },
                     input: input,
                     openTransaction: false,
+                    isBulkInsertOperation: false,
                     cancellationToken
                 );
             },

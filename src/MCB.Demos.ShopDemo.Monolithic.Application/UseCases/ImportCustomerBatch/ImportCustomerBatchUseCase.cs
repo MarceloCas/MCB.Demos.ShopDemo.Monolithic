@@ -96,7 +96,8 @@ public class ImportCustomerBatchUseCase
                         return true;
                     },
                     input: input,
-                    openTransaction: true,
+                    openTransaction: false,
+                    isBulkInsertOperation: true,
                     cancellationToken
                 );
             },

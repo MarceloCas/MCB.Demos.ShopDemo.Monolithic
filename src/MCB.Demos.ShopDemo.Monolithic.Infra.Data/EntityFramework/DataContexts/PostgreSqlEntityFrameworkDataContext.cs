@@ -53,15 +53,15 @@ public class PostgreSqlEntityFrameworkDataContext
     // Public Methods
     public override Task CommitTransactionAsync(CancellationToken cancellationToken)
     {
-        // check if in bulk operation
-        //return _postgreSqlResiliencePolicy.ExecuteAsync(
-        //    handler: base.CommitTransactionAsync,
-        //    cancellationToken
-        //);
-        return _postgreSqlResiliencePolicy.ExecuteAsync(
-            handler: BulkInsertAsync,
-            cancellationToken
-        );
+        return IsBulkInsertOperation
+            ? _postgreSqlResiliencePolicy.ExecuteAsync(
+                handler: BulkInsertAsync,
+                cancellationToken
+            )
+            : (Task)_postgreSqlResiliencePolicy.ExecuteAsync(
+                handler: base.CommitTransactionAsync,
+                cancellationToken
+            );
     }
 }
 
