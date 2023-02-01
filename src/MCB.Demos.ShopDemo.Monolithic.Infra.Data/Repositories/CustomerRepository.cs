@@ -110,9 +110,9 @@ public class CustomerRepository
                 if (customerDataModel is null)
                     return default;
 
-                var entry = await input.CustomerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
+                await input.CustomerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
 
-                return (Success: entry.IsKeySet, ModifiedCount: 1);
+                return (Success: true, ModifiedCount: 1);
             },
             cancellationToken
         )!;

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Npgsql;
 using NpgsqlTypes;
+using System.Threading;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRepositories.Base;
 public abstract class EntityFrameworkDataModelRepositoryBase
@@ -19,7 +20,6 @@ public abstract class EntityFrameworkDataModelRepositoryBase
 
     // Properties
     protected static Dictionary<Type, MappedMetadata> MappedMetadataDictionary { get; } = new();
-    protected static string BinaryImportCommand { get; private set; } = null!;
 
     // Protected Methods
     protected static NpgsqlDbType GetNpgsqlDbType(Type type)
@@ -72,15 +72,19 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
     // Constants
     public const string ENTITY_TYPE_NOT_FOUND_MESSAGE = "Entity Type not found [{0}]";
     public const string CONNECTION_MUST_BE_NPGSQLCONNECTION_MESSAGE = "Connection must be a NpgsqlConnection";
+    public const string NPGSQL_BINARY_IMPORTER_CANNOT_BE_NULL = "NpgsqlBinaryImporter cannot be null";
 
     // Fields
     private readonly bool _hasInitialized;
-    private readonly IEntityFrameworkDataContext _entityFrameworkDataContext;
+    private MappedMetadata? _currentMappedMetadata;
+    private bool _hasBulkedData;
 
     // Properties
+    protected IEntityFrameworkDataContext EntityFrameworkDataContext { get; }
     protected ITraceManager TraceManager { get; }
     protected DbSet<TDataModel> DbSet { get; }
     protected IPostgreSqlResiliencePolicy PostgreSqlResiliencePolicy { get; }
+    protected NpgsqlBinaryImporter? CurrentNpgsqlBinaryImporter { get; private set; }
 
     // Constructors
     protected EntityFrameworkDataModelRepositoryBase(
@@ -89,7 +93,7 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
         IPostgreSqlResiliencePolicy postgreSqlResiliencePolicy
     )
     {
-        _entityFrameworkDataContext = entityFrameworkDataContext;
+        EntityFrameworkDataContext = entityFrameworkDataContext;
         TraceManager = traceManager;
         DbSet = entityFrameworkDataContext.GetDbSet<TDataModel>();
         PostgreSqlResiliencePolicy = postgreSqlResiliencePolicy;
@@ -128,15 +132,60 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
             ).ToArray()
         );
     }
+    private async Task GenerateNpgsqlBinaryImporterAsync(CancellationToken cancellationToken)
+    {
+        if (CurrentNpgsqlBinaryImporter != null)
+            return;
+
+        if (EntityFrameworkDataContext.GetDbConnection() is not NpgsqlConnection connection)
+            throw new InvalidOperationException(CONNECTION_MUST_BE_NPGSQLCONNECTION_MESSAGE);
+
+        if (!MappedMetadataDictionary.TryGetValue(typeof(TDataModel), out MappedMetadata? mappedMetadata))
+            throw new InvalidOperationException(DATA_MODEL_MUST_BE_INITIALIZED);
+
+        if (connection.State != System.Data.ConnectionState.Open)
+            await connection.OpenAsync(cancellationToken);
+
+        CurrentNpgsqlBinaryImporter = await connection.BeginBinaryImportAsync(mappedMetadata.BinaryImportCommand, cancellationToken);
+    }
+    private MappedMetadata GetCurrentMapperMetadata()
+    {
+        if(_currentMappedMetadata is null)
+            _currentMappedMetadata = MappedMetadataDictionary[typeof(TDataModel)];
+
+        return _currentMappedMetadata;
+    }
 
     // Public Methods
-    public ValueTask<EntityEntry<TDataModel>> AddAsync(TDataModel dataModel, CancellationToken cancellationToken)
+    public async Task AddAsync(TDataModel dataModel, CancellationToken cancellationToken)
     {
-        return DbSet.AddAsync(dataModel, cancellationToken);
+        if (EntityFrameworkDataContext.IsBulkInsertOperation)
+        {
+            await GenerateNpgsqlBinaryImporterAsync(cancellationToken);
+
+            var mappedMetadata = GetCurrentMapperMetadata();
+
+            await CurrentNpgsqlBinaryImporter!.StartRowAsync(cancellationToken);
+            foreach (var mappedPropertyMetadada in mappedMetadata.MappedPropertyMetadadaCollection)
+            {
+                var value = mappedPropertyMetadada.PropertyInfo.GetValue(dataModel);
+
+                if (value is null)
+                    await CurrentNpgsqlBinaryImporter.WriteNullAsync(cancellationToken);
+                else
+                    await CurrentNpgsqlBinaryImporter.WriteAsync(value, mappedPropertyMetadada.NpgsqlDbType, cancellationToken);
+            }
+
+            _hasBulkedData = true;
+        }
+        else
+        {
+            await DbSet.AddAsync(dataModel, cancellationToken);
+        }
     }
     public ValueTask<EntityEntry<TDataModel>> UpdateAsync(TDataModel dataModel, CancellationToken cancellationToken)
     {
-        var entry = _entityFrameworkDataContext.SetEntry(dataModel);
+        var entry = EntityFrameworkDataContext.SetEntry(dataModel);
         entry.CurrentValues.SetValues(dataModel);
 
         return ValueTask.FromResult(entry);
@@ -194,12 +243,17 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
 
     public Task<TDataModel?> GetFirstOrDefaultAsync(Func<TDataModel, bool> expression, CancellationToken cancellationToken)
     {
-        var dbSetResult = DbSet.AsNoTracking().Where(expression);
-        var localResult = DbSet.Local.Where(expression);
+        if(EntityFrameworkDataContext.IsBulkInsertOperation)
+            return Task.FromResult(default(TDataModel));
+        else
+        {
+            var dbSetResult = DbSet.AsNoTracking().Where(expression);
+            var localResult = DbSet.Local.Where(expression);
 
-        var merged = dbSetResult.UnionBy(localResult, keySelector: q => q.Id);
+            var merged = dbSetResult.UnionBy(localResult, keySelector: q => q.Id);
 
-        return Task.FromResult(merged.FirstOrDefault());
+            return Task.FromResult(merged.FirstOrDefault());
+        }
     }
 
     public IEnumerable<TDataModel> GetAll(Guid tenantId)
@@ -220,40 +274,18 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
 
         return Task.FromResult(merged);
     }
-    public async Task WriteBulkAsync(IEnumerable<TDataModel> dataModelCollection, CancellationToken cancellationToken)
+    public async Task WriteBulkAsync(CancellationToken cancellationToken)
     {
-        if (dataModelCollection?.Any() != true)
+        if (!_hasBulkedData)
             return;
-
-        if (_entityFrameworkDataContext.GetDbConnection() is not NpgsqlConnection connection)
-            throw new InvalidOperationException(CONNECTION_MUST_BE_NPGSQLCONNECTION_MESSAGE);
-
-        if (!MappedMetadataDictionary.TryGetValue(typeof(TDataModel), out MappedMetadata? mappedMetadata))
-            throw new InvalidOperationException(DATA_MODEL_MUST_BE_INITIALIZED);
 
         await PostgreSqlResiliencePolicy.ExecuteAsync(
             handler: async cancellationToken =>
             {
-                if (connection.State != System.Data.ConnectionState.Open)
-                    await connection.OpenAsync(cancellationToken);
+                if (CurrentNpgsqlBinaryImporter is null)
+                    throw new InvalidOperationException(NPGSQL_BINARY_IMPORTER_CANNOT_BE_NULL);
 
-                using var writer = await connection.BeginBinaryImportAsync(mappedMetadata.BinaryImportCommand, cancellationToken);
-                foreach (var dataModel in dataModelCollection)
-                {
-                    await writer.StartRowAsync(cancellationToken);
-
-                    foreach (var mappedPropertyMetadada in mappedMetadata.MappedPropertyMetadadaCollection)
-                    {
-                        var value = mappedPropertyMetadada.PropertyInfo.GetValue(dataModel);
-
-                        if (value is null)
-                            await writer.WriteNullAsync(cancellationToken);
-                        else
-                            await writer.WriteAsync(value, mappedPropertyMetadada.NpgsqlDbType, cancellationToken);
-                    }
-                }
-
-                await writer.CompleteAsync(cancellationToken);
+                await CurrentNpgsqlBinaryImporter.CompleteAsync(cancellationToken);
             },
             cancellationToken
         );

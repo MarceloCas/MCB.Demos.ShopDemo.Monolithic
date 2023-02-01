@@ -10,6 +10,10 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataContexts.
 public interface IEntityFrameworkDataContext
     : IDataContext
 {
+    // Properties
+    bool IsBulkInsertOperation { get; }
+
+    // Methods
     DbConnection GetDbConnection();
     DbSet<TDataModel> GetDbSet<TDataModel>() where TDataModel : DataModelBase;
     EntityEntry<TDataModel> SetEntry<TDataModel>(TDataModel dataModel) where TDataModel : DataModelBase;

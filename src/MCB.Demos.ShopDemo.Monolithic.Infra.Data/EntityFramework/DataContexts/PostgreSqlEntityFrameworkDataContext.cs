@@ -32,12 +32,8 @@ public class PostgreSqlEntityFrameworkDataContext
     // Private Methods
     private async Task BulkInsertAsync(CancellationToken cancellationToken)
     {
-        var customerDataModelEntryCollection = ChangeTracker.Entries<CustomerDataModel>();
-        if (customerDataModelEntryCollection.Any())
-        {
-            var customerDataModelEntityFrameworkRepository = _dependencyInjectionContainer.Resolve<ICustomerDataModelEntityFrameworkRepository>()!;
-            await customerDataModelEntityFrameworkRepository.WriteBulkAsync(customerDataModelEntryCollection.Select(q => q.Entity), cancellationToken);
-        }
+        var customerDataModelEntityFrameworkRepository = _dependencyInjectionContainer.Resolve<ICustomerDataModelEntityFrameworkRepository>()!;
+        await customerDataModelEntityFrameworkRepository.WriteBulkAsync(cancellationToken);
     }
 
     // Protected Methods

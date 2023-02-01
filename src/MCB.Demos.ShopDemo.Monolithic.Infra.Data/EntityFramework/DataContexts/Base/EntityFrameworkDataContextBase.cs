@@ -17,7 +17,7 @@ public abstract class EntityFrameworkDataContextBase
     // Properties
     protected ITraceManager TraceManager { get; }
     protected string ConnectionString { get; }
-    protected bool IsBulkInsertOperation { get; private set; }
+    public bool IsBulkInsertOperation { get; private set; }
 
     // Constructors
     protected EntityFrameworkDataContextBase(

@@ -6,7 +6,7 @@ namespace MCB.Demos.ShopDemo.Monolithic.Infra.Data.EntityFramework.DataModelsRep
 public interface IEntityFrameworkDataModelRepository<TDataModel>
     where TDataModel : DataModelBase
 {
-    ValueTask<EntityEntry<TDataModel>> AddAsync(TDataModel dataModel, CancellationToken cancellationToken);
+    Task AddAsync(TDataModel dataModel, CancellationToken cancellationToken);
     ValueTask<EntityEntry<TDataModel>> UpdateAsync(TDataModel dataModel, CancellationToken cancellationToken);
     ValueTask<EntityEntry<TDataModel>> AddOrUpdateAsync(TDataModel dataModel, CancellationToken cancellationToken);
 
@@ -23,5 +23,5 @@ public interface IEntityFrameworkDataModelRepository<TDataModel>
     IEnumerable<TDataModel> GetAll(Guid tenantId);
     Task<IEnumerable<TDataModel>> GetAllAsync(Guid tenantId, CancellationToken cancellationToken);
 
-    Task WriteBulkAsync(IEnumerable<TDataModel> dataModelCollection, CancellationToken cancellationToken);
+    Task WriteBulkAsync(CancellationToken cancellationToken);
 }
