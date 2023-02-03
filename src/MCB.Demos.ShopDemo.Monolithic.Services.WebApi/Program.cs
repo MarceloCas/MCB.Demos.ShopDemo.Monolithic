@@ -23,6 +23,7 @@ using OpenTelemetry.Logs;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,9 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 
 if (appSettings == null)
     throw new InvalidOperationException("AppSettings cannot be null");
+
+Console.WriteLine("AppSetting loaded:");
+Console.WriteLine(JsonSerializer.Serialize(appSettings));
 
 builder.Services.AddSingleton(appSettings);
 #endregion
