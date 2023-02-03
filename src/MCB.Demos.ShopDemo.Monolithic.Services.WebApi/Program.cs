@@ -25,225 +25,234 @@ using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
 using System.Text.Json;
 
-var builder = WebApplication.CreateBuilder(args);
-
-#region Config
-var appSettings = builder.Configuration.Get<AppSettings>();
-
-if (appSettings == null)
-    throw new InvalidOperationException("AppSettings cannot be null");
-
-Console.WriteLine("AppSetting loaded:");
-Console.WriteLine(JsonSerializer.Serialize(appSettings));
-
-builder.Services.AddSingleton(appSettings);
-#endregion
-
-#region Configure Service
-
-// McbDependencyInjection 
-builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
+try
 {
-    dependencyInjectionContainer.RegisterSingleton<IStartupService, StartupService>();
 
-    MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
-        applicationName: appSettings.ApplicationName,
-        applicationVersion: appSettings.ApplicationVersion,
-        dependencyInjectionContainer,
-        adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
-        appSettings!
-    );
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-// OpenTelemetry Tracing and Metrics
-var batchExportProcessorOptions = new BatchExportProcessorOptions<System.Diagnostics.Activity>
-{
-    MaxQueueSize = 2048,
-    ExporterTimeoutMilliseconds = 30_000,
-    MaxExportBatchSize = 512,
-    ScheduledDelayMilliseconds = 5000
-};
+    #region Config
+    var appSettings = builder.Configuration.Get<AppSettings>();
 
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(builder => { })
-    .WithTracing(builder => builder
-        .AddHttpClientInstrumentation(options => { })
-        .AddAspNetCoreInstrumentation(options => { })
-        .AddSource(appSettings.ApplicationName)
-        .SetResourceBuilder(
-            ResourceBuilder
-                .CreateDefault()
-                .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
-        )
-        .AddEntityFrameworkCoreInstrumentation(options => { })
-        .AddRedisInstrumentation(configure: options => { })
-        .AddNpgsql(options => { })
-        .AddOtlpExporter(options =>
-        {
-            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
-            options.BatchExportProcessorOptions = batchExportProcessorOptions;
-        })
-    )
-    .WithMetrics(builder => builder
-        .AddMeter(appSettings.ApplicationName)
-        .AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation()
-        .AddRuntimeInstrumentation()
-        .AddOtlpExporter(options =>
-        {
-            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
-            options.BatchExportProcessorOptions = batchExportProcessorOptions;
-        })
-    )
-.StartWithHost();
+    if (appSettings == null)
+        throw new InvalidOperationException("AppSettings cannot be null");
 
-// OpenTelemetry Logging
-builder.Logging.ClearProviders();
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options.SetResourceBuilder(ResourceBuilder.CreateDefault()
-        .AddService(
-            serviceName: appSettings.ApplicationName,
-            serviceVersion: appSettings.ApplicationVersion,
-            serviceInstanceId: Environment.MachineName
-        )
-    );
+    Console.WriteLine("AppSetting loaded:");
+    Console.WriteLine(JsonSerializer.Serialize(appSettings));
 
-    options
-        .AddOtlpExporter(options =>
-        {
-            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
-            options.BatchExportProcessorOptions = batchExportProcessorOptions;
-        })
-        .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
+    builder.Services.AddSingleton(appSettings);
+    #endregion
 
-    if (appSettings.OpenTelemetry.EnableConsoleExporter)
-        options.AddConsoleExporter();
+    #region Configure Service
 
-});
-builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
-
-// Entity Framework
-builder.Services.AddDbContextPool<PostgreSqlEntityFrameworkDataContext>(
-    options => options.UseNpgsql(
-        appSettings!.PostgreSql.ConnectionString
-    )
-);
-builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection =>
-{
-    var appSettings = serviceCollection.GetService<AppSettings>()!;
-
-    return new PostgreSqlEntityFrameworkDataContext(
-        serviceCollection.GetService<ITraceManager>()!,
-        appSettings.PostgreSql.ConnectionString,
-        serviceCollection.GetService<IDependencyInjectionContainer>()!,
-        serviceCollection.GetService<IPostgreSqlResiliencePolicy>()!
-    );
-});
-
-// ASP.NET
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+    // McbDependencyInjection 
+    builder.Services.AddMcbDependencyInjection(dependencyInjectionContainer =>
     {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        dependencyInjectionContainer.RegisterSingleton<IStartupService, StartupService>();
+
+        MCB.Demos.ShopDemo.Monolithic.Services.WebApi.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(
+            applicationName: appSettings.ApplicationName,
+            applicationVersion: appSettings.ApplicationVersion,
+            dependencyInjectionContainer,
+            adapterMapAction: typeAdapterConfig => AdapterConfig.Configure(dependencyInjectionContainer),
+            appSettings!
+        );
     });
-builder.Services.AddApiVersioning(options =>
-{
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = new ApiVersion(majorVersion: 1, minorVersion: 0);
-    options.ReportApiVersions = true;
-});
-builder.Services.AddVersionedApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
-});
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
+
+    // OpenTelemetry Tracing and Metrics
+    var batchExportProcessorOptions = new BatchExportProcessorOptions<System.Diagnostics.Activity>
     {
-        Version = "v1",
-        Title = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi",
-        Description = "ShopDemo (Monolithic) Web Api",
-        Contact = new OpenApiContact()
+        MaxQueueSize = 2048,
+        ExporterTimeoutMilliseconds = 30_000,
+        MaxExportBatchSize = 512,
+        ScheduledDelayMilliseconds = 5000
+    };
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(builder => { })
+        .WithTracing(builder => builder
+            .AddHttpClientInstrumentation(options => { })
+            .AddAspNetCoreInstrumentation(options => { })
+            .AddSource(appSettings.ApplicationName)
+            .SetResourceBuilder(
+                ResourceBuilder
+                    .CreateDefault()
+                    .AddService(serviceName: appSettings.ApplicationName, serviceVersion: appSettings.ApplicationVersion)
+            )
+            .AddEntityFrameworkCoreInstrumentation(options => { })
+            .AddRedisInstrumentation(configure: options => { })
+            .AddNpgsql(options => { })
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+                options.BatchExportProcessorOptions = batchExportProcessorOptions;
+            })
+        )
+        .WithMetrics(builder => builder
+            .AddMeter(appSettings.ApplicationName)
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+                options.BatchExportProcessorOptions = batchExportProcessorOptions;
+            })
+        )
+    .StartWithHost();
+
+    // OpenTelemetry Logging
+    builder.Logging.ClearProviders();
+    builder.Logging.AddOpenTelemetry(options =>
+    {
+        options.SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddService(
+                serviceName: appSettings.ApplicationName,
+                serviceVersion: appSettings.ApplicationVersion,
+                serviceInstanceId: Environment.MachineName
+            )
+        );
+
+        options
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+                options.BatchExportProcessorOptions = batchExportProcessorOptions;
+            })
+            .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
+
+        if (appSettings.OpenTelemetry.EnableConsoleExporter)
+            options.AddConsoleExporter();
+
+    });
+    builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
+
+    // Entity Framework
+    builder.Services.AddDbContextPool<PostgreSqlEntityFrameworkDataContext>(
+        options => options.UseNpgsql(
+            appSettings!.PostgreSql.ConnectionString
+        )
+    );
+    builder.Services.AddScoped<IEntityFrameworkDataContext>(serviceCollection =>
+    {
+        var appSettings = serviceCollection.GetService<AppSettings>()!;
+
+        return new PostgreSqlEntityFrameworkDataContext(
+            serviceCollection.GetService<ITraceManager>()!,
+            appSettings.PostgreSql.ConnectionString,
+            serviceCollection.GetService<IDependencyInjectionContainer>()!,
+            serviceCollection.GetService<IPostgreSqlResiliencePolicy>()!
+        );
+    });
+
+    // ASP.NET
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
         {
-            Name = "Marcelo Castelo Branco",
-            Email = "marcelo.castelo@outlook.com",
-            Url = new Uri("https://www.linkedin.com/in/marcelocastelobranco/")
+            options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(majorVersion: 1, minorVersion: 0);
+        options.ReportApiVersions = true;
+    });
+    builder.Services.AddVersionedApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "MCB.Demos.ShopDemo.Monolithic.Services.WebApi",
+            Description = "ShopDemo (Monolithic) Web Api",
+            Contact = new OpenApiContact()
+            {
+                Name = "Marcelo Castelo Branco",
+                Email = "marcelo.castelo@outlook.com",
+                Url = new Uri("https://www.linkedin.com/in/marcelocastelobranco/")
+            }
+        });
+    });
+
+    // HealthCheck
+    builder.Services.AddHealthChecks()
+        .AddCheck<StartupCheck>("/health/startup", tags: new[] { "startup" })
+        .AddCheck<ReadinessCheck>("/health/readiness", tags: new[] { "readiness" })
+        .AddCheck<LivenessCheck>("/health/liveness", tags: new[] { "liveness" });
+    #endregion
+
+    var app = builder.Build();
+    var logger = app.Services.GetService<ILogger<Program>>()!;
+
+    #region Configure Pipeline
+    app.UseMcbGlobalExceptionMiddleware();
+    app.UseMcbRequestCounterMetricMiddleware();
+    app.UseMcbDependencyInjection();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    });
+
+    app.UseAuthorization();
+    app.MapControllers();
+
+    // HealthCheck
+    app.MapHealthChecks(
+        "/health/startup",
+        options: new HealthCheckOptions
+        {
+            AllowCachingResponses = false,
+            ResponseWriter = ReportWriter.WriteReport,
+            Predicate = healthCheck => healthCheck.Tags.Contains("startup")
         }
-    });
-});
+    );
+    app.MapHealthChecks(
+        "/health/readiness",
+        options: new HealthCheckOptions
+        {
+            AllowCachingResponses = false,
+            ResponseWriter = ReportWriter.WriteReport,
+            Predicate = healthCheck => healthCheck.Tags.Contains("readiness")
+        }
+    );
+    app.MapHealthChecks(
+        "/health/liveness",
+        options: new HealthCheckOptions
+        {
+            AllowCachingResponses = false,
+            ResponseWriter = ReportWriter.WriteReport,
+            Predicate = healthCheck => healthCheck.Tags.Contains("liveness")
+        }
+    );
+    #endregion
 
-// HealthCheck
-builder.Services.AddHealthChecks()
-    .AddCheck<StartupCheck>("/health/startup", tags: new[] { "startup" })
-    .AddCheck<ReadinessCheck>("/health/readiness", tags: new[] { "readiness" })
-    .AddCheck<LivenessCheck>("/health/liveness", tags: new[] { "liveness" });
-#endregion
+    #region Startup
+    var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionContainer>()!;
+    var startupService = dependencyInjectionContainer.Resolve<IStartupService>()!;
+    var tryStartupApplicationResult = await startupService.TryStartupApplicationAsync(cancellationToken: default);
 
-var app = builder.Build();
-var logger = app.Services.GetService<ILogger<Program>>()!;
-
-#region Configure Pipeline
-app.UseMcbGlobalExceptionMiddleware();
-app.UseMcbRequestCounterMetricMiddleware();
-app.UseMcbDependencyInjection();
-
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-});
-
-app.UseAuthorization();
-app.MapControllers();
-
-// HealthCheck
-app.MapHealthChecks(
-    "/health/startup",
-    options: new HealthCheckOptions
+    if (!tryStartupApplicationResult.Success)
     {
-        AllowCachingResponses = false,
-        ResponseWriter = ReportWriter.WriteReport,
-        Predicate = healthCheck => healthCheck.Tags.Contains("startup")
-    }
-);
-app.MapHealthChecks(
-    "/health/readiness",
-    options: new HealthCheckOptions
-    {
-        AllowCachingResponses = false,
-        ResponseWriter = ReportWriter.WriteReport,
-        Predicate = healthCheck => healthCheck.Tags.Contains("readiness")
-    }
-);
-app.MapHealthChecks(
-    "/health/liveness",
-    options: new HealthCheckOptions
-    {
-        AllowCachingResponses = false,
-        ResponseWriter = ReportWriter.WriteReport,
-        Predicate = healthCheck => healthCheck.Tags.Contains("liveness")
-    }
-);
-#endregion
+        logger.LogError("Fail on startup");
 
-#region Startup
-var dependencyInjectionContainer = app.Services.GetService<IDependencyInjectionContainer>()!;
-var startupService = dependencyInjectionContainer.Resolve<IStartupService>()!;
-var tryStartupApplicationResult = await startupService.TryStartupApplicationAsync(cancellationToken: default);
+        if (tryStartupApplicationResult.Messages != null)
+            foreach (var message in tryStartupApplicationResult.Messages)
+                logger.LogError(message: "Startup error message: {message}", args: message!);
+    }
+    #endregion
 
-if (!tryStartupApplicationResult.Success)
-{
-    logger.LogError("Fail on startup");
+    app.Run();
 
-    if (tryStartupApplicationResult.Messages != null)
-        foreach (var message in tryStartupApplicationResult.Messages)
-            logger.LogError(message: "Startup error message: {message}", args: message!);
 }
-#endregion
-
-app.Run();
+catch (Exception ex)
+{
+    Console.WriteLine($"Program initialization failed. Ex.: {ex}");
+}
