@@ -16,7 +16,7 @@ using IUnitOfWork = MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfac
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
 
 public class ImportCustomerBatchUseCase
-    : UseCaseBase<ImportCustomerBatchUseCaseInput>,
+    : UseCaseBase<ImportCustomerBatchUseCaseInput, int>,
     IImportCustomerBatchUseCase
 {
     // Constants
@@ -46,7 +46,7 @@ public class ImportCustomerBatchUseCase
     }
 
     // Public Methods
-    protected override Task<bool> ExecuteInternalAsync(ImportCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
+    protected override Task<(bool Success, int Output)> ExecuteInternalAsync(ImportCustomerBatchUseCaseInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: $"{nameof(ImportCustomerBatchUseCase)}.{nameof(ExecuteInternalAsync)}",
@@ -70,7 +70,7 @@ public class ImportCustomerBatchUseCase
                                 cancellationToken
                             );
 
-                            if (!processResult)
+                            if (!processResult.Success)
                             {
                                 var notifications = q.Input.NotificationSubscriber.NotificationCollection.ToArray();
                                 q.Input.NotificationSubscriber.ClearAllNotifications();
@@ -89,11 +89,11 @@ public class ImportCustomerBatchUseCase
                                     cancellationToken
                                 );
 
-                                return false;
+                                return default;
                             }
                         }
 
-                        return true;
+                        return (Success: true, Output: input.Input.Items.Length);
                     },
                     input: input,
                     openTransaction: false,

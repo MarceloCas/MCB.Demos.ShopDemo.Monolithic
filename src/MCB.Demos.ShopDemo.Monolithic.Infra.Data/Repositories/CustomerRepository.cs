@@ -19,6 +19,7 @@ public class CustomerRepository
     // Constants
     public const string GET_BY_EMAIL_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(GetByEmailAsync)}";
     public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(ImportCustomerAsync)}";
+    public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(DeleteCustomerAsync)}";
 
     // Fields
     private readonly TimeSpan _customerDataModelTTL;
@@ -42,6 +43,7 @@ public class CustomerRepository
         _customerDataModelRedisRepository = customerDataModelRedisRepository;
     }
 
+    // Public Methods
     public Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
@@ -113,6 +115,31 @@ public class CustomerRepository
                 await input.CustomerDataModelRepository.AddAsync(customerDataModel, cancellationToken);
 
                 return (Success: true, ModifiedCount: 1);
+            },
+            cancellationToken
+        )!;
+    }
+    public Task<bool> DeleteCustomerAsync(Customer customer, CancellationToken cancellationToken)
+    {
+        return TraceManager.StartActivityAsync(
+            name: DELETE_CUSTOMER_TRACE_NAME,
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: Guid.Empty,
+            tenantId: customer.TenantId,
+            executionUser: customer.AuditableInfo.CreatedBy,
+            sourcePlatform: customer.AuditableInfo.LastSourcePlatform,
+            input: (Customer: customer, Adapter, CustomerDataModelRepository: _customerDataModelRepository, CustomerDataModelRedisRepository: _customerDataModelRedisRepository),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                var customerDataModel = input.Adapter.Adapt<Customer, CustomerDataModel>(input.Customer);
+
+                if (customerDataModel is null)
+                    return false;
+
+                await input.CustomerDataModelRepository.RemoveAsync(customerDataModel, cancellationToken);
+                await input.CustomerDataModelRedisRepository.RemoveAsync(customerDataModel, cancellationToken);
+
+                return true;
             },
             cancellationToken
         )!;

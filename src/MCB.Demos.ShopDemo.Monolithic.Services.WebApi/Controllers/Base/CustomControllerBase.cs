@@ -77,9 +77,9 @@ public class CustomControllerBase
 
         return response;
     }
-    private ResponseBase CreateResponse<TUseCaseInput>(
-        Func<TUseCaseInput, ResponseBase> responseBaseFactory,
-        TUseCaseInput useCaseInput
+    private ResponseBase CreateResponse<TInput>(
+        Func<TInput, ResponseBase> responseBaseFactory,
+        TInput useCaseInput
     )
     {
         return AddMessagesToResponse(responseBaseFactory(useCaseInput));
@@ -94,8 +94,8 @@ public class CustomControllerBase
     {
         return StatusCode(StatusCodes.Status503ServiceUnavailable, string.Format(METHOD_NOT_AVALIABLE_MESSAGE, featureFlagKey));
     }
-    protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput>(
-        IUseCase<TUseCaseInput> useCase,
+    protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput, TUseCaseOutput>(
+        IUseCase<TUseCaseInput, TUseCaseOutput> useCase,
         TUseCaseInput useCaseInput,
         Func<TUseCaseInput, ResponseBase> responseBaseFactory,
         int successStatusCode,
@@ -103,20 +103,20 @@ public class CustomControllerBase
         CancellationToken cancellationToken
     ) where TUseCaseInput : UseCaseInputBase
     {
-        var success = await useCase.ExecuteAsync(
+        var useCaseExecutionResult = await useCase.ExecuteAsync(
             useCaseInput,
             cancellationToken
         );
 
         var response =
-            success ? null
+            useCaseExecutionResult.Success ? null
             : CreateResponse(
                 responseBaseFactory,
                 useCaseInput
             );
 
         return StatusCode(
-            statusCode: success ? successStatusCode : failStatusCode,
+            statusCode: useCaseExecutionResult.Success ? successStatusCode : failStatusCode,
             value: response
         );
     }

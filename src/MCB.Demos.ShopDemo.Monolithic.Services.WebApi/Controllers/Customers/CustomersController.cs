@@ -3,6 +3,8 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
@@ -29,6 +31,7 @@ public class CustomersController
     // Field
     private readonly IImportCustomerUseCase _importCustomerUseCase;
     private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
+    private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
     private readonly IGetCustomerByEmailQuery _getCustomerByEmailQuery;
 
     // Constructors
@@ -40,11 +43,13 @@ public class CustomersController
         IMcbFeatureFlagManager featureFlagManager,
         IImportCustomerUseCase importCustomerUseCase,
         IImportCustomerBatchUseCase importCustomerBatchUseCase,
+        IDeleteCustomerUseCase deleteCustomerUseCase,
         IGetCustomerByEmailQuery getCustomerByEmailQuery
     ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
         _importCustomerUseCase = importCustomerUseCase;
         _importCustomerBatchUseCase = importCustomerBatchUseCase;
+        _deleteCustomerUseCase = deleteCustomerUseCase;
         _getCustomerByEmailQuery = getCustomerByEmailQuery;
     }
 
@@ -166,6 +171,40 @@ public class CustomersController
                     responseBaseFactory: (useCaseInput) => new ImportCustomerBatchResponse(),
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
+                    cancellationToken
+                )!;
+            },
+            cancellationToken
+        )!;
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(DeleteCustomerResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseBase))]
+    public Task<IActionResult> DeleteCustomerAsync(
+        [FromBody] DeleteCustomerPayload payload,
+        CancellationToken cancellationToken
+    )
+    {
+        return TraceManager.StartActivityAsync(
+            name: nameof(Request.Path.Value) ?? nameof(DeleteCustomerAsync),
+            kind: System.Diagnostics.ActivityKind.Server,
+            correlationId: payload.CorrelationId,
+            tenantId: payload.TenantId,
+            executionUser: payload.ExecutionUser,
+            sourcePlatform: payload.SourcePlatform,
+            input: (Payload: payload, DeleteCustomerUseCase: _deleteCustomerUseCase, Adapter),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY, cancellationToken))
+                    return CreateNotAllowedResult(FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY)!;
+
+                return await RunUseCaseAsync(
+                    useCase: input.DeleteCustomerUseCase!,
+                    useCaseInput: input.Adapter.Adapt<DeleteCustomerPayload, DeleteCustomerUseCaseInput>(input.Payload)!,
+                    responseBaseFactory: (useCaseInput) => new DeleteCustomerResponse(),
+                    successStatusCode: (int)System.Net.HttpStatusCode.Created,
+                    failStatusCode: (int)System.Net.HttpStatusCode.NotFound,
                     cancellationToken
                 )!;
             },

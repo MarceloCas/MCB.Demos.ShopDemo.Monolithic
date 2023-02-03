@@ -10,7 +10,8 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerHasBeenRegistered;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.DependencyInjection;
@@ -71,7 +72,8 @@ public static class Bootstrapper
             // DTOs
             typeof(CustomerDto),
             // Events
-            typeof(CustomerHasBeenRegisteredEvent),
+            typeof(CustomerRegisteredEvent),
+            typeof(CustomerDeletedEvent),
         });
     }
 }

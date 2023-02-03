@@ -3,6 +3,8 @@ using MCB.Demos.ShopDemo.Monolithic.Application.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
@@ -21,6 +23,7 @@ public static class Bootstrapper
         // Use Cases
         dependencyInjectionContainer.RegisterScoped<IImportCustomerUseCase, ImportCustomerUseCase>();
         dependencyInjectionContainer.RegisterScoped<IImportCustomerBatchUseCase, ImportCustomerBatchUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IDeleteCustomerUseCase, DeleteCustomerUseCase>();
 
         // Queries
         dependencyInjectionContainer.RegisterScoped<IGetCustomerByEmailQuery, GetCustomerByEmailQuery>();

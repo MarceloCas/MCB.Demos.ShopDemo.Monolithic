@@ -3,5 +3,6 @@ public static class FeatureFlags
 {
     public const string IMPORT_CUSTOMER_FEATURE_FLAG_KEY = "import-customer";
     public const string IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY = "import-customer-batch";
+    public const string DELETE_CUSTOMER_FEATURE_FLAG_KEY = "delete-customer";
     public const string GET_CUSTOMER_FEATURE_FLAG_KEY = "get-customer";
 }

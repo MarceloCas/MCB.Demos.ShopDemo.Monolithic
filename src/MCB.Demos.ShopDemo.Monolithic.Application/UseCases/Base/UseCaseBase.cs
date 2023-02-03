@@ -11,14 +11,17 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 
-public abstract class UseCaseBase<TUseCaseInput>
-    : IUseCase<TUseCaseInput>
+public abstract class UseCaseBase<TUseCaseInput, TUseCaseOutput>
+    : IUseCase<TUseCaseInput, TUseCaseOutput>
     where TUseCaseInput : UseCaseInputBase
 {
     // Constants
     public const string USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_CODE = "USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_CODE";
     public const string USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_DESCRIPTION = "Use case input cannot be null|UseCaseInputType:{0}";
     public const NotificationType USE_CASE_INPUT_CANNOT_BE_NULL_ERROR_NOTIFICATION_TYPE = NotificationType.Error;
+
+    public const string DOMAIN_EVENT_CANNOT_BE_NULL = "Domain event cannot be null";
+    public const string EXTERNAL_EVENT_CANNOT_BE_NULL = "External event cannot be null";
 
     // Fields
     private readonly IDomainEventSubscriber _domainEventSubscriber;
@@ -53,19 +56,23 @@ public abstract class UseCaseBase<TUseCaseInput>
     }
 
     // Public Methods
-    public async Task<bool> ExecuteAsync(TUseCaseInput? useCaseInput, CancellationToken cancellationToken)
+    public async Task<(bool Success, TUseCaseOutput? Output)> ExecuteAsync(TUseCaseInput? useCaseInput, CancellationToken cancellationToken)
     {
         if (!await CheckIfUseCaseInputIsNullAndSendNotification(useCaseInput, cancellationToken))
-            return false;
+            return default;
 
-        if (!await ExecuteInternalAsync(useCaseInput!, cancellationToken))
-            return false;
+        var useCaseOutput = await ExecuteInternalAsync(useCaseInput!, cancellationToken);
 
-        return await PublishDomainEventsToExternalBusAsync(cancellationToken);
+        if (!useCaseOutput.Success)
+            return default;
+
+        await PublishDomainEventsToExternalBusAsync(cancellationToken);
+
+        return useCaseOutput;
     }
 
     // Protected Abstract Methods
-    protected abstract Task<bool> ExecuteInternalAsync(TUseCaseInput useCaseInput, CancellationToken cancellationToken);
+    protected abstract Task<(bool Success, TUseCaseOutput? Output)> ExecuteInternalAsync(TUseCaseInput useCaseInput, CancellationToken cancellationToken);
 
     // Private Methods
     private async Task<bool> CheckIfUseCaseInputIsNullAndSendNotification(TUseCaseInput? useCaseInput, CancellationToken cancellationToken)
@@ -89,11 +96,11 @@ public abstract class UseCaseBase<TUseCaseInput>
         foreach (var domainEventBase in _domainEventSubscriber.DomainEventCollection)
         {
             if (domainEventBase is null)
-                continue;
+                throw new InvalidOperationException(DOMAIN_EVENT_CANNOT_BE_NULL);
 
             var externalEvent = _externalEventFactory.Create((Adapter, domainEventBase));
             if(externalEvent is null)
-                continue;
+                throw new InvalidOperationException(EXTERNAL_EVENT_CANNOT_BE_NULL);
 
             await _eventsExchangeRabbitMqPublisher.PublishAsync(externalEvent, cancellationToken);
         }

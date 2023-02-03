@@ -8,6 +8,10 @@
     "Value": "dHJ1ZQ=="
   },
   {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/delete-customer",
+    "Value": "dHJ1ZQ=="
+  },
+  {
     "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/get-customer",
     "Value": "dHJ1ZQ=="
   }

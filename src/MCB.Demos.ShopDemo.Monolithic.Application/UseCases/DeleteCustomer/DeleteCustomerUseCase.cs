@@ -4,28 +4,27 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer;
-
-public class ImportCustomerUseCase
-    : UseCaseBase<ImportCustomerUseCaseInput, Customer>,
-    IImportCustomerUseCase
+namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.DeleteCustomer;
+public class DeleteCustomerUseCase
+    : UseCaseBase<DeleteCustomerUseCaseInput, Customer>,
+    IDeleteCustomerUseCase
 {
     // Constants
-    public const string IMPORT_CUSTOMER_USE_CASE_TRACE_NAME = $"{nameof(ImportCustomerUseCase)}.{nameof(ExecuteInternalAsync)}";
+    public const string DELETE_CUSTOMER_USE_CASE_TRACE_NAME = $"{nameof(DeleteCustomerUseCase)}.{nameof(ExecuteInternalAsync)}";
 
     // Fields
     private readonly ICustomerService _customerService;
 
     // Constructors
-    public ImportCustomerUseCase(
+    public DeleteCustomerUseCase(
         IDomainEventSubscriber domainEventSubscriber,
         INotificationPublisher notificationPublisher,
         IEventsExchangeRabbitMqPublisher eventsExchangeRabbitMqPublisher,
@@ -39,11 +38,10 @@ public class ImportCustomerUseCase
         _customerService = customerService;
     }
 
-    // Public Methods
-    protected override Task<(bool Success, Customer? Output)> ExecuteInternalAsync(ImportCustomerUseCaseInput input, CancellationToken cancellationToken)
+    protected override Task<(bool Success, Customer? Output)> ExecuteInternalAsync(DeleteCustomerUseCaseInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: IMPORT_CUSTOMER_USE_CASE_TRACE_NAME,
+            name: DELETE_CUSTOMER_USE_CASE_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: input.CorrelationId,
             tenantId: input.TenantId,
@@ -55,10 +53,10 @@ public class ImportCustomerUseCase
                 return input.UnitOfWork.ExecuteAsync(
                     handler: q =>
                     {
-                        return q.Input.CustomerService.ImportCustomerAsync(
-                            input: q.Input.Adapter.Adapt<ImportCustomerUseCaseInput, ImportCustomerServiceInput>(q.Input.Input)!,
+                        return q.Input.CustomerService.DeleteCustomerAsync(
+                            input: q.Input.Adapter.Adapt<DeleteCustomerUseCaseInput, DeleteCustomerServiceInput>(q.Input.Input)!,
                             cancellationToken
-                        );
+                        ); ;
                     },
                     input: input,
                     openTransaction: false,

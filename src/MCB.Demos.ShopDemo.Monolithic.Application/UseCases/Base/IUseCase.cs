@@ -2,8 +2,8 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
 
-public interface IUseCase<in TUseCaseInput>
+public interface IUseCase<in TUseCaseInput, TUseCaseOutput>
     where TUseCaseInput : UseCaseInputBase
 {
-    Task<bool> ExecuteAsync(TUseCaseInput useCaseInput, CancellationToken cancellationToken);
+    Task<(bool Success, TUseCaseOutput? Output)> ExecuteAsync(TUseCaseInput useCaseInput, CancellationToken cancellationToken);
 }

@@ -2,9 +2,11 @@
 using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerHasBeenRegistered;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerHasBeenRegistered;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models.Base;
 
@@ -32,8 +34,8 @@ public static class AdapterConfig
             );
 
         // ExternalEvents
-        TypeAdapterConfig<CustomerHasBeenRegisteredDomainEvent, CustomerHasBeenRegisteredEvent>.NewConfig()
-            .Map(dest => dest.Customer, src => ((Domain.Entities.Customers.Customer)src.AggregationRoot).Adapt<CustomerDto>());
+        TypeAdapterConfig<CustomerRegisteredDomainEvent, CustomerRegisteredEvent>.NewConfig().Map(dest => dest.Customer, src => ((Domain.Entities.Customers.Customer)src.AggregationRoot).Adapt<CustomerDto>());
+        TypeAdapterConfig<CustomerDeletedDomainEvent, CustomerDeletedEvent>.NewConfig().Map(dest => dest.Customer, src => ((Domain.Entities.Customers.Customer)src.AggregationRoot).Adapt<CustomerDto>());
 
         MapDomainEntityToDto<Domain.Entities.Customers.Customer, CustomerDto>();
     }

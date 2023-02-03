@@ -3,6 +3,6 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inp
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
 public interface IImportCustomerBatchUseCase
-    : IUseCase<ImportCustomerBatchUseCaseInput>
+    : IUseCase<ImportCustomerBatchUseCaseInput, int>
 {
 }
