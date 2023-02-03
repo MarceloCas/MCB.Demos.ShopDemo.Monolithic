@@ -111,8 +111,6 @@ public abstract class EntityFrameworkDataModelRepositoryBase<TDataModel>
         if (entityType is null)
             throw new InvalidOperationException(string.Format(ENTITY_TYPE_NOT_FOUND_MESSAGE, typeof(TDataModel).FullName));
 
-        var propertyInfoCollection = typeof(TDataModel).GetProperties();
-
         Initialize(
             dataModelType: typeof(TDataModel),
             entityType.GetSchema(),

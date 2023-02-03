@@ -56,7 +56,7 @@ public class DeleteCustomerUseCase
                         return q.Input.CustomerService.DeleteCustomerAsync(
                             input: q.Input.Adapter.Adapt<DeleteCustomerUseCaseInput, DeleteCustomerServiceInput>(q.Input.Input)!,
                             cancellationToken
-                        ); ;
+                        );
                     },
                     input: input,
                     openTransaction: false,
