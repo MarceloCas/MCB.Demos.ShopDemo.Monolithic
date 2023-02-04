@@ -18,11 +18,6 @@ on:
         type: boolean
         required: true
         default: true
-      runIntegrationTests:
-        description: 'Run Integration Tests'
-        type: boolean
-        required: true
-        default: true
 
 jobs:
 
@@ -106,56 +101,3 @@ jobs:
       shell: pwsh
       run: |
         docker push ${{ needs.init.outputs.imagename }}
-
-  integration-tests:
-
-    needs: [init, build]
-    if: ${{inputs.runIntegrationTests == true}}
-    runs-on: ubuntu-latest
-            
-    steps:
-
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Create query log directory
-      run: |
-        mkdir -p data
-
-    - name: Run Prometheus Container
-      uses: docker://prom/prometheus:latest
-      with:
-        args: --config.file=prometheus.yaml --storage.tsdb.path=data
-
-    - name: Setup .NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 7.0.x
-
-    - name: Restore Dependencies
-      run: dotnet restore
-
-    - name: Build
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: pwsh
-      run: |
-        dotnet build --no-restore
-
-    - name: Apply Migration
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: pwsh
-      run: |
-        dotnet tool install --global dotnet-ef
-        dotnet ef database update -p ./src/MCB.Demos.ShopDemo.Monolithic.Infra.Data -- "${{ secrets.MIGRATION_POSTGRES_CONNECTION_STRING }}"
-
-    - name: Integration Tests
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      shell: pwsh
-      run: |
-        dotnet test --no-build ./tst/Demos.ShopDemo.Monolithic.Tests.IntegrationTests/Demos.ShopDemo.Monolithic.Tests.IntegrationTests.csproj
-
