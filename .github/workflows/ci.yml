@@ -135,13 +135,13 @@ jobs:
         ports:
             - "9090:9090"
         volumes:
-            - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+            - ${GITHUB_WORKSPACE}/prometheus.yaml:/etc/prometheus/prometheus.yml
 
       otel-collector:
         image: otel/opentelemetry-collector:latest
         options: "--config=/etc/otel-collector-config.yaml"
         volumes:
-          - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+          - ${GITHUB_WORKSPACE}/otel-collector-config.yaml:/etc/otel-collector-config.yaml
         ports:
           - "8888:8888"
           - "8889:8889"
@@ -193,7 +193,7 @@ jobs:
         image: consul
         options: consul kv import -http-addr=consul:8500 @/consul/config/consul-kv-import.json
         volumes:
-          - ./:/consul/config
+          - ${GITHUB_WORKSPACE}:/consul/config
 
       shopdemo:
         image: ${{needs.init.outputs.imagename}}
@@ -203,7 +203,7 @@ jobs:
           ASPNETCORE_ENVIRONMENT: IntegrationTests
           PostgreSql:ConnectionString: ${{ secrets.INTEGRATION_TESTS_POSTGRES_CONNECTION_STRING }}
         volumes:
-          - ./src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.IntegrationTests.json:/app/appsettings.json
+          - ${GITHUB_WORKSPACE}/src/MCB.Demos.ShopDemo.Monolithic.Services.WebApi/appsettings.IntegrationTests.json:/app/appsettings.json
         
     steps:
 
