@@ -78,7 +78,7 @@ jobs:
   
   build:
 
-    needs: [init, sonar]
+    needs: sonar
 
     runs-on: ubuntu-latest
     if: ${{inputs.runBuild == true}}
@@ -109,7 +109,7 @@ jobs:
 
   integration-tests:
 
-    needs: [init, build]
+    needs: build
     if: ${{inputs.runIntegrationTests == true}}
     runs-on: ubuntu-latest
 
