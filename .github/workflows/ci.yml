@@ -120,10 +120,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Create query log directory
+      run: |
+        mkdir -p data
+
     - name: Run Prometheus Container
       uses: docker://prom/prometheus:latest
       with:
-        args: --config.file=prometheus.yaml
+        args: --config.file=prometheus.yaml --storage.tsdb.path=data
 
     - name: Setup .NET 7
       uses: actions/setup-dotnet@v2
