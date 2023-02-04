@@ -132,10 +132,11 @@ jobs:
           
       prometheus:
         image: prom/prometheus:latest
+        options: --config.file=$PROMETHEUS_CONFIG_FILE
         ports:
             - "9090:9090"
         volumes:
-            - /prometheus.yaml:/etc/prometheus/prometheus.yml
+            - ./prometheus.yaml:/etc/prometheus/prometheus.yml
 
       otel-collector:
         image: otel/opentelemetry-collector:latest
