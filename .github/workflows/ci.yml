@@ -135,7 +135,7 @@ jobs:
         ports:
             - "9090:9090"
         volumes:
-            - /github/workspace/prometheus.yaml:/etc/prometheus/prometheus.yml
+            - /prometheus.yaml:/etc/prometheus/prometheus.yml
 
       otel-collector:
         image: otel/opentelemetry-collector:latest
