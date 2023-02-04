@@ -77,8 +77,8 @@ jobs:
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
   
   build:
-
-    needs: sonar
+  
+    needs: [init, sonar]
 
     runs-on: ubuntu-latest
     if: ${{inputs.runBuild == true}}
@@ -109,7 +109,7 @@ jobs:
 
   integration-tests:
 
-    needs: build
+    needs: [init, build]
     if: ${{inputs.runIntegrationTests == true}}
     runs-on: ubuntu-latest
 
