@@ -16,7 +16,7 @@ public static class EmailValueObjectValidatorWrapper
     )
     {
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
-            .Must((emailValueObject, street) => emailValueObjectSpecifications.EmailValueObjectShouldRequired(getEmailFunction(emailValueObject)))
+            .Must((emailValueObject, email) => emailValueObjectSpecifications.EmailValueObjectShouldRequired(getEmailFunction(emailValueObject)))
             .WithErrorCode(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredErrorCode)
             .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredMessage)
             .WithSeverity(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredSeverity);
@@ -29,7 +29,7 @@ public static class EmailValueObjectValidatorWrapper
     )
     {
         fluentValidationValidatorWrapper.RuleFor(q => propertyExpression)
-            .Must((input, street) => emailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLength(getEmailFunction(input)))
+            .Must((input, email) => emailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLength(getEmailFunction(input)))
             .When(input => emailValueObjectSpecifications.EmailValueObjectShouldRequired(getEmailFunction(input)))
             .WithErrorCode(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthErrorCode)
             .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthMessage)

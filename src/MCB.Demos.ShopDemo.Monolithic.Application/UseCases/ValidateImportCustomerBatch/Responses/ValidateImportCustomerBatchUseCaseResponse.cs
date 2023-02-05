@@ -2,8 +2,8 @@
 public record ValidateImportCustomerBatchUseCaseResponse
 {
     // Properties
-    public IEnumerable<ValidateImportCustomerBatchUseCaseResponseItem> ItemCollection { get; set; }
     public bool Success { get; set; }
+    public IEnumerable<ValidateImportCustomerBatchUseCaseResponseItem> ItemCollection { get; set; }
 
     // Constructors
     public ValidateImportCustomerBatchUseCaseResponse(IEnumerable<ValidateImportCustomerBatchUseCaseResponseItem> itemCollection)

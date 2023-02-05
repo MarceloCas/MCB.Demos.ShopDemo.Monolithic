@@ -34,7 +34,6 @@ public class Customer
 
     // Validators
     private readonly RegisterNewCustomerInputShouldBeValidValidator _registerNewCustomerInputShouldBeValidValidator;
-    private readonly EmailValueObjectShouldBeValidValidator _emailValueObjectShouldBeValidValidator;
 
     // Constructors
     public Customer(
@@ -48,15 +47,13 @@ public class Customer
             new InputBaseSpecifications(), 
             dateTimeProvider
         );
-        _emailValueObjectShouldBeValidValidator = new EmailValueObjectShouldBeValidValidator();
     }
 
     // Public Methods
     public Customer RegisterNewCustomer(RegisterNewCustomerInput input)
     {
         // Validate
-        if (!Validate(() => _registerNewCustomerInputShouldBeValidValidator.Validate(input)) ||
-            !Validate(() => _emailValueObjectShouldBeValidValidator.Validate(input.Email)))
+        if (!Validate(() => _registerNewCustomerInputShouldBeValidValidator.Validate(input)))
             return this;
 
         // Process and Return

@@ -113,7 +113,7 @@ public class CustomerService
             cancellationToken
         )!;
     }
-    public Task<(bool Success, IEnumerable<Notification> NotificationCollection)> ValidateImportCustomerAsync(ValidateImportCustomerServiceInput input, CancellationToken cancellationToken)
+    public Task<(bool Success, IEnumerable<Notification>? NotificationCollection)> ValidateImportCustomerAsync(ValidateImportCustomerServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: VALIDATE_IMPORT_CUSTOMER_TRACE_NAME,
@@ -147,7 +147,7 @@ public class CustomerService
                     notificationCollection.Add(Adapter.Adapt<ValidationMessage, Notification>(validationMessage));
 
                 // Return
-                return (Success: notificationCollection.Count == 0, NotificationCollection: notificationCollection.AsEnumerable());
+                return (Success: notificationCollection.Count == 0, NotificationCollection: notificationCollection.Count == 0 ? null : notificationCollection.AsEnumerable());
             },
             cancellationToken
         )!;

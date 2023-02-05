@@ -7,14 +7,10 @@ public record ValidateImportCustomerBatchUseCaseResponseItem
     public int Index { get; set; }
     public string? Email { get; set; }
     public bool Success { get; set; }
-    public IEnumerable<Notification> NotificationCollection { get; set; }
+    public IEnumerable<Notification>? NotificationCollection { get; set; }
 
     // Constructors
-    public ValidateImportCustomerBatchUseCaseResponseItem()
-    {
-        NotificationCollection = Enumerable.Empty<Notification>();
-    }
-    public ValidateImportCustomerBatchUseCaseResponseItem(int index, string? email, bool success, IEnumerable<Notification> notificationCollection)
+    public ValidateImportCustomerBatchUseCaseResponseItem(int index, string? email, bool success, IEnumerable<Notification>? notificationCollection)
     {
         Index = index;
         Email = email;

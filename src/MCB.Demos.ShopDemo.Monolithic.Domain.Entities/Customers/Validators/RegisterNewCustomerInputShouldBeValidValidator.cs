@@ -6,6 +6,11 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators.Interfa
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Specifications;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validators.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validators;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validators.Wrappers;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Specifications.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Specifications;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators;
 
@@ -15,14 +20,16 @@ public sealed class RegisterNewCustomerInputShouldBeValidValidator
 {
     // Fields
     private readonly ICustomerSpecifications _customerSpecifications;
+    private readonly IEmailValueObjectSpecifications _emailValueObjectSpecifications;
 
     // Constructors
     public RegisterNewCustomerInputShouldBeValidValidator(
         IInputBaseSpecifications inputBaseSpecifications,
         IDateTimeProvider dateTimeProvider
-    ): base(inputBaseSpecifications)
+    ) : base(inputBaseSpecifications)
     {
         _customerSpecifications = new CustomerSpecifications(dateTimeProvider);
+        _emailValueObjectSpecifications = new EmailValueObjectSpecifications();
     }
 
     // Protected Methods
@@ -68,6 +75,20 @@ public sealed class RegisterNewCustomerInputShouldBeValidValidator
             fluentValidationValidatorWrapper,
             propertyExpression: input => input.BirthDate,
             getBirthDateFunction: input => input.BirthDate
+        );
+
+        // Email
+        EmailValueObjectValidatorWrapper.AddEmailValueObjectShouldRequired(
+            _emailValueObjectSpecifications,
+            fluentValidationValidatorWrapper,
+            propertyExpression: input => input.Email,
+            getEmailFunction: input => input.Email
+        );
+        EmailValueObjectValidatorWrapper.AddEmailValueObjectShouldHaveMaximumLength(
+            _emailValueObjectSpecifications,
+            fluentValidationValidatorWrapper,
+            propertyExpression: input => input.Email,
+            getEmailFunction: input => input.Email
         );
     }
 }

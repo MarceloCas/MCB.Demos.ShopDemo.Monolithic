@@ -8,10 +8,5 @@ public record ValidateImportCustomerBatchResponseItem
     public int Index { get; set; }
     public string? Email { get; set; }
     public bool Success { get; set; }
-    public IEnumerable<Notification> NotificationCollection { get; set; }
-
-    public ValidateImportCustomerBatchResponseItem()
-    {
-        NotificationCollection = Enumerable.Empty<Notification>();
-    }
+    public IEnumerable<Notification>? NotificationCollection { get; set; }
 }

@@ -85,7 +85,7 @@ public class ValidateImportCustomerBatchUseCase
                     },
                     input: input,
                     openTransaction: false,
-                    isBulkInsertOperation: true,
+                    isBulkInsertOperation: false,
                     cancellationToken
                 );
             },

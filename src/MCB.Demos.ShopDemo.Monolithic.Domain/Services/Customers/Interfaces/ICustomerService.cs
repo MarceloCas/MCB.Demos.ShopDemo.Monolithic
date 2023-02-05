@@ -9,6 +9,6 @@ public interface ICustomerService
     : IService<Customer>
 {
     Task<(bool Success, Customer? ImportedCustomer)> ImportCustomerAsync(ImportCustomerServiceInput input, CancellationToken cancellationToken);
-    Task<(bool Success, IEnumerable<Notification> NotificationCollection)> ValidateImportCustomerAsync(ValidateImportCustomerServiceInput input, CancellationToken cancellationToken);
+    Task<(bool Success, IEnumerable<Notification>? NotificationCollection)> ValidateImportCustomerAsync(ValidateImportCustomerServiceInput input, CancellationToken cancellationToken);
     Task<(bool Success, Customer? DeletedCustomer)> DeleteCustomerAsync(DeleteCustomerServiceInput input, CancellationToken cancellationToken);
 }
