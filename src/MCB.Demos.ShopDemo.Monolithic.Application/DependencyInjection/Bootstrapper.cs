@@ -9,6 +9,8 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Interfaces;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Application.DependencyInjection;
 
@@ -23,6 +25,7 @@ public static class Bootstrapper
         // Use Cases
         dependencyInjectionContainer.RegisterScoped<IImportCustomerUseCase, ImportCustomerUseCase>();
         dependencyInjectionContainer.RegisterScoped<IImportCustomerBatchUseCase, ImportCustomerBatchUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IValidateImportCustomerBatchUseCase, ValidateImportCustomerBatchUseCase>();
         dependencyInjectionContainer.RegisterScoped<IDeleteCustomerUseCase, DeleteCustomerUseCase>();
 
         // Queries

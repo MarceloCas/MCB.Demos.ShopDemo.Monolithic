@@ -2,6 +2,7 @@
 using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRegistered;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
@@ -22,6 +23,19 @@ public static class AdapterConfig
         TypeAdapterConfig<(ImportCustomerBatchUseCaseInput, ImportCustomerBatchUseCaseInputItem), ImportCustomerServiceInput>.NewConfig()
             .MapWith(src =>
                 new ImportCustomerServiceInput(
+                    src.Item1.CorrelationId,
+                    src.Item1.TenantId,
+                    src.Item2.FirstName ?? string.Empty,
+                    src.Item2.LastName ?? string.Empty,
+                    src.Item2.BirthDate ?? default,
+                    src.Item2.Email ?? string.Empty,
+                    src.Item1.ExecutionUser ?? string.Empty,
+                    src.Item1.SourcePlatform ?? string.Empty
+                )
+            );
+        TypeAdapterConfig<(ValidateImportCustomerBatchUseCaseInput, ValidateImportCustomerBatchUseCaseInputItem), ValidateImportCustomerServiceInput>.NewConfig()
+            .MapWith(src =>
+                new ValidateImportCustomerServiceInput(
                     src.Item1.CorrelationId,
                     src.Item1.TenantId,
                     src.Item2.FirstName ?? string.Empty,

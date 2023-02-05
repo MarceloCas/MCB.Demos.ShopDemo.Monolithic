@@ -77,12 +77,13 @@ public class CustomControllerBase
 
         return response;
     }
-    private ResponseBase CreateResponse<TInput>(
-        Func<TInput, ResponseBase> responseBaseFactory,
-        TInput useCaseInput
+    private ResponseBase CreateResponse<TInput, TOutput>(
+        Func<TInput, TOutput, ResponseBase> responseBaseFactory,
+        TInput useCaseInput,
+        TOutput useCaseOutput
     )
     {
-        return AddMessagesToResponse(responseBaseFactory(useCaseInput));
+        return AddMessagesToResponse(responseBaseFactory(useCaseInput, useCaseOutput));
     }
 
     // Protected Methods
@@ -97,7 +98,8 @@ public class CustomControllerBase
     protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput, TUseCaseOutput>(
         IUseCase<TUseCaseInput, TUseCaseOutput> useCase,
         TUseCaseInput useCaseInput,
-        Func<TUseCaseInput, ResponseBase> responseBaseFactory,
+        Func<TUseCaseInput, TUseCaseOutput, ResponseBase> successResponseBaseFactory,
+        Func<TUseCaseInput, TUseCaseOutput, ResponseBase?> failResponseBaseFactory,
         int successStatusCode,
         int failStatusCode,
         CancellationToken cancellationToken
@@ -108,12 +110,11 @@ public class CustomControllerBase
             cancellationToken
         );
 
-        var response =
-            useCaseExecutionResult.Success ? null
-            : CreateResponse(
-                responseBaseFactory,
-                useCaseInput
-            );
+        var response = CreateResponse(
+            responseBaseFactory: (useCaseExecutionResult.Success ? successResponseBaseFactory : failResponseBaseFactory)!,
+            useCaseInput,
+            useCaseOutput: useCaseExecutionResult.Output
+        );
 
         return StatusCode(
             statusCode: useCaseExecutionResult.Success ? successStatusCode : failStatusCode,

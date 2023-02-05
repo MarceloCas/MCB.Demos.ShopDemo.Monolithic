@@ -63,10 +63,8 @@ public abstract class UseCaseBase<TUseCaseInput, TUseCaseOutput>
 
         var useCaseOutput = await ExecuteInternalAsync(useCaseInput!, cancellationToken);
 
-        if (!useCaseOutput.Success)
-            return default;
-
-        await PublishDomainEventsToExternalBusAsync(cancellationToken);
+        if (useCaseOutput.Success)
+            await PublishDomainEventsToExternalBusAsync(cancellationToken);
 
         return useCaseOutput;
     }

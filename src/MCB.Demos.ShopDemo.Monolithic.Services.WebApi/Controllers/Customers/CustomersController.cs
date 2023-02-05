@@ -1,4 +1,5 @@
-﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+﻿using Mapster;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
@@ -9,6 +10,9 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Base;
@@ -26,11 +30,10 @@ namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers;
 public class CustomersController
     : CustomControllerBase
 {
-    
-
     // Field
     private readonly IImportCustomerUseCase _importCustomerUseCase;
     private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
+    private readonly IValidateImportCustomerBatchUseCase _validateImportCustomerBatchUseCase;
     private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
     private readonly IGetCustomerByEmailQuery _getCustomerByEmailQuery;
 
@@ -43,12 +46,14 @@ public class CustomersController
         IMcbFeatureFlagManager featureFlagManager,
         IImportCustomerUseCase importCustomerUseCase,
         IImportCustomerBatchUseCase importCustomerBatchUseCase,
+        IValidateImportCustomerBatchUseCase validateImportCustomerBatchUseCase,
         IDeleteCustomerUseCase deleteCustomerUseCase,
         IGetCustomerByEmailQuery getCustomerByEmailQuery
     ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
         _importCustomerUseCase = importCustomerUseCase;
         _importCustomerBatchUseCase = importCustomerBatchUseCase;
+        _validateImportCustomerBatchUseCase = validateImportCustomerBatchUseCase;
         _deleteCustomerUseCase = deleteCustomerUseCase;
         _getCustomerByEmailQuery = getCustomerByEmailQuery;
     }
@@ -134,8 +139,43 @@ public class CustomersController
                 return await RunUseCaseAsync(
                     useCase: input!.ImportCustomerUseCase,
                     useCaseInput: input.Adapter.Adapt<ImportCustomerPayload, ImportCustomerUseCaseInput>(input.Payload)!,
-                    responseBaseFactory: (useCaseInput) => new ImportCustomerResponse(),
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new ImportCustomerResponse(),
+                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => null,
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
+                    failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
+                    cancellationToken
+                )!;
+            },
+            cancellationToken
+        )!;
+    }
+
+    [HttpPost("validate-batch-import")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ValidateImportCustomerBatchResponse))]
+    public Task<IActionResult> ValidateImportCustomerBatchAsync(
+        [FromBody] ValidateImportCustomerBatchPayload payload,
+        CancellationToken cancellationToken
+    )
+    {
+        return TraceManager.StartActivityAsync(
+            name: nameof(Request.Path.Value) ?? nameof(ValidateImportCustomerBatchAsync),
+            kind: System.Diagnostics.ActivityKind.Server,
+            correlationId: payload.CorrelationId,
+            tenantId: payload.TenantId,
+            executionUser: payload.ExecutionUser,
+            sourcePlatform: payload.SourcePlatform,
+            input: (Payload: payload, ValidateImportCustomerBatchUseCase: _validateImportCustomerBatchUseCase, Adapter),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
+                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+
+                return await RunUseCaseAsync(
+                    useCase: input.ValidateImportCustomerBatchUseCase!,
+                    useCaseInput: input.Adapter.Adapt<ValidateImportCustomerBatchPayload, ValidateImportCustomerBatchUseCaseInput>(input.Payload)!,
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => Adapter.Adapt<ValidateImportCustomerBatchUseCaseResponse, ValidateImportCustomerBatchResponse>(useCaseOutput)!,
+                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => Adapter.Adapt<ValidateImportCustomerBatchUseCaseResponse, ValidateImportCustomerBatchResponse>(useCaseOutput)!,
+                    successStatusCode: (int)System.Net.HttpStatusCode.OK,
                     failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
                     cancellationToken
                 )!;
@@ -168,7 +208,8 @@ public class CustomersController
                 return await RunUseCaseAsync(
                     useCase: input.ImportCustomerBatchUseCase!,
                     useCaseInput: input.Adapter.Adapt<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>(input.Payload)!,
-                    responseBaseFactory: (useCaseInput) => new ImportCustomerBatchResponse(),
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new ImportCustomerBatchResponse(),
+                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => null,
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.UnprocessableEntity,
                     cancellationToken
@@ -202,7 +243,8 @@ public class CustomersController
                 return await RunUseCaseAsync(
                     useCase: input.DeleteCustomerUseCase!,
                     useCaseInput: input.Adapter.Adapt<DeleteCustomerPayload, DeleteCustomerUseCaseInput>(input.Payload)!,
-                    responseBaseFactory: (useCaseInput) => new DeleteCustomerResponse(),
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new DeleteCustomerResponse(),
+                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => null,
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.NotFound,
                     cancellationToken

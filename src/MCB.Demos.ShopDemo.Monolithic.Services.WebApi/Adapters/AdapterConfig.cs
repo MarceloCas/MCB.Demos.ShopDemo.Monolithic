@@ -3,6 +3,7 @@ using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ImportCustomerBatch.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.ValidateImportCustomerBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models.Base;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Models;
@@ -43,5 +44,7 @@ public static class AdapterConfig
         TypeAdapterConfig<ImportCustomerPayload, ImportCustomerUseCaseInput>.NewConfig();
         TypeAdapterConfig<ImportCustomerBatchPayload, ImportCustomerBatchUseCaseInput>.NewConfig();
         TypeAdapterConfig<ImportCustomerBatchPayloadItem, ImportCustomerBatchUseCaseInputItem>.NewConfig();
+        TypeAdapterConfig<ValidateImportCustomerBatchPayload, ValidateImportCustomerBatchUseCaseInput>.NewConfig();
+        TypeAdapterConfig<ValidateImportCustomerBatchPayloadItem, ValidateImportCustomerBatchUseCaseInputItem>.NewConfig();
     }
 }

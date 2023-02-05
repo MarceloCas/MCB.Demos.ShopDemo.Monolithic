@@ -3,6 +3,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Models.Enums;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted.Factories.Interfaces;
@@ -17,11 +18,12 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers;
 
 public class CustomerService
-    : ServiceBase<Entities.Customers.Customer>,
+    : ServiceBase<Customer>,
     ICustomerService
 {
     // Constants
     public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(ImportCustomerAsync)}";
+    public const string VALIDATE_IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(ValidateImportCustomerAsync)}";
     public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(DeleteCustomerAsync)}";
 
     // Messages
@@ -107,6 +109,45 @@ public class CustomerService
 
                 // Return
                 return (Success: true, ImportedCustomer: customer);
+            },
+            cancellationToken
+        )!;
+    }
+    public Task<(bool Success, IEnumerable<Notification> NotificationCollection)> ValidateImportCustomerAsync(ValidateImportCustomerServiceInput input, CancellationToken cancellationToken)
+    {
+        return TraceManager.StartActivityAsync(
+            name: VALIDATE_IMPORT_CUSTOMER_TRACE_NAME,
+            kind: System.Diagnostics.ActivityKind.Internal,
+            correlationId: input.CorrelationId,
+            tenantId: input.TenantId,
+            executionUser: input.ExecutionUser,
+            sourcePlatform: input.SourcePlatform,
+            input: (Input: input, CustomerRepository: _customerRepository, Adapter, NotificationPublisher, CustomerFactory: _customerFactory, DomainEventPublisher, CustomerHasBeenRegisteredDomainEventFactory: _customerHasBeenRegisteredDomainEventFactory),
+            handler: async (input, activity, cancellationToken) =>
+            {
+                var notificationCollection = new List<Notification>();
+
+                // Validate input before process
+                if (await input.CustomerRepository.GetByEmailAsync(input.Input.TenantId, input.Input.Email, cancellationToken) is not null)
+                    notificationCollection.Add(
+                        new Notification(
+                            CustomerEmailAlreadyRegisteredNotificationType,
+                            CustomerEmailAlreadyRegisteredErrorCode,
+                            CustomerEmailAlreadyRegisteredMessage
+                        )
+                    );
+
+                // Process
+                var customer = input.CustomerFactory
+                    .Create()!
+                    .RegisterNewCustomer(input.Adapter.Adapt<ValidateImportCustomerServiceInput, RegisterNewCustomerInput>(input.Input)!);
+
+                // Validate domain entity after process
+                foreach (var validationMessage in customer.ValidationInfo.ValidationMessageCollection)
+                    notificationCollection.Add(Adapter.Adapt<ValidationMessage, Notification>(validationMessage));
+
+                // Return
+                return (Success: notificationCollection.Count == 0, NotificationCollection: notificationCollection.AsEnumerable());
             },
             cancellationToken
         )!;
