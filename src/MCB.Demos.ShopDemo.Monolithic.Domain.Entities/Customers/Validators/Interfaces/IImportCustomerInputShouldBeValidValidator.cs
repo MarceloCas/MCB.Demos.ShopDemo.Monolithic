@@ -3,7 +3,7 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators.Interfaces;
 
-public interface IRegisterNewCustomerInputShouldBeValidValidator
-    : IValidator<RegisterNewCustomerInput>
+public interface IImportCustomerInputShouldBeValidValidator
+    : IValidator<ImportCustomerInput>
 {
 }

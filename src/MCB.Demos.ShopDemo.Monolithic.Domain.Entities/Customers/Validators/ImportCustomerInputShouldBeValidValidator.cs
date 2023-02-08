@@ -14,16 +14,16 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Specifica
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators;
 
-public sealed class RegisterNewCustomerInputShouldBeValidValidator
-    : InputBaseValidator<RegisterNewCustomerInput>,
-    IRegisterNewCustomerInputShouldBeValidValidator
+public sealed class ImportCustomerInputShouldBeValidValidator
+    : InputBaseValidator<ImportCustomerInput>,
+    IImportCustomerInputShouldBeValidValidator
 {
     // Fields
     private readonly ICustomerSpecifications _customerSpecifications;
     private readonly IEmailValueObjectSpecifications _emailValueObjectSpecifications;
 
     // Constructors
-    public RegisterNewCustomerInputShouldBeValidValidator(
+    public ImportCustomerInputShouldBeValidValidator(
         IInputBaseSpecifications inputBaseSpecifications,
         IDateTimeProvider dateTimeProvider
     ) : base(inputBaseSpecifications)

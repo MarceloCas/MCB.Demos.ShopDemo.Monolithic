@@ -90,7 +90,7 @@ public class CustomerService
                 // Process
                 var customer = input.CustomerFactory
                     .Create()!
-                    .RegisterNewCustomer(input.Adapter.Adapt<ImportCustomerServiceInput, RegisterNewCustomerInput>(input.Input)!);
+                    .ImportCustomer(input.Adapter.Adapt<ImportCustomerServiceInput, ImportCustomerInput>(input.Input)!);
 
                 // Validate domain entity after process
                 if (!await ValidateDomainEntityAndSendNotificationsAsync(customer, cancellationToken))
@@ -140,7 +140,7 @@ public class CustomerService
                 // Process
                 var customer = input.CustomerFactory
                     .Create()!
-                    .RegisterNewCustomer(input.Adapter.Adapt<ValidateImportCustomerServiceInput, RegisterNewCustomerInput>(input.Input)!);
+                    .ImportCustomer(input.Adapter.Adapt<ValidateImportCustomerServiceInput, ImportCustomerInput>(input.Input)!);
 
                 // Validate domain entity after process
                 foreach (var validationMessage in customer.ValidationInfo.ValidationMessageCollection)

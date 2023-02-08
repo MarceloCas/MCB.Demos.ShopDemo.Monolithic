@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 
-public sealed record RegisterNewCustomerInput
+public sealed record ImportCustomerInput
     : InputBase
 {
     // Properties
@@ -12,7 +12,7 @@ public sealed record RegisterNewCustomerInput
     public string Email { get; }
 
     // Constructors
-    public RegisterNewCustomerInput(
+    public ImportCustomerInput(
         Guid tenantId,
         string firstName,
         string lastName,

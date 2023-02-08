@@ -33,7 +33,7 @@ public class Customer
     }
 
     // Validators
-    private readonly RegisterNewCustomerInputShouldBeValidValidator _registerNewCustomerInputShouldBeValidValidator;
+    private readonly ImportCustomerInputShouldBeValidValidator _importCustomerInputShouldBeValidValidator;
 
     // Constructors
     public Customer(
@@ -43,17 +43,17 @@ public class Customer
         FirstName = string.Empty;
         LastName = string.Empty;
 
-        _registerNewCustomerInputShouldBeValidValidator = new RegisterNewCustomerInputShouldBeValidValidator(
+        _importCustomerInputShouldBeValidValidator = new ImportCustomerInputShouldBeValidValidator(
             new InputBaseSpecifications(), 
             dateTimeProvider
         );
     }
 
     // Public Methods
-    public Customer RegisterNewCustomer(RegisterNewCustomerInput input)
+    public Customer ImportCustomer(ImportCustomerInput input)
     {
         // Validate
-        if (!Validate(() => _registerNewCustomerInputShouldBeValidValidator.Validate(input)))
+        if (!Validate(() => _importCustomerInputShouldBeValidValidator.Validate(input)))
             return this;
 
         // Process and Return
