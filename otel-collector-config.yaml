@@ -49,4 +49,4 @@ service:
     logs:
       receivers: [otlp]
       processors: []
-      exporters: [logging, file]
+      exporters: [logging]
