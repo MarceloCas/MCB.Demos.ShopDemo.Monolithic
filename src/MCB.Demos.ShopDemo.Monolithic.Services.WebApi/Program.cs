@@ -20,9 +20,9 @@ using OpenTelemetry;
 using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
-using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Services;
+using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,8 +104,9 @@ builder.Services.AddOpenTelemetry()
     )
 .StartWithHost();
 
-// OpenTelemetry Logging
+// Logging
 builder.Logging.ClearProviders();
+
 builder.Logging.AddOpenTelemetry(options =>
 {
     options.SetResourceBuilder(ResourceBuilder.CreateDefault()
@@ -119,16 +120,19 @@ builder.Logging.AddOpenTelemetry(options =>
     options
         .AddOtlpExporter(options =>
         {
-                options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
+            options.Endpoint = new Uri(appSettings.OpenTelemetry.GrpcCollectorReceiverUrl);
             options.BatchExportProcessorOptions = batchExportProcessorOptions;
         })
-        .AddProcessor(new OpenTelemetryLogGrayLogProcessor());
+        .AddProcessor(new OpenTelemetryLogSeqProcessor(appSettings));
 
     if (appSettings.OpenTelemetry.EnableConsoleExporter)
         options.AddConsoleExporter();
 
 });
-    builder.Logging.AddFilter<OpenTelemetryLoggerProvider>("*", Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default));
+builder.Logging.AddFilter<OpenTelemetryLoggerProvider>(
+    category: appSettings.ApplicationName, 
+    level: Enum.Parse<LogLevel>(appSettings.Logging.LogLevel.Default)
+);
 
 // Entity Framework
 builder.Services.AddDbContextPool<PostgreSqlEntityFrameworkDataContext>(

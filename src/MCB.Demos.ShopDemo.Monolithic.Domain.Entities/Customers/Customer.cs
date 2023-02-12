@@ -5,7 +5,6 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Validators;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.ValueObjects.Email.Validators;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 

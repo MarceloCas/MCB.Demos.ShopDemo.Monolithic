@@ -189,6 +189,20 @@ services:
     networks:
       - mcb-demos-shopdemo-monolithic
 
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:5341"
+      - "5342:80"
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_API_KEY: "123456"
+    volumes:
+      - /mcb/docker/volumes/seq/data:/data
+    networks:
+      - mcb-demos-shopdemo-monolithic
+
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer

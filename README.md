@@ -97,6 +97,7 @@ This project uses amazing technologies and frameworks like:
 - Prometheus as metrics storage
 - Grafana as dashbaord software
 - HashiCorp Consul KV
+- Datalust Seq for logging visualization
 - Github Actions as CI/CD platform
 
 ## :classical_building: Architecture
@@ -140,6 +141,7 @@ If you don't have a docker installed and running, you will need to have the foll
 - Jaeger
 - Grafana
 - HashiCorp
+- Datalust Seq
 
 
 ## :gear: Setup
@@ -157,6 +159,7 @@ This compose file will create:
 - Redis single instance
 - [Redis Insight](http://localhost:8001/) installation to access Redis using a internet browser
 - [HashiCorp Consult KV](http://localhost:8500/) installation to access HashiCorp KV
+- [Datalust Seq](http://localhost:5342/) installation to access Datalust Seq
 - [Portainer](http://localhost:9000/) to view and manage all compose environment using a internet browser GUI
 
 :information_source: All username, passwords and ports mapping are in  [docker-compose.yml](docker-compose.yml)  file :information_source:
@@ -305,6 +308,12 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
   "Consul": {
     "Address": "http://localhost:8500/v1/kv",
     "RefreshIntervalInSeconds": 0
+  },
+  "Seq": {
+    "Url": "http://localhost:5341",
+    "ApiKey": "123456",
+    "MinimumLevel": "Information",
+    "UseSeqInsteadOfOpenTelemetryExport": true
   }
 }
 ```

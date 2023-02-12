@@ -16,6 +16,7 @@ public class AppSettings
     public OpenTelemetry OpenTelemetry { get; set; } = null!;
     public Logging Logging { get; set; } = null!;
     public Consul Consul { get; set; } = null!;
+    public Seq Seq { get; set; } = null!;
 
     // Public Methods
     public (bool IsValid, IEnumerable<string> Messages) Validate()
@@ -59,6 +60,11 @@ public class AppSettings
             messageCollection.Add($"{typeFullName}.{nameof(Consul)} cannot be null");
         else
             messageCollection.AddRange(Consul.Validate().Messages);
+
+        if (Seq is null)
+            messageCollection.Add($"{typeFullName}.{nameof(Seq)} cannot be null");
+        else
+            messageCollection.AddRange(Seq.Validate().Messages);
 
         return (IsValid: messageCollection.Count == 0, Messages: messageCollection);
     }

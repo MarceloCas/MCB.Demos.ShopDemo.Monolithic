@@ -15,7 +15,8 @@ public class CustomControllerBase
     : ControllerBase
 {
     // Constants
-    public const string METHOD_NOT_AVALIABLE_MESSAGE = "Method not avaliable. You can't have the feature flag {0}";
+    public const string METHOD_NOT_AVALIABLE_SERILOG_MESSAGE_TEMPLATE = "Method not avaliable. You can't have the feature flag|tenantId:{tenantId}|featureFlag:{featureFlag}";
+    public const string METHOD_NOT_AVALIABLE_MESSAGE = "Method not avaliable. You can't have the feature flag|tenantId:{0}|featureFlag:{1}";
 
     // Fields
     private readonly INotificationSubscriber _notificationSubscriber;
@@ -91,9 +92,10 @@ public class CustomControllerBase
     {
         return FeatureFlagManager.GetFlagAsync(tenantId, executionUser, featureFlagKey, cancellationToken);
     }
-    protected IActionResult CreateNotAllowedResult(string featureFlagKey)
+    protected IActionResult CreateNotAllowedResult(Guid tenantId, string featureFlagKey)
     {
-        return StatusCode(StatusCodes.Status503ServiceUnavailable, string.Format(METHOD_NOT_AVALIABLE_MESSAGE, featureFlagKey));
+        Logger.LogWarning(METHOD_NOT_AVALIABLE_SERILOG_MESSAGE_TEMPLATE, tenantId, featureFlagKey);
+        return StatusCode(StatusCodes.Status503ServiceUnavailable, string.Format(METHOD_NOT_AVALIABLE_MESSAGE, tenantId, featureFlagKey));
     }
     protected async Task<IActionResult> RunUseCaseAsync<TUseCaseInput, TUseCaseOutput>(
         IUseCase<TUseCaseInput, TUseCaseOutput> useCase,

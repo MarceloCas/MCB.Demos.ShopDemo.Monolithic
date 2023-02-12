@@ -1,5 +1,4 @@
-﻿using Mapster;
-using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
+﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Adapter;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.GetCustomerByEmail;
@@ -89,7 +88,7 @@ public class CustomersController
             handler: async (input, activity, cancellationToken) => 
             {
                 if (!await CheckFeatureFlagAsync(input.TenantId, executionUser: null, FeatureFlags.GET_CUSTOMER_FEATURE_FLAG_KEY, cancellationToken))
-                    return CreateNotAllowedResult(FeatureFlags.GET_CUSTOMER_FEATURE_FLAG_KEY)!;
+                    return CreateNotAllowedResult(input.TenantId, FeatureFlags.GET_CUSTOMER_FEATURE_FLAG_KEY)!;
 
                 return await RunQueryAsync(
                     input,
@@ -134,7 +133,7 @@ public class CustomersController
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
-                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+                    return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
                     useCase: input!.ImportCustomerUseCase,
@@ -168,7 +167,7 @@ public class CustomersController
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
-                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+                    return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
                     useCase: input.ValidateImportCustomerBatchUseCase!,
@@ -203,7 +202,7 @@ public class CustomersController
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY, cancellationToken))
-                    return CreateNotAllowedResult(FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
+                    return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.IMPORT_CUSTOMER_BATCH_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
                     useCase: input.ImportCustomerBatchUseCase!,
@@ -238,7 +237,7 @@ public class CustomersController
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY, cancellationToken))
-                    return CreateNotAllowedResult(FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY)!;
+                    return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
                     useCase: input.DeleteCustomerUseCase!,
