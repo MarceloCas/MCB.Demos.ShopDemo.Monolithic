@@ -307,7 +307,7 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
   },
   "Consul": {
     "Address": "http://localhost:8500/v1/kv",
-    "RefreshIntervalInSeconds": 0
+    "RefreshIntervalInSeconds": 30
   },
   "Seq": {
     "Url": "http://localhost:5341",
