@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Admin;
 
-[Route("admin/v{version:apiVersion}/[controller]")]
+[Route("admin/v{version:apiVersion}/startup")]
 [ApiController]
 [ApiVersion("1")]
 public class StartupController

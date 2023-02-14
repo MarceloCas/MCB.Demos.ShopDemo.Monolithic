@@ -23,7 +23,7 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Products;
 
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/products")]
 [ApiController]
 [ApiVersion("1")]
 public class ProductsController

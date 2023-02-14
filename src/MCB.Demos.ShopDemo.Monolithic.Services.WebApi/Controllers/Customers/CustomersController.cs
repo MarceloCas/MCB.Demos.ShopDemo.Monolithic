@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers;
 
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/customers")]
 [ApiController]
 [ApiVersion("1")]
 public class CustomersController
