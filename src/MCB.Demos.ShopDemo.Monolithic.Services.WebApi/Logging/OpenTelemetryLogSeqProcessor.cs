@@ -50,7 +50,6 @@ public class OpenTelemetryLogSeqProcessor
             case LogLevel.Critical:
                 Log.Logger.Fatal(MESSAGE_TEMPLATE, data.Timestamp, data.TraceId, data.SpanId, data.TraceFlags, data.TraceState, data.CategoryName, data.LogLevel, data.EventId, data.FormattedMessage, data.State, data.StateValues, data.Exception);
                 break;
-            case LogLevel.None:
             default:
                 Log.Logger.Information(MESSAGE_TEMPLATE, data.Timestamp, data.TraceId, data.SpanId, data.TraceFlags, data.TraceState, data.CategoryName, data.LogLevel, data.EventId, data.FormattedMessage, data.State, data.StateValues, data.Exception);
                 break;

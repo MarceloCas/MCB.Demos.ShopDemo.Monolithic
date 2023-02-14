@@ -16,17 +16,14 @@ public class GetProductByCodeQuery
 
     // Fields
     private readonly IProductRepository _productRepository;
-    private readonly INotificationPublisher _notificationPublisher;
 
     // Constructors
     public GetProductByCodeQuery(
         ITraceManager traceManager,
-        IProductRepository productRepository,
-        INotificationPublisher notificationPublisher
+        IProductRepository productRepository
     ) : base(traceManager)
     {
         _productRepository = productRepository;
-        _notificationPublisher = notificationPublisher;
     }
 
     public override Task<Product?> ExecuteAsync(GetProductByCodeQueryInput input, CancellationToken cancellationToken)
