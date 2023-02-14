@@ -14,5 +14,37 @@
   {
     "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/get-customer",
     "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-product",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-product-batch",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/delete-product",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/get-product",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-order",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/import-order-batch",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/delete-order",
+    "Value": "dHJ1ZQ=="
+  },
+  {
+    "Key": "feature-flags/tenants/0275a76e-0b7d-4187-b10e-5ef540e266e9/get-order",
+    "Value": "dHJ1ZQ=="
   }
 ]

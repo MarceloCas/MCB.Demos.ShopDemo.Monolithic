@@ -5,6 +5,9 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.DataModels.Base;
 
@@ -23,16 +26,26 @@ public static class AdapterConfig
     private static void MapDomainEntityToDataModel()
     {
         ConfigureMapFromDomainEntityBaseToDataModelBase<Customer, CustomerDataModel>();
+        ConfigureMapFromDomainEntityBaseToDataModelBase<Product, ProductDataModel>();
     }
     private static void MapDataModelToDomainEntity(IDependencyInjectionContainer dependencyInjectionContainer)
     {
         ConfigureMapFromDataModelToInputBase<CustomerDataModel, SetExistingCustomerInfoInput>();
+        ConfigureMapFromDataModelToInputBase<ProductDataModel, SetExistingProductInfoInput>();
+
         TypeAdapterConfig<CustomerDataModel, Customer>.NewConfig()
             .MapWith(converterFactory: src =>
                 dependencyInjectionContainer
                     .Resolve<ICustomerFactory>()!
                     .Create()!
                     .SetExistingCustomerInfo(src.Adapt<SetExistingCustomerInfoInput>())
+            );
+        TypeAdapterConfig<ProductDataModel, Product>.NewConfig()
+            .MapWith(converterFactory: src =>
+                dependencyInjectionContainer
+                    .Resolve<IProductFactory>()!
+                    .Create()!
+                    .SetExistingProductInfo(src.Adapt<SetExistingProductInfoInput>())
             );
     }
     private static void ConfigureMapFromDomainEntityBaseToDataModelBase<TDomainEntityBase, TDataModelBase>()   

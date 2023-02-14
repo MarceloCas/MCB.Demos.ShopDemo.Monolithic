@@ -32,6 +32,9 @@ public class PostgreSqlEntityFrameworkDataContext
     {
         var customerDataModelEntityFrameworkRepository = _dependencyInjectionContainer.Resolve<ICustomerDataModelEntityFrameworkRepository>()!;
         await customerDataModelEntityFrameworkRepository.WriteBulkAsync(cancellationToken);
+
+        var productDataModelEntityFrameworkRepository = _dependencyInjectionContainer.Resolve<IProductDataModelEntityFrameworkRepository>()!;
+        await productDataModelEntityFrameworkRepository.WriteBulkAsync(cancellationToken);
     }
 
     // Protected Methods
@@ -42,6 +45,7 @@ public class PostgreSqlEntityFrameworkDataContext
     protected override void OnModelCreatingInternal(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new CustomerEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
     }
 
     // Public Methods

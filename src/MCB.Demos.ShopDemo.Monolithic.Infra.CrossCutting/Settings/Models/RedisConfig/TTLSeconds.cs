@@ -3,6 +3,7 @@ public class TtlSeconds
 {
     // Properties
     public int CustomerDataModel { get; set; }
+    public int ProductDataModel { get; set; }
 
     // Public Methods
     public static (bool IsValid, IEnumerable<string> Messages) Validate()

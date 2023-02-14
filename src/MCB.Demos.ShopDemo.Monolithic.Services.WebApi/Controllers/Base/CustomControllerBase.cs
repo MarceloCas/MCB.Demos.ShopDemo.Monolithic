@@ -44,10 +44,13 @@ public class CustomControllerBase
     }
 
     // Private Methods
-    private ResponseBase AddMessagesToResponse(ResponseBase response)
+    private ResponseBase? AddMessagesToResponse(ResponseBase response)
     {
         if (!_notificationSubscriber.NotificationCollection.Any())
             return response;
+
+        if (response is null)
+            return null;
 
         response.Messages = _notificationSubscriber.NotificationCollection.Select(q =>
             new ResponseMessage
@@ -78,7 +81,7 @@ public class CustomControllerBase
 
         return response;
     }
-    private ResponseBase CreateResponse<TInput, TOutput>(
+    private ResponseBase? CreateResponse<TInput, TOutput>(
         Func<TInput, TOutput, ResponseBase> responseBaseFactory,
         TInput useCaseInput,
         TOutput useCaseOutput

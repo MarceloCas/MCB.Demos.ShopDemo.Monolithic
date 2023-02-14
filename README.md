@@ -273,7 +273,8 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
   "Redis": {
     "ConnectionString": "localhost:6379,allowAdmin=true,abortConnect=false,connectTimeout=500,responseTimeout=500,syncTimeout=500,keepAlive=10",
     "TTLSeconds": {
-      "CustomerDataModel": 600
+      "CustomerDataModel": 600,
+      "ProductDataModel": 600
     }
   },
   "PostgreSql": {

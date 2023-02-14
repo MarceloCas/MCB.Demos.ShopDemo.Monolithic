@@ -47,6 +47,5 @@ public static class Bootstrapper
         Infra.Data.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer, appSettings);
         Infra.CrossCutting.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer, appSettings);
         Infra.CrossCutting.FeatureFlag.DependencyInjection.Bootstrapper.ConfigureDependencyInjection(dependencyInjectionContainer);
-        
     }
 }

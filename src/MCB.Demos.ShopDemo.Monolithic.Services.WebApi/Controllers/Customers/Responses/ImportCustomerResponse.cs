@@ -7,11 +7,5 @@ public class ImportCustomerResponse
     : ResponseBase
 {
     // Properties
-    public IEnumerable<CustomerDto> CustomerCollection { get; set; }
-
-    // Constructors
-    public ImportCustomerResponse()
-    {
-        CustomerCollection = Enumerable.Empty<CustomerDto>();
-    }
+    public IEnumerable<CustomerDto>? CustomerCollection { get; set; }
 }

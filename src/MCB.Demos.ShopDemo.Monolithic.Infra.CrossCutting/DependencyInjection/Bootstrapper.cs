@@ -10,8 +10,10 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerDeleted;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.CustomerRegistered;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Customers.CustomerDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Customers.CustomerImported;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Products.ProductDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Products.ProductImported;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.DependencyInjection;
@@ -69,11 +71,14 @@ public static class Bootstrapper
     {
         // Protobuf Serialization
         ProtobufSerializer.ConfigureTypeCollection(new[] {
-            // DTOs
+            // Customers
             typeof(CustomerDto),
-            // Events
-            typeof(CustomerRegisteredEvent),
+            typeof(CustomerImportedEvent),
             typeof(CustomerDeletedEvent),
+            // Products
+            typeof(ProductDto),
+            typeof(ProductImportedEvent),
+            typeof(ProductDeletedEvent),
         });
     }
 }

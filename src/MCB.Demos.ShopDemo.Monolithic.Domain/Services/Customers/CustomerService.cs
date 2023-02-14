@@ -7,7 +7,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted.Factories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRegistered.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImported.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
@@ -38,7 +38,7 @@ public class CustomerService
     // Fields
     private readonly ICustomerRepository _customerRepository;
     private readonly ICustomerFactory _customerFactory;
-    private readonly ICustomerRegisteredDomainEventFactory _customerHasBeenRegisteredDomainEventFactory;
+    private readonly ICustomerImportedDomainEventFactory _customerHasBeenRegisteredDomainEventFactory;
     private readonly ICustomerDeletedDomainEventFactory _customerDeletedDomainEventFactory;
 
     // Constructors
@@ -49,7 +49,7 @@ public class CustomerService
         IAdapter adapter,
         ICustomerRepository customerRepository,
         ICustomerFactory customerFactory,
-        ICustomerRegisteredDomainEventFactory customerHasBeenRegisteredDomainEventFactory,
+        ICustomerImportedDomainEventFactory customerHasBeenRegisteredDomainEventFactory,
         ICustomerDeletedDomainEventFactory customerDeletedDomainEventFactory
     ) : base(notificationPublisher, domainEventPublisher, traceManager, adapter, customerRepository)
     {

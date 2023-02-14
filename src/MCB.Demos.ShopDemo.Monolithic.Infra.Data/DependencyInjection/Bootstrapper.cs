@@ -29,6 +29,7 @@ public static class Bootstrapper
 
         // Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerRepository, CustomerRepository>();
+        dependencyInjectionContainer.RegisterScoped<IProductRepository, ProductRepository>();
 
         ConfigureDependencyInjectionForEntityFramework(dependencyInjectionContainer);
         ConfigureDependencyInjectionForRedis(dependencyInjectionContainer, appSettings);
@@ -45,6 +46,7 @@ public static class Bootstrapper
 
         // Data Model Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerDataModelEntityFrameworkRepository, CustomerDataModelEntityFrameworkRepository>();
+        dependencyInjectionContainer.RegisterScoped<IProductDataModelEntityFrameworkRepository, ProductDataModelEntityFrameworkRepository>();
     }
     private static void ConfigureDependencyInjectionForRedis(IDependencyInjectionContainer dependencyInjectionContainer, AppSettings appSettings)
     {
@@ -70,6 +72,7 @@ public static class Bootstrapper
 
         // DataModels Repositories
         dependencyInjectionContainer.RegisterScoped<ICustomerDataModelRedisRepository, CustomerDataModelRedisRepository>();
+        dependencyInjectionContainer.RegisterScoped<IProductDataModelRedisRepository, ProductDataModelRedisRepository>();
     }
 
 }
