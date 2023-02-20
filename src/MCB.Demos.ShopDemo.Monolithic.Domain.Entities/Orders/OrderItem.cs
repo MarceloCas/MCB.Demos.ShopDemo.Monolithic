@@ -10,7 +10,7 @@ public class OrderItem
     : DomainEntityBase
 {
     // Fields
-    private readonly ImportOrderItemInputShouldBeValidValidator _importOrderItemInputShouldBeValidValidator;
+    private readonly RegisterNewOrderItemInputShouldBeValidValidator _registerNewOrderItemInputShouldBeValidValidator;
 
     // Properties
     public int Sequence { get; private set; }
@@ -24,17 +24,17 @@ public class OrderItem
         IDateTimeProvider dateTimeProvider
     ) : base(dateTimeProvider)
     {
-        _importOrderItemInputShouldBeValidValidator = new ImportOrderItemInputShouldBeValidValidator(
+        _registerNewOrderItemInputShouldBeValidValidator = new RegisterNewOrderItemInputShouldBeValidValidator(
             new InputBaseSpecifications(),
             dateTimeProvider
         );
     }
 
     // Public Methods
-    public OrderItem ImportOrderItem(ImportOrderItemInput input)
+    public OrderItem RegisterNewOrderItem(RegisterNewOrderItemInput input)
     {
         // Validate
-        if (!Validate(() => _importOrderItemInputShouldBeValidValidator.Validate(input)))
+        if (!Validate(() => _registerNewOrderItemInputShouldBeValidValidator.Validate(input)))
             return this;
 
         // Process and Return

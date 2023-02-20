@@ -8,15 +8,15 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Specifications;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Validators.Wrappers;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Validators;
-public class ImportOrderItemInputShouldBeValidValidator
-    : InputBaseValidator<ImportOrderItemInput>,
-    IImportOrderItemInputShouldBeValidValidator
+public class RegisterNewOrderItemInputShouldBeValidValidator
+    : InputBaseValidator<RegisterNewOrderItemInput>,
+    IRegisterNewOrderItemInputShouldBeValidValidator
 {
     // Fields
     private readonly IOrderItemSpecifications _orderItemSpecifications;
 
     // Constructors
-    public ImportOrderItemInputShouldBeValidValidator(
+    public RegisterNewOrderItemInputShouldBeValidValidator(
         IInputBaseSpecifications inputBaseSpecifications,
         IDateTimeProvider dateTimeProvider
     ) : base(inputBaseSpecifications)

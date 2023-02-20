@@ -2,7 +2,7 @@
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Inputs;
-public record ImportOrderItemInput
+public record RegisterNewOrderItemInput
     : InputBase
 {
     // Properties
@@ -13,7 +13,7 @@ public record ImportOrderItemInput
     public Product Product { get; } = null!;
 
     // Constructors
-    public ImportOrderItemInput(
+    public RegisterNewOrderItemInput(
         Guid tenantId,
         int sequence,
         string? description,
