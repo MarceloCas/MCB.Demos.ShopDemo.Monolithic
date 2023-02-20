@@ -12,7 +12,7 @@ public class Product
 {
     // Properties
     public string Code { get; private set; }
-    public string Description { get; private set; }
+    public string? Description { get; private set; }
 
     // Validators
     private readonly ImportProductInputShouldBeValidValidator _importProductInputShouldBeValidValidator;
@@ -23,7 +23,6 @@ public class Product
     ) : base(dateTimeProvider)
     {
         Code = string.Empty;
-        Description = string.Empty;
 
         _importProductInputShouldBeValidValidator = new ImportProductInputShouldBeValidValidator(
             new InputBaseSpecifications(),
@@ -75,7 +74,7 @@ public class Product
     protected override DomainEntityBase CreateInstanceForCloneInternal() => new Product(DateTimeProvider);
 
     // Private Methods
-    private Product SetProductInfo(string code, string description)
+    private Product SetProductInfo(string code, string? description)
     {
         Code = code;
         Description = description;

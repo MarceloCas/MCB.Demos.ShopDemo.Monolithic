@@ -1,5 +1,4 @@
-﻿using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
-using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
+﻿using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Base;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Repositories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products;
