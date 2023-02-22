@@ -41,11 +41,11 @@ public static class OrderValidatorWrapper
         IOrderSpecifications orderSpecifications,
         ValidatorBase<TInput>.FluentValidationValidatorWrapper fluentValidationValidatorWrapper,
         Expression<Func<TInput, TProperty>> propertyExpression,
-        Func<TInput, DateTime?> getDateWithValidLengthFunction
+        Func<TInput, DateTime?> getDateFunction
     )
     {
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
-            .Must((input, sequence) => orderSpecifications.OrderShouldHaveDateWithValidLength(getDateWithValidLengthFunction(input)))
+            .Must((input, sequence) => orderSpecifications.OrderShouldHaveDateWithValidLength(getDateFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorCode)
             .WithMessage(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorMessage)
             .WithSeverity(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorSeverity);
@@ -76,6 +76,7 @@ public static class OrderValidatorWrapper
     {
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveOrderItems(getImportOrderInputFunction(input)))
+            .When(input => input != null)
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveOrderItemsErrorCode)
             .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsErrorMessage)
             .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsErrorSeverity);
@@ -89,6 +90,7 @@ public static class OrderValidatorWrapper
     {
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveOrderItemsWithValidSequence(getImportOrderInputFunction(input)))
+            .When(input => input != null)
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveOrderItemsErrorCode)
             .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsErrorMessage)
             .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsErrorSeverity);

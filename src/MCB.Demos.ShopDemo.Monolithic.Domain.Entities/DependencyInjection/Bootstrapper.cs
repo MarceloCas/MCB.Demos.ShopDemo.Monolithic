@@ -5,6 +5,12 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImp
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImported.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderImported.Factories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderImported.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderRemoved.Factories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderRemoved.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Factories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductImported.Factories;
@@ -21,6 +27,7 @@ public static class Bootstrapper
     {
         ConfigureDependencyInjectionForCustomer(dependencyInjectionContainer);
         ConfigureDependencyInjectionForProduct(dependencyInjectionContainer);
+        ConfigureDependencyInjectionForOrder(dependencyInjectionContainer);
     }
 
     // Private Methods
@@ -41,5 +48,15 @@ public static class Bootstrapper
         // Domain Events
         dependencyInjectionContainer.RegisterSingleton<IProductImportedDomainEventFactory, ProductImportedDomainEventFactory>();
         dependencyInjectionContainer.RegisterSingleton<IProductDeletedDomainEventFactory, ProductDeletedDomainEventFactory>();
+    }
+    private static void ConfigureDependencyInjectionForOrder(IDependencyInjectionContainer dependencyInjectionContainer)
+    {
+        // Factories
+        dependencyInjectionContainer.RegisterSingleton<IOrderFactory, OrderFactory>();
+        dependencyInjectionContainer.RegisterSingleton<IOrderItemFactory, OrderItemFactory>();
+
+        // Domain Events
+        dependencyInjectionContainer.RegisterSingleton<IOrderImportedDomainEventFactory, OrderImportedDomainEventFactory>();
+        dependencyInjectionContainer.RegisterSingleton<IOrderRemovedDomainEventFactory, OrderRemovedDomainEventFactory>();
     }
 }

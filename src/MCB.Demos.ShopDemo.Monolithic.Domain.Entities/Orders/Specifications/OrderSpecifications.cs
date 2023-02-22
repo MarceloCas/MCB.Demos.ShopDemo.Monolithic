@@ -17,7 +17,7 @@ public class OrderSpecifications
     }
 
     // Methods
-    public bool OrderShouldHaveCode(string code)
+    public bool OrderShouldHaveCode(string? code)
     {
         return !string.IsNullOrWhiteSpace(code);
     }
