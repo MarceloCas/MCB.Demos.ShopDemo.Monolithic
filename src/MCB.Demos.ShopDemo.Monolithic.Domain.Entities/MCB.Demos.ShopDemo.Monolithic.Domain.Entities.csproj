@@ -19,8 +19,4 @@
     <ProjectReference Include="..\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting\MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Orders\Specifications\Interfaces\" />
-  </ItemGroup>
-
 </Project>
