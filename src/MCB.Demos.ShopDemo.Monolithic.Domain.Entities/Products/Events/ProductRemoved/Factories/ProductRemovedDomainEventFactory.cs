@@ -1,25 +1,25 @@
 ﻿using MCB.Core.Domain.Entities.DomainEntitiesBase.Events.Factories;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductRemoved.Factories.Interfaces;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories;
-public class ProductDeletedDomainEventFactory
+namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductRemoved.Factories;
+public class ProductRemovedDomainEventFactory
     : DomainEventFactoryBase,
-    IProductDeletedDomainEventFactory
+    IProductRemovedDomainEventFactory
 {
     // Constructors
-    public ProductDeletedDomainEventFactory(
+    public ProductRemovedDomainEventFactory(
         IDateTimeProvider dateTimeProvider
     ) : base(dateTimeProvider)
     {
     }
 
     // Public Methods
-    public ProductDeletedDomainEvent? Create((Product Product, string ExecutionUser, string SourcePlatform, Guid CorrelationId) parameter)
+    public ProductRemovedDomainEvent? Create((Product Product, string ExecutionUser, string SourcePlatform, Guid CorrelationId) parameter)
     {
-        var (id, timestamp, domainEventType) = GetBaseEventFields<ProductDeletedDomainEvent>();
+        var (id, timestamp, domainEventType) = GetBaseEventFields<ProductRemovedDomainEvent>();
 
-        return new ProductDeletedDomainEvent(
+        return new ProductRemovedDomainEvent(
             correlationId: parameter.CorrelationId,
             id: id,
             tenantId: parameter.Product.TenantId,

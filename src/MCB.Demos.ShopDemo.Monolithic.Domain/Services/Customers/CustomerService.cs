@@ -6,7 +6,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications.Mode
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRemoved.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImported.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Inputs;
@@ -39,7 +39,7 @@ public class CustomerService
     private readonly ICustomerRepository _customerRepository;
     private readonly ICustomerFactory _customerFactory;
     private readonly ICustomerImportedDomainEventFactory _customerHasBeenRegisteredDomainEventFactory;
-    private readonly ICustomerDeletedDomainEventFactory _customerDeletedDomainEventFactory;
+    private readonly ICustomerRemovedDomainEventFactory _customerRemovedDomainEventFactory;
 
     // Constructors
     public CustomerService(
@@ -50,13 +50,13 @@ public class CustomerService
         ICustomerRepository customerRepository,
         ICustomerFactory customerFactory,
         ICustomerImportedDomainEventFactory customerHasBeenRegisteredDomainEventFactory,
-        ICustomerDeletedDomainEventFactory customerDeletedDomainEventFactory
+        ICustomerRemovedDomainEventFactory customerRemovedDomainEventFactory
     ) : base(notificationPublisher, domainEventPublisher, traceManager, adapter, customerRepository)
     {
         _customerRepository = customerRepository;
         _customerFactory = customerFactory;
         _customerHasBeenRegisteredDomainEventFactory = customerHasBeenRegisteredDomainEventFactory;
-        _customerDeletedDomainEventFactory = customerDeletedDomainEventFactory;
+        _customerRemovedDomainEventFactory = customerRemovedDomainEventFactory;
     }
 
     // Public Methods
@@ -152,7 +152,7 @@ public class CustomerService
             cancellationToken
         )!;
     }
-    public Task<(bool Success, Customer? DeletedCustomer)> DeleteCustomerAsync(DeleteCustomerServiceInput input, CancellationToken cancellationToken)
+    public Task<(bool Success, Customer? RemovedCustomer)> DeleteCustomerAsync(DeleteCustomerServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_CUSTOMER_TRACE_NAME,
@@ -161,7 +161,7 @@ public class CustomerService
             tenantId: input.TenantId,
             executionUser: input.ExecutionUser,
             sourcePlatform: input.SourcePlatform,
-            input: (Input: input, CustomerRepository: _customerRepository, Adapter, NotificationPublisher, CustomerFactory: _customerFactory, DomainEventPublisher, CustomerDeletedDomainEventFactory: _customerDeletedDomainEventFactory),
+            input: (Input: input, CustomerRepository: _customerRepository, Adapter, NotificationPublisher, CustomerFactory: _customerFactory, DomainEventPublisher, CustomerRemovedDomainEventFactory: _customerRemovedDomainEventFactory),
             handler: async (input, activity, cancellationToken) =>
             {
                 // Validate input before process
@@ -188,12 +188,12 @@ public class CustomerService
 
                 // Send domain event
                 await input.DomainEventPublisher.PublishDomainEventAsync(
-                    input.CustomerDeletedDomainEventFactory.Create((customer, input.Input.ExecutionUser, input.Input.SourcePlatform, input.Input.CorrelationId))!,
+                    input.CustomerRemovedDomainEventFactory.Create((customer, input.Input.ExecutionUser, input.Input.SourcePlatform, input.Input.CorrelationId))!,
                     cancellationToken
                 );
 
                 // Return
-                return (Success: persistenceResult, DeletedCustomer: customer);
+                return (Success: persistenceResult, RemovedCustomer: customer);
             },
             cancellationToken
         )!;

@@ -9,5 +9,5 @@ public interface IProductService
 {
     Task<(bool Success, Product? ImportedProduct)> ImportProductAsync(ImportProductServiceInput input, CancellationToken cancellationToken);
     Task<(bool Success, IEnumerable<Notification>? NotificationCollection)> ValidateImportProductAsync(ValidateImportProductServiceInput input, CancellationToken cancellationToken);
-    Task<(bool Success, Product? DeletedProduct)> DeleteProductAsync(DeleteProductServiceInput input, CancellationToken cancellationToken);
+    Task<(bool Success, Product? RemovedProduct)> DeleteProductAsync(DeleteProductServiceInput input, CancellationToken cancellationToken);
 }

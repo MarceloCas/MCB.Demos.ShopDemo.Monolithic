@@ -10,9 +10,9 @@ using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.ResiliencePolicies.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.Settings;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Customers.CustomerDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Customers.CustomerRemoved;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Customers.CustomerImported;
-using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Products.ProductDeleted;
+using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Products.ProductRemoved;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Events.Products.ProductImported;
 using MCB.Demos.ShopDemo.Monolithic.Messages.V1.Models;
 
@@ -74,11 +74,11 @@ public static class Bootstrapper
             // Customers
             typeof(CustomerDto),
             typeof(CustomerImportedEvent),
-            typeof(CustomerDeletedEvent),
+            typeof(CustomerRemovedEvent),
             // Products
             typeof(ProductDto),
             typeof(ProductImportedEvent),
-            typeof(ProductDeletedEvent),
+            typeof(ProductRemovedEvent),
         });
     }
 }

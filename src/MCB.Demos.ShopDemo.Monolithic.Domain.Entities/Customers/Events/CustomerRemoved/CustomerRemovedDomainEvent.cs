@@ -1,10 +1,10 @@
 ﻿using MCB.Core.Domain.Entities.DomainEntitiesBase.Events;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted;
-public record CustomerDeletedDomainEvent
+namespace MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRemoved;
+public record CustomerRemovedDomainEvent
     : DomainEventBase
 {
-    public CustomerDeletedDomainEvent(
+    public CustomerRemovedDomainEvent(
         Guid correlationId,
         Guid id,
         Guid tenantId,

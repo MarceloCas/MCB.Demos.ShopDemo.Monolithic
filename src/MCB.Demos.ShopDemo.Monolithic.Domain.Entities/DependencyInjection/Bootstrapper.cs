@@ -1,6 +1,6 @@
 ﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted.Factories;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerDeleted.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRemoved.Factories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerRemoved.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImported.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Events.CustomerImported.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers.Factories;
@@ -11,8 +11,8 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderRemoved.F
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Events.OrderRemoved.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Orders.Factories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductRemoved.Factories;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductRemoved.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductImported.Factories;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductImported.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Factories;
@@ -38,7 +38,7 @@ public static class Bootstrapper
 
         // Domain Events
         dependencyInjectionContainer.RegisterSingleton<ICustomerImportedDomainEventFactory, CustomerImportedDomainEventFactory>();
-        dependencyInjectionContainer.RegisterSingleton<ICustomerDeletedDomainEventFactory, CustomerDeletedDomainEventFactory>();
+        dependencyInjectionContainer.RegisterSingleton<ICustomerRemovedDomainEventFactory, CustomerRemovedDomainEventFactory>();
     }
     private static void ConfigureDependencyInjectionForProduct(IDependencyInjectionContainer dependencyInjectionContainer)
     {
@@ -47,7 +47,7 @@ public static class Bootstrapper
 
         // Domain Events
         dependencyInjectionContainer.RegisterSingleton<IProductImportedDomainEventFactory, ProductImportedDomainEventFactory>();
-        dependencyInjectionContainer.RegisterSingleton<IProductDeletedDomainEventFactory, ProductDeletedDomainEventFactory>();
+        dependencyInjectionContainer.RegisterSingleton<IProductRemovedDomainEventFactory, ProductRemovedDomainEventFactory>();
     }
     private static void ConfigureDependencyInjectionForOrder(IDependencyInjectionContainer dependencyInjectionContainer)
     {

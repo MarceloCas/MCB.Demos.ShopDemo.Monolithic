@@ -10,7 +10,7 @@ using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Products.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductImported.Factories.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductDeleted.Factories.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Events.ProductRemoved.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Products.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products.Inputs;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
@@ -38,7 +38,7 @@ public class ProductService
     private readonly IProductRepository _productRepository;
     private readonly IProductFactory _productFactory;
     private readonly IProductImportedDomainEventFactory _productHasBeenRegisteredDomainEventFactory;
-    private readonly IProductDeletedDomainEventFactory _productDeletedDomainEventFactory;
+    private readonly IProductRemovedDomainEventFactory _productRemovedDomainEventFactory;
 
     // Constructors
     public ProductService(
@@ -49,13 +49,13 @@ public class ProductService
         IProductRepository productRepository,
         IProductFactory productFactory,
         IProductImportedDomainEventFactory productHasBeenRegisteredDomainEventFactory,
-        IProductDeletedDomainEventFactory productDeletedDomainEventFactory
+        IProductRemovedDomainEventFactory productRemovedDomainEventFactory
     ) : base(notificationPublisher, domainEventPublisher, traceManager, adapter, productRepository)
     {
         _productRepository = productRepository;
         _productFactory = productFactory;
         _productHasBeenRegisteredDomainEventFactory = productHasBeenRegisteredDomainEventFactory;
-        _productDeletedDomainEventFactory = productDeletedDomainEventFactory;
+        _productRemovedDomainEventFactory = productRemovedDomainEventFactory;
     }
 
     // Public Methods
@@ -151,7 +151,7 @@ public class ProductService
             cancellationToken
         )!;
     }
-    public Task<(bool Success, Product? DeletedProduct)> DeleteProductAsync(DeleteProductServiceInput input, CancellationToken cancellationToken)
+    public Task<(bool Success, Product? RemovedProduct)> DeleteProductAsync(DeleteProductServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_PRODUCT_TRACE_NAME,
@@ -160,7 +160,7 @@ public class ProductService
             tenantId: input.TenantId,
             executionUser: input.ExecutionUser,
             sourcePlatform: input.SourcePlatform,
-            input: (Input: input, ProductRepository: _productRepository, Adapter, NotificationPublisher, ProductFactory: _productFactory, DomainEventPublisher, ProductDeletedDomainEventFactory: _productDeletedDomainEventFactory),
+            input: (Input: input, ProductRepository: _productRepository, Adapter, NotificationPublisher, ProductFactory: _productFactory, DomainEventPublisher, ProductRemovedDomainEventFactory: _productRemovedDomainEventFactory),
             handler: async (input, activity, cancellationToken) =>
             {
                 // Validate input before process
@@ -187,12 +187,12 @@ public class ProductService
 
                 // Send domain event
                 await input.DomainEventPublisher.PublishDomainEventAsync(
-                    input.ProductDeletedDomainEventFactory.Create((product, input.Input.ExecutionUser, input.Input.SourcePlatform, input.Input.CorrelationId))!,
+                    input.ProductRemovedDomainEventFactory.Create((product, input.Input.ExecutionUser, input.Input.SourcePlatform, input.Input.CorrelationId))!,
                     cancellationToken
                 );
 
                 // Return
-                return (Success: persistenceResult, DeletedProduct: product);
+                return (Success: persistenceResult, RemovedProduct: product);
             },
             cancellationToken
         )!;
