@@ -1,21 +1,21 @@
 ﻿using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Base.Inputs;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Products.Inputs;
-public record DeleteProductServiceInput
+namespace MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
+public record RemoveCustomerServiceInput
     : ServiceInputBase
 {
     // Properties
-    public string Code { get; }
+    public string Email { get; }
 
     // Constructors
-    public DeleteProductServiceInput(
+    public RemoveCustomerServiceInput(
         Guid correlationId,
         Guid tenantId,
-        string code,
+        string email,
         string executionUser,
         string sourcePlatform
     ) : base(correlationId, tenantId, executionUser, sourcePlatform)
     {
-        Code = code;
+        Email = email;
     }
 }

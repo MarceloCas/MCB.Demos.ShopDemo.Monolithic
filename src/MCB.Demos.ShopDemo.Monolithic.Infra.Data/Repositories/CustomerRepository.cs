@@ -19,7 +19,7 @@ public class CustomerRepository
     // Constants
     public const string GET_BY_EMAIL_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(GetByEmailAsync)}";
     public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(ImportCustomerAsync)}";
-    public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(DeleteCustomerAsync)}";
+    public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerRepository)}.{nameof(RemoveCustomerAsync)}";
 
     // Fields
     private readonly TimeSpan _customerDataModelTTL;
@@ -119,7 +119,7 @@ public class CustomerRepository
             cancellationToken
         )!;
     }
-    public Task<bool> DeleteCustomerAsync(Customer customer, CancellationToken cancellationToken)
+    public Task<bool> RemoveCustomerAsync(Customer customer, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_CUSTOMER_TRACE_NAME,

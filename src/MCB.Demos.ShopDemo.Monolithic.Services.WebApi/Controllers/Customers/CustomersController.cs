@@ -3,8 +3,8 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Customers.GetCustomerByEmail.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Customers.GetCustomerByEmail.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.DeleteCustomer.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.DeleteCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomer.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomerBatch.Inputs;
@@ -33,7 +33,7 @@ public class CustomersController
     private readonly IImportCustomerUseCase _importCustomerUseCase;
     private readonly IImportCustomerBatchUseCase _importCustomerBatchUseCase;
     private readonly IValidateImportCustomerBatchUseCase _validateImportCustomerBatchUseCase;
-    private readonly IDeleteCustomerUseCase _deleteCustomerUseCase;
+    private readonly IRemoveCustomerUseCase _deleteCustomerUseCase;
     private readonly IGetCustomerByEmailQuery _getCustomerByEmailQuery;
 
     // Constructors
@@ -46,7 +46,7 @@ public class CustomersController
         IImportCustomerUseCase importCustomerUseCase,
         IImportCustomerBatchUseCase importCustomerBatchUseCase,
         IValidateImportCustomerBatchUseCase validateImportCustomerBatchUseCase,
-        IDeleteCustomerUseCase deleteCustomerUseCase,
+        IRemoveCustomerUseCase deleteCustomerUseCase,
         IGetCustomerByEmailQuery getCustomerByEmailQuery
     ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
@@ -219,30 +219,30 @@ public class CustomersController
     }
 
     [HttpDelete]
-    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(DeleteCustomerResponse))]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(RemoveCustomerResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseBase))]
-    public Task<IActionResult> DeleteCustomerAsync(
-        [FromBody] DeleteCustomerPayload payload,
+    public Task<IActionResult> RemoveCustomerAsync(
+        [FromBody] RemoveCustomerPayload payload,
         CancellationToken cancellationToken
     )
     {
         return TraceManager.StartActivityAsync(
-            name: nameof(Request.Path.Value) ?? nameof(DeleteCustomerAsync),
+            name: nameof(Request.Path.Value) ?? nameof(RemoveCustomerAsync),
             kind: System.Diagnostics.ActivityKind.Server,
             correlationId: payload.CorrelationId,
             tenantId: payload.TenantId,
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
-            input: (Payload: payload, DeleteCustomerUseCase: _deleteCustomerUseCase, Adapter),
+            input: (Payload: payload, RemoveCustomerUseCase: _deleteCustomerUseCase, Adapter),
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY, cancellationToken))
                     return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.DELETE_CUSTOMER_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
-                    useCase: input.DeleteCustomerUseCase!,
-                    useCaseInput: input.Adapter.Adapt<DeleteCustomerPayload, DeleteCustomerUseCaseInput>(input.Payload)!,
-                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new DeleteCustomerResponse(),
+                    useCase: input.RemoveCustomerUseCase!,
+                    useCaseInput: input.Adapter.Adapt<RemoveCustomerPayload, RemoveCustomerUseCaseInput>(input.Payload)!,
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new RemoveCustomerResponse(),
                     failResponseBaseFactory: (useCaseInput, useCaseOutput) => null,
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.NotFound,

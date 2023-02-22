@@ -18,7 +18,7 @@ public class ProductRepository
     // Constants
     public const string GET_BY_CODE_TRACE_NAME = $"{nameof(ProductRepository)}.{nameof(GetByCodeAsync)}";
     public const string IMPORT_PRODUCT_TRACE_NAME = $"{nameof(ProductRepository)}.{nameof(ImportProductAsync)}";
-    public const string DELETE_PRODUCT_TRACE_NAME = $"{nameof(ProductRepository)}.{nameof(DeleteProductAsync)}";
+    public const string DELETE_PRODUCT_TRACE_NAME = $"{nameof(ProductRepository)}.{nameof(RemoveProductAsync)}";
 
     // Fields
     private readonly TimeSpan _productDataModelTTL;
@@ -118,7 +118,7 @@ public class ProductRepository
             cancellationToken
         )!;
     }
-    public Task<bool> DeleteProductAsync(Product product, CancellationToken cancellationToken)
+    public Task<bool> RemoveProductAsync(Product product, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_PRODUCT_TRACE_NAME,

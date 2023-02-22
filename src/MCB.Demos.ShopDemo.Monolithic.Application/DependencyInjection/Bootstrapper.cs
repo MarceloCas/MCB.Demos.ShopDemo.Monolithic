@@ -5,16 +5,16 @@ using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Customers.GetCustomerByE
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Customers.GetCustomerByEmail.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Products.GetProductByCode;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Products.GetProductByCode.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.DeleteCustomer;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.DeleteCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomer;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomer.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomerBatch;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ImportCustomerBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ValidateImportCustomerBatch;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.ValidateImportCustomerBatch.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.RemoveProduct;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.RemoveProduct.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProduct;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProduct.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProductBatch;
@@ -42,7 +42,7 @@ public static class Bootstrapper
         dependencyInjectionContainer.RegisterScoped<IImportCustomerUseCase, ImportCustomerUseCase>();
         dependencyInjectionContainer.RegisterScoped<IImportCustomerBatchUseCase, ImportCustomerBatchUseCase>();
         dependencyInjectionContainer.RegisterScoped<IValidateImportCustomerBatchUseCase, ValidateImportCustomerBatchUseCase>();
-        dependencyInjectionContainer.RegisterScoped<IDeleteCustomerUseCase, DeleteCustomerUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IRemoveCustomerUseCase, RemoveCustomerUseCase>();
 
         // Queries
         dependencyInjectionContainer.RegisterScoped<IGetCustomerByEmailQuery, GetCustomerByEmailQuery>();
@@ -53,7 +53,7 @@ public static class Bootstrapper
         dependencyInjectionContainer.RegisterScoped<IImportProductUseCase, ImportProductUseCase>();
         dependencyInjectionContainer.RegisterScoped<IImportProductBatchUseCase, ImportProductBatchUseCase>();
         dependencyInjectionContainer.RegisterScoped<IValidateImportProductBatchUseCase, ValidateImportProductBatchUseCase>();
-        dependencyInjectionContainer.RegisterScoped<IDeleteProductUseCase, DeleteProductUseCase>();
+        dependencyInjectionContainer.RegisterScoped<IRemoveProductUseCase, RemoveProductUseCase>();
 
         // Queries
         dependencyInjectionContainer.RegisterScoped<IGetProductByCodeQuery, GetProductByCodeQuery>();

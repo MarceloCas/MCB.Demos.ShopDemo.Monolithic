@@ -4,27 +4,27 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Abstractions.Notifications;
 using MCB.Core.Infra.CrossCutting.Observability.Abstractions;
 using MCB.Demos.ShopDemo.Monolithic.Application.Factories.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Base;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Customers;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Customers.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.RabbitMq.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Entities.Products;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Products.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Infra.Data.UnitOfWork.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Domain.Services.Products.Inputs;
 
-namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct;
-public class DeleteProductUseCase
-    : UseCaseBase<DeleteProductUseCaseInput, Product>,
-    IDeleteProductUseCase
+namespace MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Customers.RemoveCustomer;
+public class RemoveCustomerUseCase
+    : UseCaseBase<RemoveCustomerUseCaseInput, Customer>,
+    IRemoveCustomerUseCase
 {
     // Constants
-    public const string DELETE_PRODUCT_USE_CASE_TRACE_NAME = $"{nameof(DeleteProductUseCase)}.{nameof(ExecuteInternalAsync)}";
+    public const string DELETE_CUSTOMER_USE_CASE_TRACE_NAME = $"{nameof(RemoveCustomerUseCase)}.{nameof(ExecuteInternalAsync)}";
 
     // Fields
-    private readonly IProductService _productService;
+    private readonly ICustomerService _customerService;
 
     // Constructors
-    public DeleteProductUseCase(
+    public RemoveCustomerUseCase(
         IDomainEventSubscriber domainEventSubscriber,
         INotificationPublisher notificationPublisher,
         IEventsExchangeRabbitMqPublisher eventsExchangeRabbitMqPublisher,
@@ -32,29 +32,29 @@ public class DeleteProductUseCase
         ITraceManager traceManager,
         IAdapter adapter,
         IUnitOfWork unitOfWork,
-        IProductService productService
+        ICustomerService customerService
     ) : base(domainEventSubscriber, notificationPublisher, eventsExchangeRabbitMqPublisher, externalEventFactory, traceManager, adapter, unitOfWork)
     {
-        _productService = productService;
+        _customerService = customerService;
     }
 
-    protected override Task<(bool Success, Product? Output)> ExecuteInternalAsync(DeleteProductUseCaseInput input, CancellationToken cancellationToken)
+    protected override Task<(bool Success, Customer? Output)> ExecuteInternalAsync(RemoveCustomerUseCaseInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
-            name: DELETE_PRODUCT_USE_CASE_TRACE_NAME,
+            name: DELETE_CUSTOMER_USE_CASE_TRACE_NAME,
             kind: System.Diagnostics.ActivityKind.Internal,
             correlationId: input.CorrelationId,
             tenantId: input.TenantId,
             executionUser: input.ExecutionUser,
             sourcePlatform: input.SourcePlatform,
-            input: (Input: input, UnitOfWork, ProductService: _productService, Adapter),
+            input: (Input: input, UnitOfWork, CustomerService: _customerService, Adapter),
             handler: (input, activity, cancellationToken) =>
             {
                 return input.UnitOfWork.ExecuteAsync(
                     handler: q =>
                     {
-                        return q.Input.ProductService.DeleteProductAsync(
-                            input: q.Input.Adapter.Adapt<DeleteProductUseCaseInput, DeleteProductServiceInput>(q.Input.Input)!,
+                        return q.Input.CustomerService.RemoveCustomerAsync(
+                            input: q.Input.Adapter.Adapt<RemoveCustomerUseCaseInput, RemoveCustomerServiceInput>(q.Input.Input)!,
                             cancellationToken
                         );
                     },
@@ -68,4 +68,3 @@ public class DeleteProductUseCase
         )!;
     }
 }
-

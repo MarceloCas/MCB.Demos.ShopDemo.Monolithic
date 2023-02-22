@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProduct.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProductBatch.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ValidateImportProductBatch.Interfaces;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.Interfaces;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.RemoveProduct.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Application.Queries.Products.GetProductByCode.Interfaces;
 using MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Products.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Infra.CrossCutting.FeatureFlag;
@@ -19,7 +19,7 @@ using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProduct.
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ValidateImportProductBatch.Inputs;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ValidateImportProductBatch.Responses;
 using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.ImportProductBatch.Inputs;
-using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.DeleteProduct.Inputs;
+using MCB.Demos.ShopDemo.Monolithic.Application.UseCases.Products.RemoveProduct.Inputs;
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Products;
 
@@ -33,7 +33,7 @@ public class ProductsController
     private readonly IImportProductUseCase _importProductUseCase;
     private readonly IImportProductBatchUseCase _importProductBatchUseCase;
     private readonly IValidateImportProductBatchUseCase _validateImportProductBatchUseCase;
-    private readonly IDeleteProductUseCase _deleteProductUseCase;
+    private readonly IRemoveProductUseCase _deleteProductUseCase;
     private readonly IGetProductByCodeQuery _getProductByCodeQuery;
 
     // Constructors
@@ -46,7 +46,7 @@ public class ProductsController
         IImportProductUseCase importProductUseCase,
         IImportProductBatchUseCase importProductBatchUseCase,
         IValidateImportProductBatchUseCase validateImportProductBatchUseCase,
-        IDeleteProductUseCase deleteProductUseCase,
+        IRemoveProductUseCase deleteProductUseCase,
         IGetProductByCodeQuery getProductByCodeQuery
     ) : base(logger, notificationSubscriber, traceManager, adapter, featureFlagManager)
     {
@@ -219,31 +219,31 @@ public class ProductsController
     }
 
     [HttpDelete]
-    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(DeleteProductResponse))]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(RemoveProductResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ResponseBase))]
-    public Task<IActionResult> DeleteProductAsync(
-        [FromBody] DeleteProductPayload payload,
+    public Task<IActionResult> RemoveProductAsync(
+        [FromBody] RemoveProductPayload payload,
         CancellationToken cancellationToken
     )
     {
         return TraceManager.StartActivityAsync(
-            name: nameof(Request.Path.Value) ?? nameof(DeleteProductAsync),
+            name: nameof(Request.Path.Value) ?? nameof(RemoveProductAsync),
             kind: System.Diagnostics.ActivityKind.Server,
             correlationId: payload.CorrelationId,
             tenantId: payload.TenantId,
             executionUser: payload.ExecutionUser,
             sourcePlatform: payload.SourcePlatform,
-            input: (Payload: payload, DeleteProductUseCase: _deleteProductUseCase, Adapter),
+            input: (Payload: payload, RemoveProductUseCase: _deleteProductUseCase, Adapter),
             handler: async (input, activity, cancellationToken) =>
             {
                 if (!await CheckFeatureFlagAsync(input.Payload.TenantId, executionUser: null, FeatureFlags.DELETE_PRODUCT_FEATURE_FLAG_KEY, cancellationToken))
                     return CreateNotAllowedResult(input.Payload.TenantId, FeatureFlags.DELETE_PRODUCT_FEATURE_FLAG_KEY)!;
 
                 return await RunUseCaseAsync(
-                    useCase: input.DeleteProductUseCase!,
-                    useCaseInput: input.Adapter.Adapt<DeleteProductPayload, DeleteProductUseCaseInput>(input.Payload)!,
-                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new DeleteProductResponse(),
-                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => new DeleteProductResponse(),
+                    useCase: input.RemoveProductUseCase!,
+                    useCaseInput: input.Adapter.Adapt<RemoveProductPayload, RemoveProductUseCaseInput>(input.Payload)!,
+                    successResponseBaseFactory: (useCaseInput, useCaseOutput) => new RemoveProductResponse(),
+                    failResponseBaseFactory: (useCaseInput, useCaseOutput) => new RemoveProductResponse(),
                     successStatusCode: (int)System.Net.HttpStatusCode.Created,
                     failStatusCode: (int)System.Net.HttpStatusCode.NotFound,
                     cancellationToken

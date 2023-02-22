@@ -298,7 +298,7 @@ Regardless of whether you want to use user secrets or directly change the [AppSe
     "EventsExchange": {
       "Name": "mcb.demos.shopdemo.monolithic.e.events",
       "Durable": false,
-      "AutoDelete": false,
+      "AutoRemove": false,
       "Arguments": []
     }
   },

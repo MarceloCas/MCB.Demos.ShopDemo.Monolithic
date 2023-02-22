@@ -7,5 +7,5 @@ public interface IProductRepository
 {
     Task<Product?> GetByCodeAsync(Guid tenantId, string code, CancellationToken cancellationToken);
     Task<(bool Success, int ModifiedCount)> ImportProductAsync(Product product, CancellationToken cancellationToken);
-    Task<bool> DeleteProductAsync(Product product, CancellationToken cancellationToken);
+    Task<bool> RemoveProductAsync(Product product, CancellationToken cancellationToken);
 }

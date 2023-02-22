@@ -53,7 +53,7 @@ public static class Bootstrapper
                     ExchangeName: appSettings.RabbitMq.EventsExchange.Name,
                     ExchangeType: RabbitMqExchangeType.Header,
                     Durable: appSettings.RabbitMq.EventsExchange.Durable,
-                    AutoDelete: appSettings.RabbitMq.EventsExchange.AutoDelete,
+                    AutoDelete: appSettings.RabbitMq.EventsExchange.AutoRemove,
                     Arguments: null
                 ),
                 traceManager: d.Resolve<ITraceManager>()!,

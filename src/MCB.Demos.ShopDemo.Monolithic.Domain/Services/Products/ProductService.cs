@@ -23,7 +23,7 @@ public class ProductService
     // Constants
     public const string IMPORT_PRODUCT_TRACE_NAME = $"{nameof(ProductService)}.{nameof(ImportProductAsync)}";
     public const string VALIDATE_IMPORT_PRODUCT_TRACE_NAME = $"{nameof(ProductService)}.{nameof(ValidateImportProductAsync)}";
-    public const string DELETE_PRODUCT_TRACE_NAME = $"{nameof(ProductService)}.{nameof(DeleteProductAsync)}";
+    public const string DELETE_PRODUCT_TRACE_NAME = $"{nameof(ProductService)}.{nameof(RemoveProductAsync)}";
 
     // Messages
     public static readonly string ProductCodeAlreadyRegisteredErrorCode = nameof(ProductCodeAlreadyRegisteredErrorCode);
@@ -151,7 +151,7 @@ public class ProductService
             cancellationToken
         )!;
     }
-    public Task<(bool Success, Product? RemovedProduct)> DeleteProductAsync(DeleteProductServiceInput input, CancellationToken cancellationToken)
+    public Task<(bool Success, Product? RemovedProduct)> RemoveProductAsync(RemoveProductServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_PRODUCT_TRACE_NAME,
@@ -181,7 +181,7 @@ public class ProductService
                 }
 
                 // Process
-                var persistenceResult = await input.ProductRepository.DeleteProductAsync(product, cancellationToken);
+                var persistenceResult = await input.ProductRepository.RemoveProductAsync(product, cancellationToken);
                 if (!persistenceResult)
                     return default;
 

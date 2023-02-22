@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Customers.Payloads;
 
-public class DeleteCustomerPayload
+public class RemoveCustomerPayload
     : PayloadBase
 {
     public string? Email { get; set; }

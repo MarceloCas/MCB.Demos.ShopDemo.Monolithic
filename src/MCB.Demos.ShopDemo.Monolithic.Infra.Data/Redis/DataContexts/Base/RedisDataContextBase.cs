@@ -12,13 +12,12 @@ public abstract class RedisDataContextBase
 
     // Fields
     private readonly RedisOptions _redisOptions;
-    private ConnectionMultiplexer? _connectionMultiplexer;
     private ITransaction? _currentTransaction;
     private bool disposedValue;
 
     // Properties
-    public ConnectionMultiplexer? ConnectionMultiplexer => _connectionMultiplexer;
-    protected bool IsConnected => _connectionMultiplexer?.IsConnected == true;
+    public ConnectionMultiplexer? ConnectionMultiplexer { get; private set; }
+    protected bool IsConnected => ConnectionMultiplexer?.IsConnected == true;
     protected IDatabase? Database { get; private set; }
 
     // Constructors
@@ -38,9 +37,9 @@ public abstract class RedisDataContextBase
         if (IsConnected)
             return;
 
-        _connectionMultiplexer = ConnectionMultiplexer.Connect(_redisOptions.ConnectionString);
+        ConnectionMultiplexer = ConnectionMultiplexer.Connect(_redisOptions.ConnectionString);
 
-        Database = _connectionMultiplexer.GetDatabase();
+        Database = ConnectionMultiplexer.GetDatabase();
     }
 
     // Public Methods
@@ -55,7 +54,7 @@ public abstract class RedisDataContextBase
         if (!IsConnected)
             return;
 
-        await _connectionMultiplexer!.CloseAsync(allowCommandsToComplete: true);
+        await ConnectionMultiplexer!.CloseAsync(allowCommandsToComplete: true);
     }
 
     public virtual Task BeginTransactionAsync(CancellationToken cancellationToken)

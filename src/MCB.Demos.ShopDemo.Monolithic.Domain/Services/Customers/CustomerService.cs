@@ -24,7 +24,7 @@ public class CustomerService
     // Constants
     public const string IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(ImportCustomerAsync)}";
     public const string VALIDATE_IMPORT_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(ValidateImportCustomerAsync)}";
-    public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(DeleteCustomerAsync)}";
+    public const string DELETE_CUSTOMER_TRACE_NAME = $"{nameof(CustomerService)}.{nameof(RemoveCustomerAsync)}";
 
     // Messages
     public static readonly string CustomerEmailAlreadyRegisteredErrorCode = nameof(CustomerEmailAlreadyRegisteredErrorCode);
@@ -152,7 +152,7 @@ public class CustomerService
             cancellationToken
         )!;
     }
-    public Task<(bool Success, Customer? RemovedCustomer)> DeleteCustomerAsync(DeleteCustomerServiceInput input, CancellationToken cancellationToken)
+    public Task<(bool Success, Customer? RemovedCustomer)> RemoveCustomerAsync(RemoveCustomerServiceInput input, CancellationToken cancellationToken)
     {
         return TraceManager.StartActivityAsync(
             name: DELETE_CUSTOMER_TRACE_NAME,
@@ -182,7 +182,7 @@ public class CustomerService
                 }
 
                 // Process
-                var persistenceResult = await input.CustomerRepository.DeleteCustomerAsync(customer, cancellationToken);
+                var persistenceResult = await input.CustomerRepository.RemoveCustomerAsync(customer, cancellationToken);
                 if (!persistenceResult)
                     return default;
 

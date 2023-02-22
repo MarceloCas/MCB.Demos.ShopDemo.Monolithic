@@ -8,5 +8,5 @@ public interface ICustomerRepository
 {
     Task<Customer?> GetByEmailAsync(Guid tenantId, string email, CancellationToken cancellationToken);
     Task<(bool Success, int ModifiedCount)> ImportCustomerAsync(Customer customer, CancellationToken cancellationToken);
-    Task<bool> DeleteCustomerAsync(Customer customer, CancellationToken cancellationToken);
+    Task<bool> RemoveCustomerAsync(Customer customer, CancellationToken cancellationToken);
 }

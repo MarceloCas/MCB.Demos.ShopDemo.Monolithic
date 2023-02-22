@@ -161,7 +161,7 @@ public class StartupService
                         ExchangeName: _appSettings.RabbitMq.EventsExchange.Name,
                         ExchangeType: RabbitMqExchangeType.Header,
                         Durable: _appSettings.RabbitMq.EventsExchange.Durable,
-                        AutoDelete: _appSettings.RabbitMq.EventsExchange.AutoDelete,
+                        AutoDelete: _appSettings.RabbitMq.EventsExchange.AutoRemove,
                         Arguments: null
                     )
                 );

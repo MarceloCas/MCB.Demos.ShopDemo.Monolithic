@@ -2,7 +2,7 @@
 
 namespace MCB.Demos.ShopDemo.Monolithic.Services.WebApi.Controllers.Products.Responses;
 
-public class DeleteProductResponse
+public class RemoveProductResponse
     : ResponseBase
 {
 }
