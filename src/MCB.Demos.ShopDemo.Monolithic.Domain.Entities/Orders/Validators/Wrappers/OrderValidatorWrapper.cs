@@ -19,8 +19,8 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveCode(getCodeFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveCodeErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveCodeMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveCodeSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveCodeErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveCodeErrorSeverity);
     }
 
     // Date
@@ -34,8 +34,8 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveDate(getDateFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveDateErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveDateMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveDateSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveDateErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveDateErrorSeverity);
     }
     public static void AddOrderShouldHaveDateWithValidLength<TInput, TProperty>(
         IOrderSpecifications orderSpecifications,
@@ -47,8 +47,8 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveDateWithValidLength(getDateWithValidLengthFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveDateWithValidLengthMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveDateWithValidLengthSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveDateWithValidLengthErrorSeverity);
     }
 
     // Customer
@@ -62,8 +62,8 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveCustomer(getCustomerFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveCustomerErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveCustomerMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveCustomerSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveCustomerErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveCustomerErrorSeverity);
     }
 
     // OrderItems
@@ -77,8 +77,8 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveOrderItems(getImportOrderInputFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveOrderItemsErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsErrorSeverity);
     }
     public static void AddOrderShouldHaveOrderItemsWithValidSequence<TInput, TProperty>(
         IOrderSpecifications orderSpecifications,
@@ -90,7 +90,7 @@ public static class OrderValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderSpecifications.OrderShouldHaveOrderItemsWithValidSequence(getImportOrderInputFunction(input)))
             .WithErrorCode(IOrderSpecifications.OrderShouldHaveOrderItemsErrorCode)
-            .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsMessage)
-            .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsSeverity);
+            .WithMessage(IOrderSpecifications.OrderShouldHaveOrderItemsErrorMessage)
+            .WithSeverity(IOrderSpecifications.OrderShouldHaveOrderItemsErrorSeverity);
     }
 }

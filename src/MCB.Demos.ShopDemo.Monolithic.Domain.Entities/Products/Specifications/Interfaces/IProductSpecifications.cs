@@ -12,21 +12,21 @@ public interface IProductSpecifications
 
     // Code
     public static readonly string ProductShouldHaveCodeErrorCode = nameof(ProductShouldHaveCodeErrorCode);
-    public static readonly string ProductShouldHaveCodeMessage = nameof(ProductShouldHaveCodeMessage);
-    public static readonly Severity ProductShouldHaveCodeSeverity = Severity.Error;
+    public static readonly string ProductShouldHaveCodeErrorMessage = nameof(ProductShouldHaveCodeErrorMessage);
+    public static readonly Severity ProductShouldHaveCodeErrorSeverity = Severity.Error;
 
     public static readonly string ProductShouldHaveCodeMaximumLengthErrorCode = nameof(ProductShouldHaveCodeMaximumLengthErrorCode);
-    public static readonly string ProductShouldHaveCodeMaximumLengthMessage = nameof(ProductShouldHaveCodeMaximumLengthMessage);
-    public static readonly Severity ProductShouldHaveCodeMaximumLengthSeverity = Severity.Error;
+    public static readonly string ProductShouldHaveCodeMaximumLengthErrorMessage = nameof(ProductShouldHaveCodeMaximumLengthErrorMessage);
+    public static readonly Severity ProductShouldHaveCodeMaximumLengthErrorSeverity = Severity.Error;
 
     // Description
     public static readonly string ProductShouldHaveDescriptionErrorCode = nameof(ProductShouldHaveDescriptionErrorCode);
-    public static readonly string ProductShouldHaveDescriptionMessage = nameof(ProductShouldHaveDescriptionMessage);
-    public static readonly Severity ProductShouldHaveDescriptionSeverity = Severity.Error;
+    public static readonly string ProductShouldHaveDescriptionErrorMessage = nameof(ProductShouldHaveDescriptionErrorMessage);
+    public static readonly Severity ProductShouldHaveDescriptionErrorSeverity = Severity.Error;
 
     public static readonly string ProductShouldHaveDescriptionMaximumLengthErrorCode = nameof(ProductShouldHaveDescriptionMaximumLengthErrorCode);
-    public static readonly string ProductShouldHaveDescriptionMaximumLengthMessage = nameof(ProductShouldHaveDescriptionMaximumLengthMessage);
-    public static readonly Severity ProductShouldHaveDescriptionMaximumLengthSeverity = Severity.Error;
+    public static readonly string ProductShouldHaveDescriptionMaximumLengthErrorMessage = nameof(ProductShouldHaveDescriptionMaximumLengthErrorMessage);
+    public static readonly Severity ProductShouldHaveDescriptionMaximumLengthErrorSeverity = Severity.Error;
 
     // Methods
     bool ProductShouldHaveCode(string firstName);

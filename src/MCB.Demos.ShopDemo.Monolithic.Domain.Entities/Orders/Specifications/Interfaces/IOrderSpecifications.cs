@@ -11,31 +11,31 @@ public interface IOrderSpecifications
 
     // Code
     public static readonly string OrderShouldHaveCodeErrorCode = nameof(OrderShouldHaveCodeErrorCode);
-    public static readonly string OrderShouldHaveCodeMessage = nameof(OrderShouldHaveCodeMessage);
-    public static readonly Severity OrderShouldHaveCodeSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveCodeErrorMessage = nameof(OrderShouldHaveCodeErrorMessage);
+    public static readonly Severity OrderShouldHaveCodeErrorSeverity = Severity.Error;
 
     // Date
     public static readonly string OrderShouldHaveDateErrorCode = nameof(OrderShouldHaveDateErrorCode);
-    public static readonly string OrderShouldHaveDateMessage = nameof(OrderShouldHaveDateMessage);
-    public static readonly Severity OrderShouldHaveDateSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveDateErrorMessage = nameof(OrderShouldHaveDateErrorMessage);
+    public static readonly Severity OrderShouldHaveDateErrorSeverity = Severity.Error;
 
     public static readonly string OrderShouldHaveDateWithValidLengthErrorCode = nameof(OrderShouldHaveDateWithValidLengthErrorCode);
-    public static readonly string OrderShouldHaveDateWithValidLengthMessage = nameof(OrderShouldHaveDateWithValidLengthMessage);
-    public static readonly Severity OrderShouldHaveDateWithValidLengthSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveDateWithValidLengthErrorMessage = nameof(OrderShouldHaveDateWithValidLengthErrorMessage);
+    public static readonly Severity OrderShouldHaveDateWithValidLengthErrorSeverity = Severity.Error;
 
     // Customer
     public static readonly string OrderShouldHaveCustomerErrorCode = nameof(OrderShouldHaveCustomerErrorCode);
-    public static readonly string OrderShouldHaveCustomerMessage = nameof(OrderShouldHaveCustomerMessage);
-    public static readonly Severity OrderShouldHaveCustomerSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveCustomerErrorMessage = nameof(OrderShouldHaveCustomerErrorMessage);
+    public static readonly Severity OrderShouldHaveCustomerErrorSeverity = Severity.Error;
 
     // OrderItems
     public static readonly string OrderShouldHaveOrderItemsErrorCode = nameof(OrderShouldHaveOrderItemsErrorCode);
-    public static readonly string OrderShouldHaveOrderItemsMessage = nameof(OrderShouldHaveOrderItemsMessage);
-    public static readonly Severity OrderShouldHaveOrderItemsSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveOrderItemsErrorMessage = nameof(OrderShouldHaveOrderItemsErrorMessage);
+    public static readonly Severity OrderShouldHaveOrderItemsErrorSeverity = Severity.Error;
 
     public static readonly string OrderShouldHaveOrderItemsWithValidSequenceErrorCode = nameof(OrderShouldHaveOrderItemsWithValidSequenceErrorCode);
-    public static readonly string OrderShouldHaveOrderItemsWithValidSequenceMessage = nameof(OrderShouldHaveOrderItemsWithValidSequenceMessage);
-    public static readonly Severity OrderShouldHaveOrderItemsWithValidSequenceSeverity = Severity.Error;
+    public static readonly string OrderShouldHaveOrderItemsWithValidSequenceErrorMessage = nameof(OrderShouldHaveOrderItemsWithValidSequenceErrorMessage);
+    public static readonly Severity OrderShouldHaveOrderItemsWithValidSequenceErrorSeverity = Severity.Error;
 
     // Methods
     bool OrderShouldHaveCode(string? code);

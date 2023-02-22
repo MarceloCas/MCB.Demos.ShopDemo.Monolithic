@@ -11,28 +11,28 @@ public interface IOrderItemSpecifications
 
     // Sequence
     public static readonly string OrderItemShouldHaveSequenceErrorCode = nameof(OrderItemShouldHaveSequenceErrorCode);
-    public static readonly string OrderItemShouldHaveSequenceMessage = nameof(OrderItemShouldHaveSequenceMessage);
-    public static readonly Severity OrderItemShouldHaveSequenceSeverity = Severity.Error;
+    public static readonly string OrderItemShouldHaveSequenceErrorMessage = nameof(OrderItemShouldHaveSequenceErrorMessage);
+    public static readonly Severity OrderItemShouldHaveSequenceErrorSeverity = Severity.Error;
 
     // Description
     public static readonly string OrderItemShouldHaveDescriptionMaximumLengthErrorCode = nameof(OrderItemShouldHaveDescriptionMaximumLengthErrorCode);
-    public static readonly string OrderItemShouldHaveDescriptionMaximumLengthMessage = nameof(OrderItemShouldHaveDescriptionMaximumLengthMessage);
-    public static readonly Severity OrderItemShouldHaveDescriptionMaximumLengthSeverity = Severity.Error;
+    public static readonly string OrderItemShouldHaveDescriptionMaximumLengthErrorMessage = nameof(OrderItemShouldHaveDescriptionMaximumLengthErrorMessage);
+    public static readonly Severity OrderItemShouldHaveDescriptionMaximumLengthErrorSeverity = Severity.Error;
 
     // Quantity
     public static readonly string OrderItemShouldHaveQuantityErrorCode = nameof(OrderItemShouldHaveQuantityErrorCode);
-    public static readonly string OrderItemShouldHaveQuantityMessage = nameof(OrderItemShouldHaveQuantityMessage);
-    public static readonly Severity OrderItemShouldHaveQuantitySeverity = Severity.Error;
+    public static readonly string OrderItemShouldHaveQuantityErrorMessage = nameof(OrderItemShouldHaveQuantityErrorMessage);
+    public static readonly Severity OrderItemShouldHaveQuantityErrorSeverity = Severity.Error;
 
     // UnityValue
     public static readonly string OrderItemShouldHaveUnityValueErrorCode = nameof(OrderItemShouldHaveUnityValueErrorCode);
-    public static readonly string OrderItemShouldHaveUnityValueMessage = nameof(OrderItemShouldHaveUnityValueMessage);
-    public static readonly Severity OrderItemShouldHaveUnityValueSeverity = Severity.Error;
+    public static readonly string OrderItemShouldHaveUnityValueErrorMessage = nameof(OrderItemShouldHaveUnityValueErrorMessage);
+    public static readonly Severity OrderItemShouldHaveUnityValueErrorSeverity = Severity.Error;
 
     // Product
     public static readonly string OrderItemShouldHaveProductErrorCode = nameof(OrderItemShouldHaveProductErrorCode);
-    public static readonly string OrderItemShouldHaveProductMessage = nameof(OrderItemShouldHaveProductMessage);
-    public static readonly Severity OrderItemShouldHaveProductSeverity = Severity.Error;
+    public static readonly string OrderItemShouldHaveProductErrorMessage = nameof(OrderItemShouldHaveProductErrorMessage);
+    public static readonly Severity OrderItemShouldHaveProductErrorSeverity = Severity.Error;
 
     // Methods
     bool OrderItemShouldHaveSequence(int sequence);

@@ -17,8 +17,8 @@ public static class ProductValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, firstName) => customerSpecifications.ProductShouldHaveCode(getCodeFunction(input)))
             .WithErrorCode(IProductSpecifications.ProductShouldHaveCodeErrorCode)
-            .WithMessage(IProductSpecifications.ProductShouldHaveCodeMessage)
-            .WithSeverity(IProductSpecifications.ProductShouldHaveCodeSeverity);
+            .WithMessage(IProductSpecifications.ProductShouldHaveCodeErrorMessage)
+            .WithSeverity(IProductSpecifications.ProductShouldHaveCodeErrorSeverity);
     }
     public static void AddProductShouldHaveCodeMaximumLength<TInput, TProperty>(
         IProductSpecifications customerSpecifications,
@@ -31,8 +31,8 @@ public static class ProductValidatorWrapper
             .Must((input, firstName) => customerSpecifications.ProductShouldHaveCodeMaximumLength(getCodeFunction(input)))
             .When(input => customerSpecifications.ProductShouldHaveCode(getCodeFunction(input)))
             .WithErrorCode(IProductSpecifications.ProductShouldHaveCodeMaximumLengthErrorCode)
-            .WithMessage(IProductSpecifications.ProductShouldHaveCodeMaximumLengthMessage)
-            .WithSeverity(IProductSpecifications.ProductShouldHaveCodeMaximumLengthSeverity);
+            .WithMessage(IProductSpecifications.ProductShouldHaveCodeMaximumLengthErrorMessage)
+            .WithSeverity(IProductSpecifications.ProductShouldHaveCodeMaximumLengthErrorSeverity);
     }
 
     // Description
@@ -46,8 +46,8 @@ public static class ProductValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, lastName) => customerSpecifications.ProductShouldHaveDescription(getDescriptionFunction(input)))
             .WithErrorCode(IProductSpecifications.ProductShouldHaveDescriptionErrorCode)
-            .WithMessage(IProductSpecifications.ProductShouldHaveDescriptionMessage)
-            .WithSeverity(IProductSpecifications.ProductShouldHaveDescriptionSeverity);
+            .WithMessage(IProductSpecifications.ProductShouldHaveDescriptionErrorMessage)
+            .WithSeverity(IProductSpecifications.ProductShouldHaveDescriptionErrorSeverity);
     }
     public static void AddProductShouldHaveDescriptionMaximumLength<TInput, TProperty>(
         IProductSpecifications customerSpecifications,
@@ -60,7 +60,7 @@ public static class ProductValidatorWrapper
             .Must((input, lastName) => customerSpecifications.ProductShouldHaveDescriptionMaximumLength(getDescriptionFunction(input)))
             .When(input => customerSpecifications.ProductShouldHaveDescription(getDescriptionFunction(input)))
             .WithErrorCode(IProductSpecifications.ProductShouldHaveDescriptionMaximumLengthErrorCode)
-            .WithMessage(IProductSpecifications.ProductShouldHaveDescriptionMaximumLengthMessage)
-            .WithSeverity(IProductSpecifications.ProductShouldHaveDescriptionMaximumLengthSeverity);
+            .WithMessage(IProductSpecifications.ProductShouldHaveDescriptionMaximumLengthErrorMessage)
+            .WithSeverity(IProductSpecifications.ProductShouldHaveDescriptionMaximumLengthErrorSeverity);
     }
 }

@@ -18,8 +18,8 @@ public static class CustomerValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, firstName) => customerSpecifications.CustomerShouldHaveFirstName(getFirstNameFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveFirstNameErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveFirstNameMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveFirstNameSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveFirstNameErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveFirstNameErrorSeverity);
     }
     public static void AddCustomerShouldHaveFirstNameMaximumLength<TInput, TProperty>(
         ICustomerSpecifications customerSpecifications,
@@ -32,8 +32,8 @@ public static class CustomerValidatorWrapper
             .Must((input, firstName) => customerSpecifications.CustomerShouldHaveFirstNameMaximumLength(getFirstNameFunction(input)))
             .When(input => customerSpecifications.CustomerShouldHaveFirstName(getFirstNameFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveFirstNameMaximumLengthErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveFirstNameMaximumLengthMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveFirstNameMaximumLengthSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveFirstNameMaximumLengthErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveFirstNameMaximumLengthErrorSeverity);
     }
 
     // LastName
@@ -47,8 +47,8 @@ public static class CustomerValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, lastName) => customerSpecifications.CustomerShouldHaveLastName(getLastNameFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveLastNameErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveLastNameMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveLastNameSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveLastNameErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveLastNameErrorSeverity);
     }
     public static void AddCustomerShouldHaveLastNameMaximumLength<TInput, TProperty>(
         ICustomerSpecifications customerSpecifications,
@@ -61,8 +61,8 @@ public static class CustomerValidatorWrapper
             .Must((input, lastName) => customerSpecifications.CustomerShouldHaveLastNameMaximumLength(getLastNameFunction(input)))
             .When(input => customerSpecifications.CustomerShouldHaveLastName(getLastNameFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveLastNameMaximumLengthErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveLastNameMaximumLengthMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveLastNameMaximumLengthSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveLastNameMaximumLengthErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveLastNameMaximumLengthErrorSeverity);
     }
 
     // BirthDate
@@ -76,8 +76,8 @@ public static class CustomerValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, birthDate) => customerSpecifications.CustomerShouldHaveBirthDate(getBirthDateFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveBirthDateErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveBirthDateMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveBirthDateSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveBirthDateErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveBirthDateErrorSeverity);
     }
     public static void AddCustomerShouldHaveValidBirthDate<TInput, TProperty>(
         ICustomerSpecifications customerSpecifications,
@@ -90,7 +90,7 @@ public static class CustomerValidatorWrapper
             .Must((input, birthDate) => customerSpecifications.CustomerShouldHaveValidBirthDate(getBirthDateFunction(input)))
             .When(input => customerSpecifications.CustomerShouldHaveBirthDate(getBirthDateFunction(input)))
             .WithErrorCode(ICustomerSpecifications.CustomerShouldHaveValidBirthDateErrorCode)
-            .WithMessage(ICustomerSpecifications.CustomerShouldHaveValidBirthDateMessage)
-            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveValidBirthDateSeverity);
+            .WithMessage(ICustomerSpecifications.CustomerShouldHaveValidBirthDateErrorMessage)
+            .WithSeverity(ICustomerSpecifications.CustomerShouldHaveValidBirthDateErrorSeverity);
     }
 }

@@ -187,7 +187,7 @@ public class ImportCustomerStepDefinitions
         );
 
         message.Should().NotBeNull();
-        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveFirstNameSeverity));
+        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveFirstNameErrorSeverity));
     }
 
     [Then(@"a should have lastName message must be returned")]
@@ -198,7 +198,7 @@ public class ImportCustomerStepDefinitions
         );
 
         message.Should().NotBeNull();
-        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveLastNameSeverity));
+        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveLastNameErrorSeverity));
     }
 
     [Then(@"a should have birthDate message must be returned")]
@@ -209,7 +209,7 @@ public class ImportCustomerStepDefinitions
         );
 
         message.Should().NotBeNull();
-        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveBirthDateSeverity));
+        message?.Type.Should().Be(Parse(ICustomerSpecifications.CustomerShouldHaveBirthDateErrorSeverity));
     }
 
     #endregion [ Then ]

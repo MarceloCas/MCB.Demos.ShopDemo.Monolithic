@@ -18,8 +18,8 @@ public static class OrderItemValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, sequence) => orderItemSpecifications.OrderItemShouldHaveSequence(getSequenceFunction(input)))
             .WithErrorCode(IOrderItemSpecifications.OrderItemShouldHaveSequenceErrorCode)
-            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveSequenceMessage)
-            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveSequenceSeverity);
+            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveSequenceErrorMessage)
+            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveSequenceErrorSeverity);
     }
 
     // Description
@@ -34,8 +34,8 @@ public static class OrderItemValidatorWrapper
             .Must((input, sequence) => orderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLength(getDescriptionFunction(input)))
             .When(input => !string.IsNullOrEmpty(getDescriptionFunction(input)))
             .WithErrorCode(IOrderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLengthErrorCode)
-            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLengthMessage)
-            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLengthSeverity);
+            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLengthErrorMessage)
+            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveDescriptionMaximumLengthErrorSeverity);
     }
 
     // Quantity
@@ -49,8 +49,8 @@ public static class OrderItemValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, quantity) => orderItemSpecifications.OrderItemShouldHaveQuantity(getQuantityFunction(input)))
             .WithErrorCode(IOrderItemSpecifications.OrderItemShouldHaveQuantityErrorCode)
-            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveQuantityMessage)
-            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveQuantitySeverity);
+            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveQuantityErrorMessage)
+            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveQuantityErrorSeverity);
     }
 
     // UnityValue
@@ -64,8 +64,8 @@ public static class OrderItemValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, unityValue) => orderItemSpecifications.OrderItemShouldHaveUnityValue(getUnityValueFunction(input)))
             .WithErrorCode(IOrderItemSpecifications.OrderItemShouldHaveUnityValueErrorCode)
-            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveUnityValueMessage)
-            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveUnityValueSeverity);
+            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveUnityValueErrorMessage)
+            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveUnityValueErrorSeverity);
     }
 
     // Product
@@ -79,7 +79,7 @@ public static class OrderItemValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((input, unityValue) => orderItemSpecifications.OrderItemShouldHaveProduct(getProductFunction(input)))
             .WithErrorCode(IOrderItemSpecifications.OrderItemShouldHaveProductErrorCode)
-            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveProductMessage)
-            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveProductSeverity);
+            .WithMessage(IOrderItemSpecifications.OrderItemShouldHaveProductErrorMessage)
+            .WithSeverity(IOrderItemSpecifications.OrderItemShouldHaveProductErrorSeverity);
     }
 }

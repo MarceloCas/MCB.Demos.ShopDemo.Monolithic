@@ -18,8 +18,8 @@ public static class EmailValueObjectValidatorWrapper
         fluentValidationValidatorWrapper.RuleFor(propertyExpression)
             .Must((emailValueObject, email) => emailValueObjectSpecifications.EmailValueObjectShouldRequired(getEmailFunction(emailValueObject)))
             .WithErrorCode(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredErrorCode)
-            .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredMessage)
-            .WithSeverity(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredSeverity);
+            .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredErrorMessage)
+            .WithSeverity(IEmailValueObjectSpecifications.EmailValueObjectShouldRequiredErrorSeverity);
     }
     public static void AddEmailValueObjectShouldHaveMaximumLength<TInput, TProperty>(
         IEmailValueObjectSpecifications emailValueObjectSpecifications,
@@ -32,8 +32,8 @@ public static class EmailValueObjectValidatorWrapper
             .Must((input, email) => emailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLength(getEmailFunction(input)))
             .When(input => emailValueObjectSpecifications.EmailValueObjectShouldRequired(getEmailFunction(input)))
             .WithErrorCode(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthErrorCode)
-            .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthMessage)
-            .WithSeverity(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthSeverity);
+            .WithMessage(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthErrorMessage)
+            .WithSeverity(IEmailValueObjectSpecifications.EmailValueObjectShouldHaveMaximumLengthErrorSeverity);
 
     }
 }
